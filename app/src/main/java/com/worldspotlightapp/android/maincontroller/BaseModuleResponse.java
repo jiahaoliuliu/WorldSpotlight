@@ -8,11 +8,11 @@ import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
  * The basic class response from the modules
  *
  */
-public abstract class ModuleResponseBase {
+public abstract class BaseModuleResponse {
 
     private ParseResponse mParseResponse;
 
-    public ModuleResponseBase(ParseResponse parseResponse) {
+    public BaseModuleResponse(ParseResponse parseResponse) {
         this.mParseResponse = parseResponse;
     }
 

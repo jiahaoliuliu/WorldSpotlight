@@ -19,6 +19,7 @@ import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.AbstractVideosModuleObservable;
 
 /**
  * Abstract base class created to be extended by all the activities.
@@ -37,6 +38,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     protected INotificationModule mNotificationModule;
     protected AbstractUserDataModuleObservable mUserDataModule;
     protected IGpsLocalizationModule mGpsLocalizationModule;
+    protected AbstractVideosModuleObservable mVideosModule;
 
     // Special variables for GpsLocalizationModule
     private boolean isRegisteredForLocalizationService;
@@ -63,6 +65,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         mNotificationModule = mMainController.getNotificationModule();
         mUserDataModule = mMainController.getUserDataModule();
         mGpsLocalizationModule = mMainController.getGpsLocalizationModule();
+        mVideosModule = mMainController.getVideosModule();
 
         // Getting the resolution error saved for localization service
         mResolvingError =
