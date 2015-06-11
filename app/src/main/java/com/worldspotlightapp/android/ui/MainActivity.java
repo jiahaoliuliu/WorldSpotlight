@@ -1,31 +1,23 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.internal.BitmapDescriptorParcelable;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Video;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -71,7 +63,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Video>() {
             @Override
             public boolean onClusterItemClick(Video video) {
-                Log.v(TAG, "Cluster item clicked " + video);
+                Intent startVideoDetailsActivityIntent = new Intent(mContext, VideoDetailsActivity.class);
+                startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, video.getObjectId());
+                startActivity(startVideoDetailsActivityIntent);
                 return true;
             }
         });
@@ -95,10 +89,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Data received from " + observable);
         if (observable instanceof VideosModuleObserver) {
-            if (o instanceof VideosModuleResponse) {
-                VideosModuleResponse videosModuleResponse = (VideosModuleResponse)o;
-                mParseResponse = videosModuleResponse.getParseResponse();
-                mVideosList = videosModuleResponse.getVideosList();
+            if (o instanceof VideosModuleVideosListResponse) {
+                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
+                mParseResponse = videosModuleVideosListResponse.getParseResponse();
+                mVideosList = videosModuleVideosListResponse.getVideosList();
 
                 if (mIsInForeground) {
                     processDataIfExists();
@@ -146,7 +140,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
         @Override
         protected void onBeforeClusterItemRendered(Video item, MarkerOptions markerOptions) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_default_maps_marker));
-//            super.onBeforeClusterItemRendered(item, markerOptions);
         }
     }
 }

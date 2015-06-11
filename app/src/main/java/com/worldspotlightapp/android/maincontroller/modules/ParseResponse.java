@@ -22,6 +22,8 @@ public class ParseResponse extends ParseException {
      */
     public static final int REQUEST_CORRECT = 10000;
 
+    public static final int ERROR_VIDEO_NOT_FOUND = 10001;
+
     // Status code
     // This should be the same as ParseException.
     // Since the variable code from the class ParseException is private
@@ -259,6 +261,9 @@ public class ParseResponse extends ParseException {
             case ParseException.UNSUPPORTED_SERVICE:
                 // TODO: Implement this case
                 resultMessage = context.getResources().getString(R.string.error_message_generic);
+                break;
+            case ERROR_VIDEO_NOT_FOUND:
+                resultMessage = context.getResources().getString(R.string.error_message_video_not_found);
                 break;
             default:
                 Log.w(TAG, "Request status not recognized " + getCode());

@@ -11,6 +11,9 @@ import com.parse.ParseObject;
  */
 @ParseClassName("Video")
 public class Video extends ParseObject implements ClusterItem {
+    public static final String INTENT_KEY_OBJECT_ID = "com.worldspotlightapp.android.model.video.objectid";
+
+    public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
 
     private static final String PARSE_COLUMN_TITLE = "title";
 

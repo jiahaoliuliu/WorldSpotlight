@@ -19,4 +19,13 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The Observer to notify when the videos is ready
      */
     public abstract void requestVideosList(Observer observer);
+
+    /**
+     * Retrieve the information about a video from the backend
+     * @param observer
+     *      The observer to notify
+     * @param videoObjectId
+     *      The id of the video object
+     */
+    public abstract void requestVideoInfo(Observer observer, String videoObjectId);
 }
