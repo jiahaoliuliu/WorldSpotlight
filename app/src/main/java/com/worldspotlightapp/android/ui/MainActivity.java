@@ -20,6 +20,9 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleResponse;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
@@ -33,6 +36,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private ClusterManager<Video> mClusterManager;
 
     private List<Video> mVideosList;
+
+    // The last parse response before processed.
+    // If a parse response has been processed, it will be null
+    private ParseResponse mParseResponse;
 
     // Views
     private GoogleMap mMap;
@@ -80,37 +87,54 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         });
 
+        mVideosModule.requestVideosList(this);
+        mNotificationModule.showLoadingDialog(mContext);
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        // TODO: Implement this
+        Log.v(TAG, "Data received from " + observable);
+        if (observable instanceof VideosModuleObserver) {
+            if (o instanceof VideosModuleResponse) {
+                VideosModuleResponse videosModuleResponse = (VideosModuleResponse)o;
+                mParseResponse = videosModuleResponse.getParseResponse();
+                mVideosList = videosModuleResponse.getVideosList();
+
+                if (mIsInForeground) {
+                    processDataIfExists();
+                }
+
+                observable.deleteObserver(this);
+            }
+        }
     }
 
     @Override
     protected void processDataIfExists() {
         setupMapIfNeeded();
-        if (mVideosList == null) {
-            //Retrive element from background
-            ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
-            query.findInBackground(new FindCallback<Video>() {
-                @Override
-                public void done(List<Video> videosList, ParseException e) {
-                    if (e == null) {
-                        Log.v(TAG, "The list of object has been retrieved");
-                        mVideosList = videosList;
-                        mClusterManager.addItems(mVideosList);
-                        // Force it to recluster
-                        mClusterManager.cluster();
-                        for (Video video: videosList) {
-                            Log.v(TAG, video.toString());
-                        }
-                    } else {
-                        Log.e(TAG, "Error retrieving data from backend");
-                    }
-                }
-            });
+
+        // 1. Check if the data exists
+        // If there were not data received from backend, then
+        // Not do anything
+        if (mParseResponse == null) {
+            return;
         }
+
+        // 2. Process the data
+        if (!mParseResponse.isError()) {
+            // The sign up was correct. Go to the Main activity
+            mClusterManager.addItems(mVideosList);
+            mClusterManager.cluster();
+        } else {
+            // Some error happend
+            mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
+        }
+
+        mNotificationModule.dismissLoadingDialog();
+
+        // 3. Remove the answers
+        mParseResponse = null;
+
     }
 
     private class VideosRenderer extends DefaultClusterRenderer<Video> {

@@ -9,6 +9,8 @@ import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.I
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.NotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.AbstractVideosModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 
 /**
  * The Session class models a user's session. It is the intermediate level between Controllers and
@@ -44,8 +46,8 @@ public final class MainController {
     // Modules
     private INotificationModule mNotificationModule;
     private AbstractUserDataModuleObservable mUserDataModule;
-
     private IGpsLocalizationModule mGpsLocalizationModule;
+    private AbstractVideosModuleObservable mVideosModuleObservable;
 
     /**
      * The constructor of the session. Because it is a singleton, there is not parameters for the
@@ -104,6 +106,7 @@ public final class MainController {
         newMainController.mUserDataModule = new UserDataModuleObservable(preferences);
         newMainController.mNotificationModule = new NotificationModule(context);
         newMainController.mGpsLocalizationModule = new GpsLocalizationModule(context, preferences);
+        newMainController.mVideosModuleObservable = new VideosModuleObserver();
 
         // Save the current session
         MainController.setCurrentMainController(newMainController);
@@ -142,5 +145,9 @@ public final class MainController {
 
     public IGpsLocalizationModule getGpsLocalizationModule() {
         return mGpsLocalizationModule;
+    }
+
+    public AbstractVideosModuleObservable getVideosModule() {
+        return mVideosModuleObservable;
     }
 }
