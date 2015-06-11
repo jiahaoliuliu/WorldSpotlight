@@ -1,5 +1,7 @@
 package com.worldspotlightapp.android.model;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.ClusterItem;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -8,7 +10,7 @@ import com.parse.ParseObject;
  * Created by jiahaoliuliu on 6/12/15.
  */
 @ParseClassName("Video")
-public class Video extends ParseObject{
+public class Video extends ParseObject implements ClusterItem {
 
     private static final String PARSE_COLUMN_TITLE = "title";
 
@@ -17,6 +19,7 @@ public class Video extends ParseObject{
     private static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
     private static final String PARSE_COLUMN_LOCATION = "location";
+    private LatLng mLocation;
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -80,5 +83,15 @@ public class Video extends ParseObject{
                 "thumbnailUrl='" + getThumbnailUrl() + '\'' +
                 "location='" + getLocation() + '\'' +
                 '}';
+    }
+
+    @Override
+    public LatLng getPosition() {
+        if (mLocation == null) {
+            ParseGeoPoint parseGeoPoint = getParseGeoPoint(PARSE_COLUMN_LOCATION);
+            mLocation = new LatLng(parseGeoPoint.getLatitude(), parseGeoPoint.getLongitude());
+        }
+
+        return mLocation;
     }
 }
