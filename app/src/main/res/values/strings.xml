@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">World Spotlight</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- Video details activity -->
+    <string name="video_details_description_title">Description</string>
 
     <!-- Notification manager -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
