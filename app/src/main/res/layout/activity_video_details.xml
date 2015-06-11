@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.worldspotlightapp.android.ui.VideoDetailsActivity"
     android:orientation="vertical"
+    android:background="@color/generic_background"
     >
 
     <fragment
@@ -19,7 +20,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="4dp"
         >
@@ -35,7 +36,7 @@
                 android:id="@+id/title_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:text="@string/video_details_description_title"
                 />
 
