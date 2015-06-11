@@ -15,9 +15,13 @@ import com.worldspotlightapp.android.model.Video;
  */
 public class MainApplication extends Application {
 
+    private static MainApplication sInstance;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        sInstance = this;
 
         // Initialize Parse
         ParseObject.registerSubclass(Video.class);
@@ -33,4 +37,9 @@ public class MainApplication extends Application {
             }
         });
     }
+
+    public static MainApplication getInstance() {
+        return sInstance;
+    }
+
 }

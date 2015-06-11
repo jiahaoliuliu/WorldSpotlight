@@ -3,4 +3,21 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Notification manager -->
+    <string name="dialog_loading_generic_message">Loading &#8230;</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">The request went ok</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">It seems that you don\'t have internet connection. Could you check it?</string>
+    <string name="error_message_server_generic">There was a problem with our server. Could you try it later?</string>
+    <string name="error_message_script_error">Error processing script on the cloud code</string>
+    <string name="error_message_validation_failed">Cloud Code validation failed</string>
+    <string name="error_message_generic">It seems that there is a problem. Could you try it later?</string>
+    <string name="error_message_username_already_taken">There is already some user with that email address. Could you pick another one?</string>
+    <string name="error_message_inexistent_user_or_password_not_match">The user does not exist or the password doesn\'t match. Could you check them?</string>
+    <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
+
 </resources>
