@@ -26,4 +26,15 @@ dependencies {
     // Parse
     compile 'com.parse.bolts:bolts-android:1.+'
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
+
+    // picasso for image loading
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // Material design library
+    compile 'com.android.support:design:22.2.0'
+
+    // Google Play services for location
+    //compile 'com.google.android.gms:play-services:7.5.+'
+    compile 'com.google.android.gms:play-services-location:7.5.+'
+
 }

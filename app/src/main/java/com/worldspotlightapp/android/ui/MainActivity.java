@@ -13,8 +13,9 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.List;
+import java.util.Observable;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
 
@@ -42,5 +43,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void processDataIfExists() {
+        // TODO: implement this
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        // TODO: implement this
     }
 }
