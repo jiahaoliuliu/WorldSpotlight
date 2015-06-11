@@ -16,8 +16,8 @@
     <string name="error_message_script_error">Error processing script on the cloud code</string>
     <string name="error_message_validation_failed">Cloud Code validation failed</string>
     <string name="error_message_generic">It seems that there is a problem. Could you try it later?</string>
+    <string name="error_message_video_not_found">The video you are looking for does not exists.</string>
     <string name="error_message_username_already_taken">There is already some user with that email address. Could you pick another one?</string>
-    <string name="error_message_inexistent_user_or_password_not_match">The user does not exist or the password doesn\'t match. Could you check them?</string>
-    <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
+    <string name="title_activity_video_details">VideoDetailsActivity</string>
 
 </resources>
