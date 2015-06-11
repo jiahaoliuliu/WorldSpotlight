@@ -37,4 +37,6 @@ dependencies {
     //compile 'com.google.android.gms:play-services:7.5.+'
     compile 'com.google.android.gms:play-services-location:7.5.+'
 
+    // Maps utility
+    compile 'com.google.maps.android:android-maps-utils:0.3.4'
 }
