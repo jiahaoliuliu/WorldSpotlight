@@ -3,6 +3,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
     <!-- Notification manager -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>

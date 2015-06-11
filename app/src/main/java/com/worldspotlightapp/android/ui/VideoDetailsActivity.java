@@ -1,10 +1,15 @@
 package com.worldspotlightapp.android.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.worldspotlightapp.android.R;
@@ -13,15 +18,14 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosM
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.model.Video;
 
-import java.util.IllegalFormatCodePointException;
 import java.util.Observable;
 
-public class VideoDetailsActivity extends AbstractBaseActivityObserver {
+public class VideoDetailsActivity extends AbstractBaseActivityObserver implements YouTubePlayer.OnInitializedListener {
 
     private static final String TAG = "VideoDetailsActivity";
     private static final int RECOVERY_DIALOG_REQUEST = 1;
 
-    private static final String GOOGLE_API = "AIzaSyB4nkNAMhIa-JXE3lxqPyk9GaEQqhpn_Q8";
+    private static final String GOOGLE_API_KEY = "AIzaSyB4nkNAMhIa-JXE3lxqPyk9GaEQqhpn_Q8";
 
     private String mVideoObjectId;
 
@@ -29,6 +33,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
     private Video mVideo;
 
     // Views
+    private CardView mCardView;
     private TextView mDescriptionTextView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
@@ -50,16 +55,17 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
         mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
 
         // Action bar
-//        mActionBar.setHomeButtonEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the views
+        mCardView = (CardView) findViewById(R.id.card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
+        mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
+        mYoutubePlayerFragment.initialize(GOOGLE_API_KEY, this);
 
         // Retrieve the data
         mNotificationModule.showLoadingDialog(mContext);
         mVideosModule.requestVideoInfo(this, mVideoObjectId);
-
     }
 
     @Override
@@ -112,6 +118,11 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
 
         mActionBar.setTitle(mVideo.getTitle());
         mDescriptionTextView.setText(mVideo.getDescription());
+
+        // If the youtube player has been already initialized
+        if (mYouTubePlayer != null) {
+            mYouTubePlayer.cueVideo(mVideo.getVideoId());
+        }
     }
 
     @Override
@@ -124,5 +135,53 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+        if (!wasRestored) {
+            mYouTubePlayer = youTubePlayer;
+            mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+                @Override
+                public void onFullscreen(boolean isFullScreen) {
+                    mCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
+                    mIsFullScreen = isFullScreen;
+                }
+            });
+
+            // If the video was ready
+            if (mVideo != null) {
+                mYouTubePlayer.cueVideo(mVideo.getVideoId());
+            }
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        if (youTubeInitializationResult.isUserRecoverableError()) {
+            youTubeInitializationResult.getErrorDialog(this, RECOVERY_DIALOG_REQUEST).show();
+        } else {
+            String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RECOVERY_DIALOG_REQUEST) {
+            // Retry initialization if user performed a recovery action
+            mYoutubePlayerFragment.initialize(GOOGLE_API_KEY, this);
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mIsFullScreen) {
+            mYouTubePlayer.setFullscreen(false);
+            return;
+        }
+        super.onBackPressed();
     }
 }
