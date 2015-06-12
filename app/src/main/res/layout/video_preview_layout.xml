@@ -34,10 +34,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/thumbnail_image_view"
-        android:layout_alignBottom="@+id/thumbnail_image_view"
+        android:layout_below="@+id/title_text_view"
+        android:layout_marginTop="@dimen/main_activity_video_preview_vertical_margin"
         android:maxLines="3"
         android:layout_alignLeft="@+id/title_text_view"
         android:paddingRight="@dimen/main_activity_video_preview_margin"
+        android:textSize="@dimen/main_activity_video_preview_description_size"
         />
 
     <ImageView
