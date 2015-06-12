@@ -16,6 +16,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.worldspotlightapp.android.maincontroller.MainController;
+import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
@@ -39,6 +41,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     protected AbstractUserDataModuleObservable mUserDataModule;
     protected IGpsLocalizationModule mGpsLocalizationModule;
     protected AbstractVideosModuleObservable mVideosModule;
+    protected IEventsTrackingModule mEventTrackingModule;
+    protected IActivityTrackerModule mActivityTrackerModule;
 
     // Special variables for GpsLocalizationModule
     private boolean isRegisteredForLocalizationService;
@@ -66,11 +70,18 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         mUserDataModule = mMainController.getUserDataModule();
         mGpsLocalizationModule = mMainController.getGpsLocalizationModule();
         mVideosModule = mMainController.getVideosModule();
+        mEventTrackingModule = mMainController.getEventTrackingModule();
+        mActivityTrackerModule = mMainController.getActivityTRackerModule();
 
         // Getting the resolution error saved for localization service
         mResolvingError =
                 savedInstanceState != null &&
                         savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+
+        mActivityTrackerModule.notifyActivityCreated();
+        if (mActivityTrackerModule.isThereOnlyOneActivityRunning()) {
+            mEventTrackingModule.trackAppInitialization();
+        }
     }
 
     protected void registerForLocalizationService() {
@@ -177,6 +188,11 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 //        if (isRegisteredForLocalizationService) {
 //            mGpsLocalizationModule.unregisterForLocalizationService();
 //        }
+
+        mActivityTrackerModule.notifyActivityDestroyed();
+        if (mActivityTrackerModule.isThereAnyActivityRunning()) {
+            mEventTrackingModule.trackAppFinalization();
+        }
 
         super.onDestroy();
     }

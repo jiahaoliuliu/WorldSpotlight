@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mix panel event tracker. mp = MixPanel-->
+
+    <!-- Login -->
+    <string name="mp_login">Login</string>
+
+    <!-- Logout -->
+    <string name="mp_logout">Logout</string>
+
+</resources>

@@ -3,6 +3,10 @@ package com.worldspotlightapp.android.maincontroller;
 import android.content.Context;
 
 import com.parse.ParseException;
+import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.ActivityTrackerModule;
+import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.EventsTrackingModule;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.GpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
@@ -11,6 +15,8 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractU
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.AbstractVideosModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+
+import java.util.UUID;
 
 /**
  * The Session class models a user's session. It is the intermediate level between Controllers and
@@ -48,6 +54,8 @@ public final class MainController {
     private AbstractUserDataModuleObservable mUserDataModule;
     private IGpsLocalizationModule mGpsLocalizationModule;
     private AbstractVideosModuleObservable mVideosModuleObservable;
+    private IEventsTrackingModule mEventTrackingModule;
+    private IActivityTrackerModule mActivityTrackerModule;
 
     /**
      * The constructor of the session. Because it is a singleton, there is not parameters for the
@@ -104,9 +112,12 @@ public final class MainController {
 
         // Set the modules
         newMainController.mUserDataModule = new UserDataModuleObservable(preferences);
+        UUID uuid = newMainController.mUserDataModule.getUuid();
         newMainController.mNotificationModule = new NotificationModule(context);
         newMainController.mGpsLocalizationModule = new GpsLocalizationModule(context, preferences);
         newMainController.mVideosModuleObservable = new VideosModuleObserver();
+        newMainController.mEventTrackingModule = new EventsTrackingModule(context, uuid);
+        newMainController.mActivityTrackerModule = new ActivityTrackerModule();
 
         // Save the current session
         MainController.setCurrentMainController(newMainController);
@@ -149,5 +160,13 @@ public final class MainController {
 
     public AbstractVideosModuleObservable getVideosModule() {
         return mVideosModuleObservable;
+    }
+
+    public IEventsTrackingModule getEventTrackingModule() {
+        return mEventTrackingModule;
+    }
+
+    public IActivityTrackerModule getActivityTRackerModule() {
+        return mActivityTrackerModule;
     }
 }

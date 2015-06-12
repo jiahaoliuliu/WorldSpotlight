@@ -66,4 +66,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
         transitive = true;
     }
+
+    // Mixpanel
+    compile "com.mixpanel.android:mixpanel-android:4.5.3"
 }
