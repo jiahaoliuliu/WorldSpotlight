@@ -18,6 +18,8 @@ import com.worldspotlightapp.android.model.Video;
 
 public class VideosPreviewFragment extends Fragment {
 
+    private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.VideosPreviewFragment.showArrows";
+
     private Activity mActivity;
     private Picasso mPicasso;
 
@@ -28,21 +30,24 @@ public class VideosPreviewFragment extends Fragment {
     private String mThumbnailUrl;
     private String mTitle;
     private String mDescription;
-    private String mNavigation;
+    private boolean mShowArrows;
 
     // Views
     private RelativeLayout mVideoPreviewRelativeLayout;
     private ImageView mThumbnailImageView;
     private TextView mTitleTextView;
     private TextView mDescriptionTextView;
+    private ImageView mLeftArrowImageView;
+    private ImageView mRightArrowImageView;
 
-    public static VideosPreviewFragment newInstance(String objectId, String thumbnailUrl, String title, String description) {
+    public static VideosPreviewFragment newInstance(String objectId, String thumbnailUrl, String title, String description, boolean showArrows) {
         VideosPreviewFragment videosPreviewFragment = new VideosPreviewFragment();
         Bundle args = new Bundle();
         args.putString(Video.INTENT_KEY_OBJECT_ID, objectId);
         args.putString(Video.INTENT_KEY_THUMBNAIL_URL, thumbnailUrl);
         args.putString(Video.INTENT_KEY_TITLE, title);
         args.putString(Video.INTENT_KEY_DESCRIPTION, description);
+        args.putBoolean(INTENT_KEY_SHOW_ARROWS, showArrows);
         videosPreviewFragment.setArguments(args);
         return videosPreviewFragment;
     }
@@ -57,6 +62,9 @@ public class VideosPreviewFragment extends Fragment {
         mThumbnailImageView = (ImageView) mVideoPreviewRelativeLayout.findViewById(R.id.thumbnail_image_view);
         mTitleTextView = (TextView) mVideoPreviewRelativeLayout.findViewById(R.id.title_text_view);
         mDescriptionTextView = (TextView) mVideoPreviewRelativeLayout.findViewById(R.id.description_text_view);
+        mLeftArrowImageView = (ImageView) mVideoPreviewRelativeLayout.findViewById(R.id.left_arrow_image_view);
+        mRightArrowImageView = (ImageView) mVideoPreviewRelativeLayout.findViewById(R.id.right_arrow_image_view);
+
         return mVideoPreviewRelativeLayout;
     }
 
@@ -76,7 +84,7 @@ public class VideosPreviewFragment extends Fragment {
                 || !bundle.containsKey(Video.INTENT_KEY_THUMBNAIL_URL)
                 || !bundle.containsKey(Video.INTENT_KEY_TITLE)
                 || !bundle.containsKey(Video.INTENT_KEY_DESCRIPTION)
-
+                || !bundle.containsKey(INTENT_KEY_SHOW_ARROWS)
                 ) {
             throw new IllegalArgumentException("You must instantiate this fragment using the method newInstance");
         }
@@ -92,8 +100,19 @@ public class VideosPreviewFragment extends Fragment {
         mTitle = bundle.getString(Video.INTENT_KEY_TITLE);
         mTitleTextView.setText(mTitle);
 
+        // Description
         mDescription = bundle.getString(Video.INTENT_KEY_DESCRIPTION);
         mDescriptionTextView.setText(mDescription);
+
+        // Arrow
+        mShowArrows = bundle.getBoolean(INTENT_KEY_SHOW_ARROWS);
+        if (mShowArrows) {
+            mLeftArrowImageView.setVisibility(View.VISIBLE);
+            mRightArrowImageView.setVisibility(View.VISIBLE);
+        } else {
+            mLeftArrowImageView.setVisibility(View.GONE);
+            mRightArrowImageView.setVisibility(View.GONE);
+        }
 
         mVideoPreviewRelativeLayout.setOnClickListener(onClickListener);
     }

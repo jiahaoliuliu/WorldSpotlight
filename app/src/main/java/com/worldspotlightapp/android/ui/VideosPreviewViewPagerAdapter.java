@@ -21,13 +21,17 @@ public class VideosPreviewViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int index) {
+        // Show show arrow or not
+        boolean shouldShowArrow = mVideosList.size() > 1;
+
         Video videoToShow = mVideosList.get(index);
         Fragment videosPreviewFragment =
                 VideosPreviewFragment.newInstance(
                         videoToShow.getObjectId(),
                         videoToShow.getThumbnailUrl(),
                         videoToShow.getTitle(),
-                        videoToShow.getDescription());
+                        videoToShow.getDescription(),
+                        shouldShowArrow);
 
         return videosPreviewFragment;
     }
