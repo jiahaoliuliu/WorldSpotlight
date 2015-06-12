@@ -46,4 +46,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.+'
     compile 'com.google.apis:google-api-services-youtube:v3-rev139-1.20.0'
 
+    // View pager and indicator
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
 }

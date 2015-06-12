@@ -3,21 +3,28 @@ package com.worldspotlightapp.android.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -25,6 +32,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
 
+    private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
     private List<Video> mVideosList;
@@ -36,12 +44,25 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Views
     private GoogleMap mMap;
 
+    // ViewPager for preview
+    private ViewPager mVideosPreviewViewPager;
+    private UnderlinePageIndicator mVideosPreviewViewPagerIndicator;
+    private VideosPreviewViewPagerAdapter mVideosPreviewViewPagerAdapter;
+
+    // Variable used to record if the camera update is automatic or manual
+    private boolean isAutomaticCameraUpdate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFragmentManager = getSupportFragmentManager();
+
         // Link the views
+        mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
+        mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
+
         setupMapIfNeeded();
     }
 
@@ -52,20 +73,60 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
 
         mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-
         mClusterManager = new ClusterManager<Video>(this, mMap);
         VideosRenderer videosRenderer = new VideosRenderer(mContext, mMap, mClusterManager);
         mClusterManager.setRenderer(videosRenderer);
-        mMap.setOnCameraChangeListener(mClusterManager);
+//        mMap.setOnCameraChangeListener(mClusterManager);
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                mClusterManager.onCameraChange(cameraPosition);
+                Log.v(TAG, "Camera position changed. Is it automatic update? " + isAutomaticCameraUpdate);
+                if (!isAutomaticCameraUpdate) {
+                    // Hide the viewpager
+                    mVideosPreviewViewPager.setVisibility(View.GONE);
+                    mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+                }
+            }
+        });
         mMap.setOnMarkerClickListener(mClusterManager);
         mMap.setOnInfoWindowClickListener(mClusterManager);
 
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Video>() {
             @Override
             public boolean onClusterItemClick(Video video) {
-                Intent startVideoDetailsActivityIntent = new Intent(mContext, VideoDetailsActivity.class);
-                startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, video.getObjectId());
-                startActivity(startVideoDetailsActivityIntent);
+                Log.v(TAG, "Cluster item clicked. Starting automatic camera update");
+                isAutomaticCameraUpdate = true;
+
+                // Move to the point
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(video.getPosition()), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        Log.v(TAG, "Animating the camera finished");
+                        // Show the viewpager
+                        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+                        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.v(TAG, "Animating the camera canceled");
+                        // Show the viewpager
+                        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+                        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                List<Video> videosListToShow = new ArrayList<Video>();
+                videosListToShow.add(video);
+
+                mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosListToShow);
+                mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
+
+                // Set the view pager in the view pager indicator
+                mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
+                mVideosPreviewViewPagerIndicator.setFades(false);
+
                 return true;
             }
         });
@@ -73,10 +134,27 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Video>() {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
-                Log.v(TAG, "Cluster clicked ");
-                for (Video video : cluster.getItems()) {
-                    Log.v(TAG, video.toString());
+                isAutomaticCameraUpdate = true;
+
+                // Move to the point
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
+
+                // Show the viewpager
+                mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+                mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+
+                List<Video> videosListToShow = new ArrayList<Video>();
+                for (Video video: cluster.getItems()) {
+                    videosListToShow.add(video);
                 }
+
+                mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosListToShow);
+                mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
+
+                // Set the view pager in the view pager indicator
+                mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
+                mVideosPreviewViewPagerIndicator.setFades(false);
+
                 return true;
             }
         });
@@ -141,5 +219,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
         protected void onBeforeClusterItemRendered(Video item, MarkerOptions markerOptions) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_default_maps_marker));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If the user clicks on back and the viewpager is visible, then hide it
+        if (mVideosPreviewViewPager != null && mVideosPreviewViewPager.getVisibility() == View.VISIBLE) {
+            mVideosPreviewViewPager.setVisibility(View.GONE);
+
+            if (mVideosPreviewViewPagerIndicator != null) {
+                mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+            }
+            return;
+        }
+        super.onBackPressed();
     }
 }

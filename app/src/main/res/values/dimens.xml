@@ -2,4 +2,16 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Main activity -->
+    <dimen name="main_activity_view_pager_indicator_height">5dp</dimen>
+    <dimen name="main_activity_view_pager_height">100dp</dimen>
+
+    <!--     Video Preview -->
+    <dimen name="main_activity_video_preview_margin">10dp</dimen>
+    <dimen name="main_activity_video_preview_title_size">15sp</dimen>
+    <dimen name="main_activity_video_preview_horizontal_margin">5dp</dimen>
+    <dimen name="main_activity_video_preview_image_height">80dp</dimen>
+    <dimen name="main_activity_video_preview_image_width">145dp</dimen>
+
 </resources>
