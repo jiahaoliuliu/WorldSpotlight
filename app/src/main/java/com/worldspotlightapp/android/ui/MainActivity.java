@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -45,7 +47,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private ViewPager mVideosPreviewViewPager;
     private UnderlinePageIndicator mVideosPreviewViewPagerIndicator;
     private VideosPreviewViewPagerAdapter mVideosPreviewViewPagerAdapter;
-    private List<Video> mVideosToPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +69,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
 
         mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-
         mClusterManager = new ClusterManager<Video>(this, mMap);
         VideosRenderer videosRenderer = new VideosRenderer(mContext, mMap, mClusterManager);
         mClusterManager.setRenderer(videosRenderer);
-        mMap.setOnCameraChangeListener(mClusterManager);
+//        mMap.setOnCameraChangeListener(mClusterManager);
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                mClusterManager.onCameraChange(cameraPosition);
+                // Show the viewpager
+                mVideosPreviewViewPager.setVisibility(View.GONE);
+                mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+            }
+        });
         mMap.setOnMarkerClickListener(mClusterManager);
         mMap.setOnInfoWindowClickListener(mClusterManager);
 
@@ -89,6 +98,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Video>() {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
+                // Show the viewpager
+                mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+                mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+
                 List<Video> videosListToShow = new ArrayList<Video>();
                 for (Video video: cluster.getItems()) {
                     videosListToShow.add(video);
