@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">World Spotlight</string>
 
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">You are here</string>
+
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>

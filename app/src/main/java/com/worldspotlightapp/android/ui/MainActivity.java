@@ -1,18 +1,22 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
-import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -43,6 +47,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     // Views
     private GoogleMap mMap;
+    // Marker on the map
+    private Marker mMyPositionMarker;
+
+    private FloatingActionButton mMyLocationFloatingActionButton;
 
     // ViewPager for preview
     private ViewPager mVideosPreviewViewPager;
@@ -59,11 +67,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mFragmentManager = getSupportFragmentManager();
 
+        registerForLocalizationService();
+
         // Link the views
+        mMyLocationFloatingActionButton = (FloatingActionButton) findViewById(R.id.my_location_floating_action_button);
+        mMyLocationFloatingActionButton.setOnClickListener(onClickListener);
+
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
 
         setupMapIfNeeded();
+
+        // Center the map to the user
+        centerMapToUser();
     }
 
     private void setupMapIfNeeded() {
@@ -161,6 +177,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosModule.requestVideosList(this);
         mNotificationModule.showLoadingDialog(mContext);
+
     }
 
     @Override
@@ -233,5 +250,45 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return;
         }
         super.onBackPressed();
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.my_location_floating_action_button:
+                    centerMapToUser();
+                    break;
+            }
+        }
+    };
+
+
+
+    /**
+     * Show my actual location.
+     * If the map is null, don't do anything
+     */
+    private void centerMapToUser() {
+        if (mMap == null) {
+            return;
+        }
+
+        // Move to the point
+        Location myLastKnownLocation = mGpsLocalizationModule.getLastKnownLocation();
+        LatLng myLastKnownLatLng = new LatLng(myLastKnownLocation.getLatitude(), myLastKnownLocation.getLongitude());
+
+        // Add the marker
+        if (mMyPositionMarker != null) {
+            mMyPositionMarker.remove();
+        }
+
+        mMyPositionMarker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(myLastKnownLatLng.latitude, myLastKnownLatLng.longitude))
+                .title(getString(R.string.main_activity_you_are_here)));
+        mMyPositionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location));
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
+        mMap.animateCamera(cameraUpdate);
     }
 }
