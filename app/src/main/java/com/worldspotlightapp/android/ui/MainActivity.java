@@ -188,7 +188,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
                 mParseResponse = videosModuleVideosListResponse.getParseResponse();
                 mVideosList = videosModuleVideosListResponse.getVideosList();
-                Log.v(TAG, "Video list received from backend " + mVideosList.size());
 
                 if (mIsInForeground) {
                     processDataIfExists();
