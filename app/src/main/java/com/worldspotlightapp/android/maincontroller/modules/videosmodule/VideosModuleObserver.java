@@ -10,6 +10,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 
@@ -20,6 +21,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private static final String TAG = "VideosModuleObserver";
     private static final int MAX_PARSE_QUERY_RESULT = 2000;
+    private static final int MAX_PARSE_QUERY_ALLOWED = 1000;
 
     @Override
     public void requestVideosList(Observer observer) {
@@ -27,20 +29,25 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         // Register the observer
         addObserver(observer);
 
+        final List<Video> resultVideosList = new ArrayList<Video>();
+
         //Retrive element from background
-        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
-        query.setLimit(MAX_PARSE_QUERY_RESULT);
-        query.findInBackground(new FindCallback<Video>() {
+        final FindCallback<Video> findCallback = new FindCallback<Video>() {
             @Override
             public void done(List<Video> videosList, ParseException e) {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
-                    Log.v(TAG, "The list of object has been retrieved");
-                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-                            new VideosModuleVideosListResponse(parseResponse, videosList);
+                    Log.v(TAG, "The list of object has been retrieved " + videosList.size());
+                    resultVideosList.addAll(videosList);
+                    if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
+                        requestVideoToParse(resultVideosList.size(), this);
+                    } else {
+                        VideosModuleVideosListResponse videosModuleVideosListResponse =
+                                new VideosModuleVideosListResponse(parseResponse, resultVideosList);
 
-                    setChanged();
-                    notifyObservers(videosModuleVideosListResponse);
+                        setChanged();
+                        notifyObservers(videosModuleVideosListResponse);
+                    }
                 } else {
                     Log.e(TAG, "Error retrieving data from backend");
                     VideosModuleVideosListResponse videosModuleVideosListResponse =
@@ -50,8 +57,44 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     notifyObservers(videosModuleVideosListResponse);
                 }
             }
-        });
+        };
+
+        requestVideoToParse(0, findCallback);
     }
+
+    private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback) {
+        //Retrive element from background
+        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+        query.setSkip(initialPosition);
+        query.setLimit(MAX_PARSE_QUERY_RESULT);
+        query.findInBackground(findCallback);
+    }
+
+
+//        //Retrive element from background
+//        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+//        query.setLimit(MAX_PARSE_QUERY_RESULT);
+//        query.findInBackground(new FindCallback<Video>() {
+//            @Override
+//            public void done(List<Video> videosList, ParseException e) {
+//                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+//                if (!parseResponse.isError()) {
+//                    Log.v(TAG, "The list of object has been retrieved");
+//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+//                            new VideosModuleVideosListResponse(parseResponse, videosList);
+//
+//                    setChanged();
+//                    notifyObservers(videosModuleVideosListResponse);
+//                } else {
+//                    Log.e(TAG, "Error retrieving data from backend");
+//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+//                            new VideosModuleVideosListResponse(parseResponse, null);
+//
+//                    setChanged();
+//                    notifyObservers(videosModuleVideosListResponse);
+//                }
+//            }
+//        });
 
     @Override
     public void requestVideoInfo(Observer observer, String videoObjectId) {
