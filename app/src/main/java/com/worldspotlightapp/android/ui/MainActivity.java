@@ -276,6 +276,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Move to the point
         Location myLastKnownLocation = mGpsLocalizationModule.getLastKnownLocation();
+        if (myLastKnownLocation == null) {
+            return;
+        }
+
         LatLng myLastKnownLatLng = new LatLng(myLastKnownLocation.getLatitude(), myLastKnownLocation.getLongitude());
 
         // Add the marker
