@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosM
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -27,6 +29,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
 
+    private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
     private List<Video> mVideosList;
@@ -41,7 +44,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // ViewPager for preview
     private ViewPager mVideosPreviewViewPager;
     private UnderlinePageIndicator mVideosPreviewViewPagerIndicator;
-//    private ShowOfferDetailsViewPagerAdapter showOfferDetailsViewPagerAdapter;
+    private VideosPreviewViewPagerAdapter mVideosPreviewViewPagerAdapter;
     private List<Video> mVideosToPreview;
 
     @Override
@@ -49,21 +52,13 @@ public class MainActivity extends AbstractBaseActivityObserver {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFragmentManager = getSupportFragmentManager();
+
         // Link the views
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
 
         setupMapIfNeeded();
-
-        showOfferDetailsViewPagerAdapter = new ShowOfferDetailsViewPagerAdapter(
-                ShowOfferDetailsActivity.this, getSupportFragmentManager(), offersOfSameBrand,
-                navigation);
-        offerDetailsViewPager.setAdapter(showOfferDetailsViewPagerAdapter);
-
-        // Set the view pager in the view pager indicator
-        offerDetailsViewPagerIndicator.setViewPager(offerDetailsViewPager);
-        offerDetailsViewPagerIndicator.setFades(false);
-
     }
 
     private void setupMapIfNeeded() {
@@ -94,10 +89,18 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Video>() {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
-                Log.v(TAG, "Cluster clicked ");
-                for (Video video : cluster.getItems()) {
-                    Log.v(TAG, video.toString());
+                List<Video> videosListToShow = new ArrayList<Video>();
+                for (Video video: cluster.getItems()) {
+                    videosListToShow.add(video);
                 }
+
+                mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosListToShow);
+                mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
+
+                // Set the view pager in the view pager indicator
+                mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
+                mVideosPreviewViewPagerIndicator.setFades(false);
+
                 return true;
             }
         });
