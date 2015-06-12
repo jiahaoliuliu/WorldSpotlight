@@ -84,9 +84,9 @@ public class VideosPreviewFragment extends Fragment {
         mObjectId = bundle.getString(Video.INTENT_KEY_OBJECT_ID);
 
         // Load images
-        mPicasso = Picasso.with(mActivity);
-        mPicasso.load(mThumbnailUrl);
         mThumbnailUrl = bundle.getString(Video.INTENT_KEY_THUMBNAIL_URL);
+        mPicasso = Picasso.with(mActivity);
+        mPicasso.load(mThumbnailUrl).into(mThumbnailImageView);
 
         // Title
         mTitle = bundle.getString(Video.INTENT_KEY_TITLE);

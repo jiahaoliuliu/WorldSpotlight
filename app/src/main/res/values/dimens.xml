@@ -5,8 +5,10 @@
 
     <!-- Main activity -->
     <dimen name="main_activity_view_pager_indicator_height">3dp</dimen>
-    <dimen name="main_activity_view_pager_height">250dp</dimen>
+    <dimen name="main_activity_view_pager_height">100dp</dimen>
 
-    <dimen name="main_activity_video_preview_margin">4dp</dimen>
-    <dimen name="main_activity_video_preview_title_size">25sp</dimen>
+    <!--     Video Preview -->
+    <dimen name="main_activity_video_preview_margin">10dp</dimen>
+    <dimen name="main_activity_video_preview_title_size">15sp</dimen>
+    <dimen name="main_activity_video_preview_horizontal_margin">5dp</dimen>
 </resources>
