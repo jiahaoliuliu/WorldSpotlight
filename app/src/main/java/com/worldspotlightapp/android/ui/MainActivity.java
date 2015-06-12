@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
@@ -36,13 +38,32 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Views
     private GoogleMap mMap;
 
+    // ViewPager for preview
+    private ViewPager mVideosPreviewViewPager;
+    private UnderlinePageIndicator mVideosPreviewViewPagerIndicator;
+//    private ShowOfferDetailsViewPagerAdapter showOfferDetailsViewPagerAdapter;
+    private List<Video> mVideosToPreview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Link the views
+        mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
+        mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
+
         setupMapIfNeeded();
+
+        showOfferDetailsViewPagerAdapter = new ShowOfferDetailsViewPagerAdapter(
+                ShowOfferDetailsActivity.this, getSupportFragmentManager(), offersOfSameBrand,
+                navigation);
+        offerDetailsViewPager.setAdapter(showOfferDetailsViewPagerAdapter);
+
+        // Set the view pager in the view pager indicator
+        offerDetailsViewPagerIndicator.setViewPager(offerDetailsViewPager);
+        offerDetailsViewPagerIndicator.setFades(false);
+
     }
 
     private void setupMapIfNeeded() {

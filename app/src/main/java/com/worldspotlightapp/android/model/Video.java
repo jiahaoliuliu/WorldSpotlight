@@ -11,12 +11,14 @@ import com.parse.ParseObject;
  */
 @ParseClassName("Video")
 public class Video extends ParseObject implements ClusterItem {
+    // Object Id
     public static final String INTENT_KEY_OBJECT_ID = "com.worldspotlightapp.android.model.video.objectid";
-
     public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
 
+    public static final String INTENT_KEY_TITLE = "com.worldspotlightapp.android.model.video.title";
     private static final String PARSE_COLUMN_TITLE = "title";
 
+    public static final String INTENT_KEY_DESCRIPTION = "com.worldspotlightapp.android.model.video.description";
     private static final String PARSE_COLUMN_DESCRIPTION = "description";
 
     private static final String PARSE_COLUMN_VIDEO_ID = "videoId";
@@ -27,6 +29,7 @@ public class Video extends ParseObject implements ClusterItem {
     /**
      * The thumbnail url of the video. This is generated based on the video id
      */
+    public static final String INTENT_KEY_THUMBNAIL_URL = "com.worldspotlightapp.android.model.video.thumbnailUrl";
     private String mThumbnailUrl;
 
     /**
