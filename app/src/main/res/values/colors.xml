@@ -2,7 +2,4 @@
 <resources>
     <color name="generic_background">#CCCCCC</color>
 
-    <!-- Tint -->
-    <color name="accent">#FF4081</color>
-
 </resources>
