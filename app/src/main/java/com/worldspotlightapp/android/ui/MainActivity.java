@@ -1,7 +1,6 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,6 +34,8 @@ import java.util.Observable;
 public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
+
+    private static final float DEFAULT_ZOOM_LEVEL = 13.0f;
 
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
@@ -73,6 +75,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
 
         setupMapIfNeeded();
+
+        // Center the map to the user
+        centerMapToUser(true);
     }
 
     private void setupMapIfNeeded() {
@@ -170,6 +175,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosModule.requestVideosList(this);
         mNotificationModule.showLoadingDialog(mContext);
+
     }
 
     @Override
@@ -255,11 +261,17 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
     };
 
+
+
     /**
      * Show my actual location.
      * If the map is null, don't do anything
      */
     private void centerMapToUser() {
+        centerMapToUser(false);
+    }
+
+    private void centerMapToUser(boolean modifyToDefaultZoomLevel) {
         if (mMap == null) {
             return;
         }
@@ -268,6 +280,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Location myLastKnownLocation = mGpsLocalizationModule.getLastKnownLocation();
         LatLng myLastKnownLatLng = new LatLng(myLastKnownLocation.getLatitude(), myLastKnownLocation.getLongitude());
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(myLastKnownLatLng));
+        CameraUpdate cameraUpdate = modifyToDefaultZoomLevel ?
+                CameraUpdateFactory.newLatLngZoom(myLastKnownLatLng, DEFAULT_ZOOM_LEVEL) :
+                CameraUpdateFactory.newLatLng(myLastKnownLatLng);
+
+        mMap.animateCamera(cameraUpdate);
     }
 }
