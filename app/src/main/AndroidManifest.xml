@@ -97,6 +97,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             >
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="@string/io_fabric_api_key" />
     </application>
 
 </manifest>

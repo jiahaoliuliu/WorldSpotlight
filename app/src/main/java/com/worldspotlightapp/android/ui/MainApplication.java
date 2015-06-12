@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.ui;
 import android.app.Application;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -10,6 +11,7 @@ import com.parse.ParsePush;
 import com.parse.SaveCallback;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.LocalConstants;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by jiahaoliuliu on 6/12/15.
@@ -39,6 +41,11 @@ public class MainApplication extends Application {
                 }
             }
         });
+
+        // Initialize Fabric/Crashlytics
+        if (!IS_PRODUCTION) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 
     public static MainApplication getInstance() {
