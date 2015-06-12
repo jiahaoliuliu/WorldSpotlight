@@ -41,3 +41,4 @@ fabric.properties
 
 #API secrets
 app/src/main/java/com/worldspotlightapp/android/utils/LocalConstants.java
+app/src/main/res/values/secret.xml
