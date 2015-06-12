@@ -16,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -35,8 +36,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
 
-    private static final float DEFAULT_ZOOM_LEVEL = 13.0f;
-
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
@@ -48,6 +47,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     // Views
     private GoogleMap mMap;
+    // Marker on the map
+    private Marker mMyPositionMarker;
+
     private FloatingActionButton mMyLocationFloatingActionButton;
 
     // ViewPager for preview
@@ -77,7 +79,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         setupMapIfNeeded();
 
         // Center the map to the user
-        centerMapToUser(true);
+        centerMapToUser();
     }
 
     private void setupMapIfNeeded() {
@@ -268,10 +270,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
      * If the map is null, don't do anything
      */
     private void centerMapToUser() {
-        centerMapToUser(false);
-    }
-
-    private void centerMapToUser(boolean modifyToDefaultZoomLevel) {
         if (mMap == null) {
             return;
         }
@@ -280,10 +278,17 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Location myLastKnownLocation = mGpsLocalizationModule.getLastKnownLocation();
         LatLng myLastKnownLatLng = new LatLng(myLastKnownLocation.getLatitude(), myLastKnownLocation.getLongitude());
 
-        CameraUpdate cameraUpdate = modifyToDefaultZoomLevel ?
-                CameraUpdateFactory.newLatLngZoom(myLastKnownLatLng, DEFAULT_ZOOM_LEVEL) :
-                CameraUpdateFactory.newLatLng(myLastKnownLatLng);
+        // Add the marker
+        if (mMyPositionMarker != null) {
+            mMyPositionMarker.remove();
+        }
 
+        mMyPositionMarker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(myLastKnownLatLng.latitude, myLastKnownLatLng.longitude))
+                .title(getString(R.string.main_activity_you_are_here)));
+        mMyPositionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location));
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
         mMap.animateCamera(cameraUpdate);
     }
 }
