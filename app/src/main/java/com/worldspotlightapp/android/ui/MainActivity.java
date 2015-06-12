@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -48,6 +49,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private UnderlinePageIndicator mVideosPreviewViewPagerIndicator;
     private VideosPreviewViewPagerAdapter mVideosPreviewViewPagerAdapter;
 
+    // Variable used to record if the camera update is automatic or manual
+    private boolean isAutomaticCameraUpdate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +81,12 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 mClusterManager.onCameraChange(cameraPosition);
-                // Show the viewpager
-                mVideosPreviewViewPager.setVisibility(View.GONE);
-                mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+                Log.v(TAG, "Camera position changed. Is it automatic update? " + isAutomaticCameraUpdate);
+                if (!isAutomaticCameraUpdate) {
+                    // Hide the viewpager
+                    mVideosPreviewViewPager.setVisibility(View.GONE);
+                    mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+                }
             }
         });
         mMap.setOnMarkerClickListener(mClusterManager);
@@ -88,9 +95,38 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Video>() {
             @Override
             public boolean onClusterItemClick(Video video) {
-                Intent startVideoDetailsActivityIntent = new Intent(mContext, VideoDetailsActivity.class);
-                startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, video.getObjectId());
-                startActivity(startVideoDetailsActivityIntent);
+                Log.v(TAG, "Cluster item clicked. Starting automatic camera update");
+                isAutomaticCameraUpdate = true;
+
+                // Move to the point
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(video.getPosition()), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        Log.v(TAG, "Animating the camera finished");
+                        // Show the viewpager
+                        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+                        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.v(TAG, "Animating the camera canceled");
+                        // Show the viewpager
+                        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+                        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                List<Video> videosListToShow = new ArrayList<Video>();
+                videosListToShow.add(video);
+
+                mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosListToShow);
+                mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
+
+                // Set the view pager in the view pager indicator
+                mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
+                mVideosPreviewViewPagerIndicator.setFades(false);
+
                 return true;
             }
         });
@@ -98,6 +134,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Video>() {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
+                isAutomaticCameraUpdate = true;
+
+                // Move to the point
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
+
                 // Show the viewpager
                 mVideosPreviewViewPager.setVisibility(View.VISIBLE);
                 mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
@@ -178,5 +219,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
         protected void onBeforeClusterItemRendered(Video item, MarkerOptions markerOptions) {
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_default_maps_marker));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If the user clicks on back and the viewpager is visible, then hide it
+        if (mVideosPreviewViewPager != null && mVideosPreviewViewPager.getVisibility() == View.VISIBLE) {
+            mVideosPreviewViewPager.setVisibility(View.GONE);
+
+            if (mVideosPreviewViewPagerIndicator != null) {
+                mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+            }
+            return;
+        }
+        super.onBackPressed();
     }
 }
