@@ -25,7 +25,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private static final String TAG = "VideoDetailsActivity";
     private static final int RECOVERY_DIALOG_REQUEST = 1;
 
-    private static final String GOOGLE_API_KEY = "AIzaSyB0qG0JAAxLuQUGPDndpv8_UvlsMOH8oo4";
+    private static final String GOOGLE_API_KEY = "AIzaSyB4nkNAMhIa-JXE3lxqPyk9GaEQqhpn_Q8";
 
     private String mVideoObjectId;
 
