@@ -30,6 +30,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     public UserDataModuleObservable(Preferences preferences) {
         super();
         this.mPreferences = preferences;
+        generateUUID();
     }
 
     @Override

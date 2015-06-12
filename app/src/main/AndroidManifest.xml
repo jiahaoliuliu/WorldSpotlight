@@ -99,7 +99,7 @@
         </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="@string/io_fabric_api_key" />
+            android:value="2d4649e8c5a3039ba9e81abc7c93ab2cd1e025b0" />
     </application>
 
 </manifest>
