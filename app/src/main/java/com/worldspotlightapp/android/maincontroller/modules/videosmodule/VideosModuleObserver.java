@@ -19,6 +19,7 @@ import java.util.Observer;
 public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private static final String TAG = "VideosModuleObserver";
+    private static final int MAX_PARSE_QUERY_RESULT = 2000;
 
     @Override
     public void requestVideosList(Observer observer) {
@@ -28,6 +29,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         //Retrive element from background
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+        query.setLimit(MAX_PARSE_QUERY_RESULT);
         query.findInBackground(new FindCallback<Video>() {
             @Override
             public void done(List<Video> videosList, ParseException e) {
