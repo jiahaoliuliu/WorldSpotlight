@@ -17,6 +17,7 @@ import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.utils.LocalConstants;
 
 import java.util.Observable;
 
@@ -24,8 +25,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
     private static final String TAG = "VideoDetailsActivity";
     private static final int RECOVERY_DIALOG_REQUEST = 1;
-
-    private static final String GOOGLE_API_KEY = "AIzaSyB4nkNAMhIa-JXE3lxqPyk9GaEQqhpn_Q8";
 
     private String mVideoObjectId;
 
@@ -61,7 +60,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mCardView = (CardView) findViewById(R.id.card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
-        mYoutubePlayerFragment.initialize(GOOGLE_API_KEY, this);
+        initializeYouTubePlaerFragment();
 
         // Retrieve the data
         mNotificationModule.showLoadingDialog(mContext);
@@ -170,7 +169,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
             // Retry initialization if user performed a recovery action
-            mYoutubePlayerFragment.initialize(GOOGLE_API_KEY, this);
+            initializeYouTubePlaerFragment();
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -183,5 +182,13 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             return;
         }
         super.onBackPressed();
+    }
+
+    private void initializeYouTubePlaerFragment() {
+        if (MainApplication.IS_PRODUCTION) {
+            mYoutubePlayerFragment.initialize(LocalConstants.GOOGLE_API_PRODUCTION, this);
+        } else {
+            mYoutubePlayerFragment.initialize(LocalConstants.GOOGLE_API_DEBUG, this);
+        }
     }
 }

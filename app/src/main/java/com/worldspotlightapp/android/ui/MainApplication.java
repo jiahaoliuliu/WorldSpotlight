@@ -9,6 +9,7 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.utils.LocalConstants;
 
 /**
  * Created by jiahaoliuliu on 6/12/15.
@@ -16,6 +17,8 @@ import com.worldspotlightapp.android.model.Video;
 public class MainApplication extends Application {
 
     private static MainApplication sInstance;
+
+    public static final boolean IS_PRODUCTION = false;
 
     @Override
     public void onCreate() {
@@ -25,7 +28,7 @@ public class MainApplication extends Application {
 
         // Initialize Parse
         ParseObject.registerSubclass(Video.class);
-        Parse.initialize(this, "w2gtAwnJOsaTsf1DhBqOUblbCa9Pec91IA4uM875", "qIp5KT6KyyvLr7D3rQPm0kY2znawZ1jwQbHrMAe8");
+        Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID, LocalConstants.PARSE_CLIENT_KEY);
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
