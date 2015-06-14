@@ -23,6 +23,9 @@ public class Video extends ParseObject implements ClusterItem {
 
     private static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
+    private static final String VIDEO_URL_PREFIX = "http://www.worldspotlightapp.com/video/";
+    private String mVideoUrl;
+
     private static final String PARSE_COLUMN_LOCATION = "location";
     private LatLng mLocation;
 
@@ -81,6 +84,25 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     @Override
+    public LatLng getPosition() {
+        if (mLocation == null) {
+            ParseGeoPoint parseGeoPoint = getParseGeoPoint(PARSE_COLUMN_LOCATION);
+            mLocation = new LatLng(parseGeoPoint.getLatitude(), parseGeoPoint.getLongitude());
+        }
+
+        return mLocation;
+    }
+
+    public String getVideoUrl() {
+        if (mVideoUrl == null) {
+            mVideoUrl = VIDEO_URL_PREFIX + getObjectId();
+        }
+
+        return mVideoUrl;
+    }
+
+
+    @Override
     public String toString() {
         return "Video{" +
                 "title='" + getTitle() + '\'' +
@@ -89,15 +111,5 @@ public class Video extends ParseObject implements ClusterItem {
                 "thumbnailUrl='" + getThumbnailUrl() + '\'' +
                 "location='" + getLocation() + '\'' +
                 '}';
-    }
-
-    @Override
-    public LatLng getPosition() {
-        if (mLocation == null) {
-            ParseGeoPoint parseGeoPoint = getParseGeoPoint(PARSE_COLUMN_LOCATION);
-            mLocation = new LatLng(parseGeoPoint.getLatitude(), parseGeoPoint.getLongitude());
-        }
-
-        return mLocation;
     }
 }

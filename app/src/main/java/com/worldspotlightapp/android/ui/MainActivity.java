@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Observable;
 
@@ -111,38 +113,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Video>() {
             @Override
             public boolean onClusterItemClick(Video video) {
-                Log.v(TAG, "Cluster item clicked. Starting automatic camera update");
                 isAutomaticCameraUpdate = true;
 
-                // Move to the point
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(video.getPosition()), new GoogleMap.CancelableCallback() {
-                    @Override
-                    public void onFinish() {
-                        Log.v(TAG, "Animating the camera finished");
-                        // Show the viewpager
-                        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
-                        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Log.v(TAG, "Animating the camera canceled");
-                        // Show the viewpager
-                        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
-                        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                List<Video> videosListToShow = new ArrayList<Video>();
-                videosListToShow.add(video);
-
-                mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosListToShow);
-                mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
-
-                // Set the view pager in the view pager indicator
-                mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
-                mVideosPreviewViewPagerIndicator.setFades(false);
-
+                centerMapToVideo(video);
                 return true;
             }
         });
@@ -152,25 +125,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             public boolean onClusterClick(Cluster<Video> cluster) {
                 isAutomaticCameraUpdate = true;
 
-                // Move to the point
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(cluster.getPosition()));
-
-                // Show the viewpager
-                mVideosPreviewViewPager.setVisibility(View.VISIBLE);
-                mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
-
-                List<Video> videosListToShow = new ArrayList<Video>();
-                for (Video video: cluster.getItems()) {
-                    videosListToShow.add(video);
-                }
-
-                mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosListToShow);
-                mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
-
-                // Set the view pager in the view pager indicator
-                mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
-                mVideosPreviewViewPagerIndicator.setFades(false);
-
+                centerMaptoCluster(cluster);
                 return true;
             }
         });
@@ -182,7 +137,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     public void update(Observable observable, Object o) {
-        Log.v(TAG, "Data received from " + observable);
+        Log.v(TAG, "Data received from " + observable + o);
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
                 VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
@@ -214,6 +169,14 @@ public class MainActivity extends AbstractBaseActivityObserver {
             // The sign up was correct. Go to the Main activity
             mClusterManager.addItems(mVideosList);
             mClusterManager.cluster();
+
+            // Check if the app has started because url link
+            String videoId = getTriggeredVideoId();
+            Log.d(TAG, "The video id is " + videoId);
+            if (videoId != null) {
+                centerVideo(videoId);
+            }
+
         } else {
             // Some error happend
             mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
@@ -223,6 +186,102 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // 3. Remove the answers
         mParseResponse = null;
+    }
+
+    /**
+     * Check if the app started because the url related
+     * @return
+     *      True if so
+     *      False if not
+     */
+    private String getTriggeredVideoId() {
+        //get uri data
+        Uri data = getIntent().getData();
+        Log.v(TAG, "Data contained is " + data);
+        if (data != null) {
+            String[] dataSplitted = data.toString().split("/");
+            return dataSplitted[dataSplitted.length - 1];
+        }
+        return null;
+    }
+
+    /**
+     * Center the map to a specific video
+     * @param videoId
+     */
+    private void centerVideo(String videoId) {
+        Video videoToBeCentered = null;
+        for (Video video: mVideosList) {
+            if (video.getObjectId().equals(videoId)) {
+                videoToBeCentered = video;
+                break;
+            }
+        }
+
+        // If the video was found
+        if (videoToBeCentered == null) {
+            return;
+        }
+
+        centerMapToVideo(videoToBeCentered);
+    }
+
+    /**
+     * Center the map to a specific video
+     * @param video
+     *      The video to be centered. If it is null, don't do anything
+     */
+    private void centerMapToVideo(Video video) {
+        if (video == null) {
+            return;
+        }
+
+        List<Video> videosListToShow = new ArrayList<Video>();
+        videosListToShow.add(video);
+
+        centerMapToVideos(videosListToShow, video.getPosition());
+    }
+
+    /**
+     * Center the map to a specific cluster
+     * @param cluster
+     *      The cluster with the data to be centered
+     */
+    private void centerMaptoCluster(Cluster<Video> cluster) {
+        if (cluster == null) {
+            return;
+        }
+
+        Collection<Video> clusterVideos = cluster.getItems();
+        if (clusterVideos == null || clusterVideos.size() == 0) {
+            return;
+        }
+
+        List<Video> videosListToShow = new ArrayList<Video>();
+        for (Video video: clusterVideos) {
+            videosListToShow.add(video);
+        }
+
+        centerMapToVideos(videosListToShow, cluster.getPosition());
+    }
+
+    private void centerMapToVideos(List<Video> videosList, LatLng position) {
+        Log.v(TAG, "Centering the videos on the position " + position);
+        isAutomaticCameraUpdate = true;
+
+        // Move to the point
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+
+        // Show the viewpager
+        mVideosPreviewViewPager.setVisibility(View.VISIBLE);
+        mVideosPreviewViewPagerIndicator.setVisibility(View.VISIBLE);
+
+        mVideosPreviewViewPagerAdapter = new VideosPreviewViewPagerAdapter(mFragmentManager, videosList);
+        mVideosPreviewViewPager.setAdapter(mVideosPreviewViewPagerAdapter);
+
+        // Set the view pager in the view pager indicator
+        mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
+        mVideosPreviewViewPagerIndicator.setFades(false);
 
     }
 
