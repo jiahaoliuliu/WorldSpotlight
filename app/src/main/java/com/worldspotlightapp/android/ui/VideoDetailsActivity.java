@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
     private static final String TAG = "VideoDetailsActivity";
     private static final int RECOVERY_DIALOG_REQUEST = 1;
+    private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
 
     private String mVideoObjectId;
 
@@ -125,18 +127,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Log.v(TAG, "home button pressed");
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         if (!wasRestored) {
             mYouTubePlayer = youTubePlayer;
@@ -191,4 +181,47 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             mYoutubePlayerFragment.initialize(LocalConstants.GOOGLE_API_DEBUG, this);
         }
     }
+
+    // Action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Update user profile
+        MenuItem menuItemShareVideo = menu.add(Menu.NONE, MENU_ITEM_SHARE_VIDEO_ID, Menu
+                .NONE, R.string.action_bar_share)
+                .setIcon(R.drawable.ic_action_share);
+        menuItemShareVideo.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "home button pressed");
+                onBackPressed();
+                return true;
+            case MENU_ITEM_SHARE_VIDEO_ID:
+                shareThisVideo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void shareThisVideo() {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+
+        // Subject/Title
+        String subject = getString(R.string.share_subject, "\n\n" + mVideo.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        String videoDescription = mVideo.getDescription();
+        String shareBody =
+                videoDescription != null?
+                        videoDescription + "\n\n" + mVideo.getVideoUrl():
+                        mVideo.getVideoUrl();
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
+    }
+
 }

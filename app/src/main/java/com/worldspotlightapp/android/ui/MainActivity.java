@@ -182,7 +182,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     public void update(Observable observable, Object o) {
-        Log.v(TAG, "Data received from " + observable);
+        Log.v(TAG, "Data received from " + observable + o);
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
                 VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
