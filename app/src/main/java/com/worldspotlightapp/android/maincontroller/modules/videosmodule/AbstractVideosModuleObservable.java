@@ -28,4 +28,14 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The id of the video object
      */
     public abstract void requestVideoInfo(Observer observer, String videoObjectId);
+
+    /**
+     * Search the videos by keyword. Return a list of video which either the
+     * title either the description contains the keyword
+     * @param observer
+     *      The observer to inform when the data is ready
+     * @param keyword
+     *      The keyword to be searched
+     */
+    public abstract void searchByKeyword(Observer observer, String keyword);
 }

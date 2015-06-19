@@ -3,6 +3,7 @@
 
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
+    <string name="action_bar_search">Search</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>

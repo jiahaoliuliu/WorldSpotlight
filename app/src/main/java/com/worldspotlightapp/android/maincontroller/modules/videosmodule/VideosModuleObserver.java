@@ -70,32 +70,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         query.findInBackground(findCallback);
     }
 
-
-//        //Retrive element from background
-//        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
-//        query.setLimit(MAX_PARSE_QUERY_RESULT);
-//        query.findInBackground(new FindCallback<Video>() {
-//            @Override
-//            public void done(List<Video> videosList, ParseException e) {
-//                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-//                if (!parseResponse.isError()) {
-//                    Log.v(TAG, "The list of object has been retrieved");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, videosList);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                } else {
-//                    Log.e(TAG, "Error retrieving data from backend");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, null);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                }
-//            }
-//        });
-
     @Override
     public void requestVideoInfo(Observer observer, String videoObjectId) {
         // Register the observer
@@ -134,6 +108,27 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     setChanged();
                     notifyObservers(videosModuleVideoResponse);
                 }
+            }
+        });
+    }
+
+    @Override
+    public void searchByKeyword(Observer observer, String keyword) {
+        // Register the observer
+        addObserver(observer);
+
+        // Search by video
+        // Retrieve element from background
+        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+        query.whereContains(Video.PARSE_COLUMN_TITLE, keyword);
+
+        // TODO: Check if where exists works
+        query.whereExists(keyword);
+        query.whereEqualTo(Video.PARSE_COLUMN_OBJECT_ID, videoObjectId);
+        query.findInBackground(new FindCallback<Video>() {
+            @Override
+            public void done(List<Video> list, ParseException e) {
+
             }
         });
     }

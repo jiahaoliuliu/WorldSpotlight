@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -37,6 +39,7 @@ import java.util.Observable;
 public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
+    private static final int MENU_ITEM_SEARCH_ID = 1000;
 
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
@@ -322,8 +325,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
     };
 
-
-
     /**
      * Show my actual location.
      * If the map is null, don't do anything
@@ -353,5 +354,51 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
         mMap.animateCamera(cameraUpdate);
+    }
+
+    // Action bar
+    // Action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Update user profile
+        MenuItem menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
+                .NONE, R.string.action_bar_search)
+                .setIcon(R.drawable.ic_action_search);
+        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_ITEM_SEARCH_ID:
+                searchByKeyword();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Start search by keyword. This will expand the edittext on
+     * the action bar and opens the soft keyboard.
+     * Once the user has pressed done, the search will start.
+     */
+    private void searchByKeyword() {
+        // TODO: Implement this
+        // TODO: Expand the editText on the action bar
+        // TODO: Opens the soft keyboard
+        // TODO: Capture the done button
+    }
+
+    /**
+     * Search by keyword. Returns a list of items which
+     * either the title or either the description contains
+     * the keyword
+     * @param keyword
+     */
+    private void searchByKeyword(String keyword) {
+        mNotificationModule.showLoadingDialog(mContext);
+        mVideosModule.searchByKeyword(this, keyword);
     }
 }

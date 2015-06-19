@@ -16,10 +16,10 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
 
     public static final String INTENT_KEY_TITLE = "com.worldspotlightapp.android.model.video.title";
-    private static final String PARSE_COLUMN_TITLE = "title";
+    public static final String PARSE_COLUMN_TITLE = "title";
 
     public static final String INTENT_KEY_DESCRIPTION = "com.worldspotlightapp.android.model.video.description";
-    private static final String PARSE_COLUMN_DESCRIPTION = "description";
+    public static final String PARSE_COLUMN_DESCRIPTION = "description";
 
     private static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
