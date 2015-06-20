@@ -20,7 +20,7 @@ public class MainApplication extends Application {
 
     private static MainApplication sInstance;
 
-    public static final boolean IS_PRODUCTION = false;
+    public static final boolean IS_PRODUCTION = true;
 
     @Override
     public void onCreate() {
