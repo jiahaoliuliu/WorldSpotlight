@@ -169,7 +169,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // 2. Process the data
         if (!mParseResponse.isError()) {
-            // The sign up was correct. Go to the Main activity
+            // Clean the existence items
+            mClusterManager.clearItems();
             mClusterManager.addItems(mVideosList);
             mClusterManager.cluster();
 
@@ -389,15 +390,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // TODO: Expand the editText on the action bar
         // TODO: Opens the soft keyboard
         // TODO: Capture the done button
-    }
-
-    /**
-     * Search by keyword. Returns a list of items which
-     * either the title or either the description contains
-     * the keyword
-     * @param keyword
-     */
-    private void searchByKeyword(String keyword) {
+        // TODO: Remove the hardcoded keyword
+        String keyword = "goPro";
         mNotificationModule.showLoadingDialog(mContext);
         mVideosModule.searchByKeyword(this, keyword);
     }
