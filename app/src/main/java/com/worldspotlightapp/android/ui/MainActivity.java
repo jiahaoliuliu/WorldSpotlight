@@ -135,7 +135,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosModule.requestVideosList(this);
         mNotificationModule.showLoadingDialog(mContext);
-
     }
 
     @Override
@@ -391,7 +390,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // TODO: Opens the soft keyboard
         // TODO: Capture the done button
         // TODO: Remove the hardcoded keyword
-        String keyword = "goPro";
+        String keyword = "GoPro";
         mNotificationModule.showLoadingDialog(mContext);
         mVideosModule.searchByKeyword(this, keyword);
     }

@@ -11,8 +11,10 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observer;
+import java.util.Set;
 
 /**
  * Created by jiahaoliuliu on 6/12/15.
@@ -23,13 +25,26 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private static final int MAX_PARSE_QUERY_RESULT = 2000;
     private static final int MAX_PARSE_QUERY_ALLOWED = 1000;
 
+    private List<Video> mVideosList;
+
     @Override
     public void requestVideosList(Observer observer) {
 
         // Register the observer
         addObserver(observer);
+        // If the video list was retrieved before, don't do anything
+        if (mVideosList != null) {
+            Log.v(TAG, "The list of video is has been cached. Return it");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            VideosModuleVideosListResponse videosModuleVideosListResponse =
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
 
-        final List<Video> resultVideosList = new ArrayList<Video>();
+            setChanged();
+            notifyObservers(videosModuleVideosListResponse);
+        }
+
+
+        mVideosList = new ArrayList<Video>();
 
         //Retrive element from background
         final FindCallback<Video> findCallback = new FindCallback<Video>() {
@@ -38,12 +53,12 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "The list of object has been retrieved " + videosList.size());
-                    resultVideosList.addAll(videosList);
+                    mVideosList.addAll(videosList);
                     if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
-                        requestVideosToParse(resultVideosList.size(), this);
+                        requestVideosToParse(mVideosList.size(), this);
                     } else {
                         VideosModuleVideosListResponse videosModuleVideosListResponse =
-                                new VideosModuleVideosListResponse(parseResponse, resultVideosList);
+                                new VideosModuleVideosListResponse(parseResponse, mVideosList);
 
                         setChanged();
                         notifyObservers(videosModuleVideosListResponse);
@@ -72,33 +87,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private void requestVideosToParse(
             int initialPosition,
             FindCallback<Video> findCallback) {
-        requestVideosToParse(initialPosition, null, findCallback);
-    }
-
-    /**
-     * Request all the videos which matches with a certain keyword.
-     * If the keyword is null, all the videos will be returned.
-     * It is also used to skip certain position of the video list.
-     * @param initialPosition
-     *      The initial position of the video to looking for
-     * @param keyword
-     *      The keyword to look for. This parameter could be null.
-     * @param findCallback
-     *      The callback to call when the results are returned
-     */
-    private void requestVideosToParse(
-            int initialPosition,
-            String keyword,
-            FindCallback<Video> findCallback) {
         //Retrive element from background
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
         query.setSkip(initialPosition);
         query.setLimit(MAX_PARSE_QUERY_RESULT);
-
-        // Set the keyword
-        if (keyword != null) {
-            query.whereExists(keyword);
-        }
         query.findInBackground(findCallback);
     }
 
@@ -145,41 +137,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void searchByKeyword(Observer observer, final String keyword) {
-        // Register the observer
-        addObserver(observer);
+    public void searchByKeyword(Observer observer, String keyword) {
 
-        final List<Video> resultVideosList = new ArrayList<Video>();
-
-        //Retrive element from background
-        final FindCallback<Video> findCallback = new FindCallback<Video>() {
-            @Override
-            public void done(List<Video> videosList, ParseException e) {
-                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-                if (!parseResponse.isError()) {
-                    Log.v(TAG, "The list of object has been retrieved " + videosList.size());
-                    resultVideosList.addAll(videosList);
-                    if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
-                        requestVideosToParse(resultVideosList.size(), keyword, this);
-                    } else {
-                        VideosModuleVideosListResponse videosModuleVideosListResponse =
-                                new VideosModuleVideosListResponse(parseResponse, resultVideosList);
-
-                        setChanged();
-                        notifyObservers(videosModuleVideosListResponse);
-                    }
-                } else {
-                    Log.e(TAG, "Error retrieving data from backend");
-                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-                            new VideosModuleVideosListResponse(parseResponse, null);
-
-                    setChanged();
-                    notifyObservers(videosModuleVideosListResponse);
-                }
-            }
-        };
-
-        requestVideosToParse(0, keyword, findCallback);
     }
-
 }

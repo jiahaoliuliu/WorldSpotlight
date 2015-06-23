@@ -101,6 +101,24 @@ public class Video extends ParseObject implements ClusterItem {
         return mVideoUrl;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Video video = (Video) o;
+
+        return getObjectId().equals(video.getObjectId());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mVideoUrl != null ? mVideoUrl.hashCode() : 0;
+        result = 31 * result + (mLocation != null ? mLocation.hashCode() : 0);
+        result = 31 * result + (mThumbnailUrl != null ? mThumbnailUrl.hashCode() : 0);
+        return result;
+    }
 
     @Override
     public String toString() {
