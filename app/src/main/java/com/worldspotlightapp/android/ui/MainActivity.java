@@ -175,7 +175,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
             // Check if the app has started because url link
             String videoId = getTriggeredVideoId();
-            Log.d(TAG, "The video id is " + videoId);
             if (videoId != null) {
                 centerVideo(videoId);
             }
@@ -390,7 +389,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // TODO: Opens the soft keyboard
         // TODO: Capture the done button
         // TODO: Remove the hardcoded keyword
-        String keyword = "GoPro";
+        String keyword = "Dubai";
         mNotificationModule.showLoadingDialog(mContext);
         mVideosModule.searchByKeyword(this, keyword);
     }

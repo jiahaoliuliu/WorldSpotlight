@@ -25,6 +25,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private static final int MAX_PARSE_QUERY_RESULT = 2000;
     private static final int MAX_PARSE_QUERY_ALLOWED = 1000;
 
+    // The list of all the videos
     private List<Video> mVideosList;
 
     @Override
@@ -41,8 +42,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
             setChanged();
             notifyObservers(videosModuleVideosListResponse);
+            return;
         }
-
 
         mVideosList = new ArrayList<Video>();
 
@@ -138,6 +139,45 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     @Override
     public void searchByKeyword(Observer observer, String keyword) {
+        // Register the observer
+        addObserver(observer);
+        List<Video> resultVideosList = new ArrayList<Video>();
 
+        if (mVideosList == null) {
+            Log.e(TAG, "The list of video is empty");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            VideosModuleVideosListResponse videosModuleVideosListResponse =
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
+
+            setChanged();
+            notifyObservers(videosModuleVideosListResponse);
+            return;
+        }
+
+        for (Video video: mVideosList) {
+            // By passing all the characters to lower case, we are looking for the
+            // content of the string, instead of looking for Strings which has the
+            // same characters in mayus and minus.
+            // Looking for the title
+            if (video.getTitle().toLowerCase().contains(keyword.toLowerCase())) {
+                resultVideosList.add(video);
+                continue;
+            }
+
+            if (video.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                resultVideosList.add(video);
+                // No continue needed
+            }
+        }
+
+        Log.v(TAG, "Number of videos find " + resultVideosList.size());
+
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        VideosModuleVideosListResponse videosModuleVideosListResponse =
+                new VideosModuleVideosListResponse(parseResponse, resultVideosList);
+
+        setChanged();
+        notifyObservers(videosModuleVideosListResponse);
+        return;
     }
 }
