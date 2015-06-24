@@ -12,6 +12,9 @@
     <string name="share_title">Share it with &#8230;</string>
     <string name="share_subject">Check out this great video! %1$s</string>
 
+    <!-- Search Filter activity -->
+    <string name="keyword_edit_text_hint">Enter the city or the keyword</string>
+
     <!-- Notification manager -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
 
@@ -27,5 +30,7 @@
     <string name="error_message_video_not_found">The video you are looking for does not exists.</string>
     <string name="error_message_username_already_taken">There is already some user with that email address. Could you pick another one?</string>
     <string name="title_activity_video_details">VideoDetailsActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
+
 
 </resources>

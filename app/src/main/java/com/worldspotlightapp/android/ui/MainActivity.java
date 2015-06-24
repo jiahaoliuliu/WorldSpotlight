@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -371,26 +372,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_SEARCH_ID:
-                searchByKeyword();
+                Intent startSearchFilterActivityIntent = new Intent(mContext, SearchFilterActivity.class);
+                startActivity(startSearchFilterActivityIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /**
-     * Start search by keyword. This will expand the edittext on
-     * the action bar and opens the soft keyboard.
-     * Once the user has pressed done, the search will start.
-     */
-    private void searchByKeyword() {
-        // TODO: Implement this
-        // TODO: Expand the editText on the action bar
-        // TODO: Opens the soft keyboard
-        // TODO: Capture the done button
-        // TODO: Remove the hardcoded keyword
-        String keyword = "Dubai";
-        mNotificationModule.showLoadingDialog(mContext);
-        mVideosModule.searchByKeyword(this, keyword);
     }
 }
