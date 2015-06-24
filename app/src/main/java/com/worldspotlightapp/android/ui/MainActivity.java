@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -133,14 +135,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
-
-        mVideosModule.requestVideosList(this);
-        mNotificationModule.showLoadingDialog(mContext);
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        Log.v(TAG, "Data received from " + observable + o);
+        Log.v(TAG, "Data received from " + observable + ", Object:" + o);
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
                 VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
@@ -174,12 +173,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
             mClusterManager.addItems(mVideosList);
             mClusterManager.cluster();
 
-            // Check if the app has started because url link
-            String videoId = getTriggeredVideoId();
-            if (videoId != null) {
-                centerVideo(videoId);
-            }
-
         } else {
             // Some error happend
             mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
@@ -189,6 +182,42 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // 3. Remove the answers
         mParseResponse = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Hide the softkeyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+
+        // If the map does not have the list of videos, request it
+        // to the backend
+        if (mVideosList == null) {
+            mVideosModule.requestVideosList(this);
+            mNotificationModule.showLoadingDialog(mContext);
+            return;
+        }
+
+        // Check if the app has started because url link
+        String videoId = getTriggeredVideoId();
+        if (videoId != null) {
+            centerVideo(videoId);
+            return;
+        }
+
+        // Check if the activity get resumed because the keyword
+        if (getIntent().hasExtra(SearchFilterActivity.INTENT_KEY_KEYWORD)) {
+            Log.v(TAG, "The activity started because the keyword. Looking for it");
+            String keyworkd = getIntent().getStringExtra(SearchFilterActivity.INTENT_KEY_KEYWORD);
+            mNotificationModule.showLoadingDialog(mContext);
+            mVideosModule.searchByKeyword(this, keyworkd);
+            return;
+        }
     }
 
     /**

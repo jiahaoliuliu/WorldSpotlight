@@ -14,6 +14,7 @@
 
     <!-- Search Filter activity -->
     <string name="keyword_edit_text_hint">Enter the city or the keyword</string>
+    <string name="error_keyword_empty">You must entered a keyword to start search</string>
 
     <!-- Notification manager -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
