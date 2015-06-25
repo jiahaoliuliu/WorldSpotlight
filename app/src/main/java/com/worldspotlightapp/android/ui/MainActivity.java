@@ -1,7 +1,6 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -209,15 +208,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
             centerVideo(videoId);
             return;
         }
-
-        // Check if the activity get resumed because the keyword
-        if (getIntent().hasExtra(SearchFilterActivity.INTENT_KEY_KEYWORD)) {
-            Log.v(TAG, "The activity started because the keyword. Looking for it");
-            String keyworkd = getIntent().getStringExtra(SearchFilterActivity.INTENT_KEY_KEYWORD);
-            mNotificationModule.showLoadingDialog(mContext);
-            mVideosModule.searchByKeyword(this, keyworkd);
-            return;
-        }
     }
 
     /**
@@ -401,11 +391,22 @@ public class MainActivity extends AbstractBaseActivityObserver {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_SEARCH_ID:
-                Intent startSearchFilterActivityIntent = new Intent(mContext, SearchFilterActivity.class);
-                startActivity(startSearchFilterActivityIntent);
+                searchByKeyword();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void searchByKeyword() {
+        // TODO: Show the editText on the action bar. Check for editText collapse
+        // TODO: Capture the done button
+        // TODO: Capture the keyword
+        // TODO: Set a cancel button in the editText. If the user press on cancel button
+        // Show all the videos.
+        // TODO: Remove the follow hardcoded keyword
+        String keyword = "Dubai";
+        mNotificationModule.showLoadingDialog(mContext);
+        mVideosModule.searchByKeyword(this, keyword);
     }
 }

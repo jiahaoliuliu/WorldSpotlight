@@ -7,6 +7,9 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 /**
+ * This is a class which contains the information of the table
+ * Video in Parse. It is a subclass of the class ParseObject, so
+ * the parse query could return it directly.
  * Created by jiahaoliuliu on 6/12/15.
  */
 @ParseClassName("Video")
@@ -28,6 +31,9 @@ public class Video extends ParseObject implements ClusterItem {
 
     private static final String PARSE_COLUMN_LOCATION = "location";
     private LatLng mLocation;
+
+    // TODO: Add the method to get the country
+    // TODO: Add the method to get the city
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -122,6 +128,7 @@ public class Video extends ParseObject implements ClusterItem {
 
     @Override
     public String toString() {
+        // TODO: Add the city and the country
         return "Video{" +
                 "title='" + getTitle() + '\'' +
                 "description='" + getDescription() + '\'' +

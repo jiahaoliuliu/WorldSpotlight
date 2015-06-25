@@ -166,8 +166,12 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
             if (video.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
                 resultVideosList.add(video);
-                // No continue needed
+                continue;
             }
+
+            // TODO: Check for the country
+
+            // TODO: Check for the city
         }
 
         Log.v(TAG, "Number of videos find " + resultVideosList.size());
