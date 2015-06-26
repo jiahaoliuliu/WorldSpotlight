@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
@@ -23,13 +24,29 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private static final int MAX_PARSE_QUERY_RESULT = 2000;
     private static final int MAX_PARSE_QUERY_ALLOWED = 1000;
 
+    // The list of all the videos
+    private List<Video> mVideosList;
+
     @Override
-    public void requestVideosList(Observer observer) {
+    public void requestAllVideos(Observer observer) {
 
         // Register the observer
         addObserver(observer);
 
-        final List<Video> resultVideosList = new ArrayList<Video>();
+        // if the video list was retrieved before, don't do anything
+        if (mVideosList != null) {
+            Log.v(TAG, "The list of video is has been cached. Return it");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            VideosModuleVideosListResponse videosModuleVideosListResponse =
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
+
+
+            setChanged();
+            notifyObservers(videosModuleVideosListResponse);
+            return;
+        }
+
+        mVideosList = new ArrayList<Video>();
 
         //Retrive element from background
         final FindCallback<Video> findCallback = new FindCallback<Video>() {
@@ -38,12 +55,14 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "The list of object has been retrieved " + videosList.size());
-                    resultVideosList.addAll(videosList);
+                    // Cache the query results
+                    ParseObject.pinAllInBackground("VideosList", videosList);
+                    mVideosList.addAll(videosList);
                     if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
-                        requestVideoToParse(resultVideosList.size(), this);
+                        requestVideoToParse(mVideosList.size(), this);
                     } else {
                         VideosModuleVideosListResponse videosModuleVideosListResponse =
-                                new VideosModuleVideosListResponse(parseResponse, resultVideosList);
+                                new VideosModuleVideosListResponse(parseResponse, mVideosList);
 
                         setChanged();
                         notifyObservers(videosModuleVideosListResponse);
@@ -67,34 +86,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
         query.setSkip(initialPosition);
         query.setLimit(MAX_PARSE_QUERY_RESULT);
+        query.fromLocalDatastore();
         query.findInBackground(findCallback);
     }
-
-
-//        //Retrive element from background
-//        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
-//        query.setLimit(MAX_PARSE_QUERY_RESULT);
-//        query.findInBackground(new FindCallback<Video>() {
-//            @Override
-//            public void done(List<Video> videosList, ParseException e) {
-//                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-//                if (!parseResponse.isError()) {
-//                    Log.v(TAG, "The list of object has been retrieved");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, videosList);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                } else {
-//                    Log.e(TAG, "Error retrieving data from backend");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, null);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                }
-//            }
-//        });
 
     @Override
     public void requestVideoInfo(Observer observer, String videoObjectId) {

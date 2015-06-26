@@ -130,7 +130,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         });
 
-        mVideosModule.requestVideosList(this);
+        mVideosModule.requestAllVideos(this);
         mNotificationModule.showLoadingDialog(mContext);
 
     }
