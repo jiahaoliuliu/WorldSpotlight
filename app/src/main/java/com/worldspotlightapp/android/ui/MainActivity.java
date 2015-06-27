@@ -31,8 +31,11 @@ import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
+import java.util.Set;
+import java.util.Stack;
 
 public class MainActivity extends AbstractBaseActivityObserver {
 
@@ -43,9 +46,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     private List<Video> mVideosList;
 
-    // The last parse response before processed.
-    // If a parse response has been processed, it will be null
-    private ParseResponse mParseResponse;
+    /**
+     * The set of response retrieved from the modules
+     */
+    private Stack<Object> mResponsesStack;
 
     // Views
     private GoogleMap mMap;
@@ -67,7 +71,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Data initialization
         mFragmentManager = getSupportFragmentManager();
+        mResponsesStack = new Stack<Object>();
 
         registerForLocalizationService();
 
@@ -82,6 +88,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Center the map to the user
         centerMapToUser();
+
+        // Request all the videos when the map is ready
+        // This should be done since the map has started
+        mVideosModule.requestAllVideos(this);
+        mNotificationModule.showLoadingDialog(mContext);
     }
 
     private void setupMapIfNeeded() {
@@ -94,12 +105,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager = new ClusterManager<Video>(this, mMap);
         VideosRenderer videosRenderer = new VideosRenderer(mContext, mMap, mClusterManager);
         mClusterManager.setRenderer(videosRenderer);
-//        mMap.setOnCameraChangeListener(mClusterManager);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 mClusterManager.onCameraChange(cameraPosition);
-                Log.v(TAG, "Camera position changed. Is it automatic update? " + isAutomaticCameraUpdate);
                 if (!isAutomaticCameraUpdate) {
                     // Hide the viewpager
                     mVideosPreviewViewPager.setVisibility(View.GONE);
@@ -129,10 +138,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
-
-        mVideosModule.requestVideosList(this);
-        mNotificationModule.showLoadingDialog(mContext);
-
     }
 
     @Override
@@ -140,15 +145,16 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Log.v(TAG, "Data received from " + observable + o);
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
-                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
-                mParseResponse = videosModuleVideosListResponse.getParseResponse();
-                mVideosList = videosModuleVideosListResponse.getVideosList();
+
+                // Add the data to the list of responses
+                mResponsesStack.push(o);
 
                 if (mIsInForeground) {
                     processDataIfExists();
                 }
 
-                observable.deleteObserver(this);
+                // The MainActivity will listen constantly to the changes on the list of videos
+                //observable.deleteObserver(this);
             }
         }
     }
@@ -160,32 +166,55 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // 1. Check if the data exists
         // If there were not data received from backend, then
         // Not do anything
-        if (mParseResponse == null) {
+        if (mResponsesStack.isEmpty()) {
+            return;
+        }
+
+        // Special condition. At this point if the map is null
+        // the mClusterManager could not be initialized.
+        // Of course when the Map is null, there is nothing to do
+        if (mClusterManager == null) {
             return;
         }
 
         // 2. Process the data
-        if (!mParseResponse.isError()) {
-            // The sign up was correct. Go to the Main activity
-            mClusterManager.addItems(mVideosList);
-            mClusterManager.cluster();
-
-            // Check if the app has started because url link
-            String videoId = getTriggeredVideoId();
-            Log.d(TAG, "The video id is " + videoId);
-            if (videoId != null) {
-                centerVideo(videoId);
+        while (!mResponsesStack.isEmpty()) {
+            Object response = mResponsesStack.pop();
+            // Checking the type of data
+            if (response instanceof VideosModuleVideosListResponse) {
+                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse) response;
+                // If the list of videos received are extra videos to be added to the list of existence videos
+                ParseResponse parseResponse = videosModuleVideosListResponse.getParseResponse();
+                if (videosModuleVideosListResponse.areExtraVideos()) {
+                    if (!parseResponse.isError()) {
+                        List<Video> extraVideos = videosModuleVideosListResponse.getVideosList();
+                        Log.v(TAG, "The list of extra videos received contains " + extraVideos + " videos");
+                        mVideosList.addAll(extraVideos);
+                        mClusterManager.addItems(extraVideos);
+                        mClusterManager.cluster();
+                    } else {
+                        Log.v(TAG, "Error updating the list of videos");
+                    }
+                // if the list of videos received should replace the existence list of videos
+                } else {
+                    if (!parseResponse.isError()) {
+                        mVideosList = new ArrayList<>(videosModuleVideosListResponse.getVideosList());
+                        mClusterManager.clearItems();
+                        mClusterManager.addItems(mVideosList);
+                        mClusterManager.cluster();
+                    } else {
+                        // Some error happend
+                        mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                    }
+                }
             }
-
-        } else {
-            // Some error happend
-            mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
         }
 
         mNotificationModule.dismissLoadingDialog();
 
-        // 3. Remove the answers
-        mParseResponse = null;
+        // 3. Remove the responses
+        // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
+        // there is not need to clean them
     }
 
     /**
@@ -200,6 +229,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Log.v(TAG, "Data contained is " + data);
         if (data != null) {
             String[] dataSplitted = data.toString().split("/");
+            // Reset data
+            getIntent().setData(null);
             return dataSplitted[dataSplitted.length - 1];
         }
         return null;
@@ -321,8 +352,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         }
     };
-
-
 
     /**
      * Show my actual location.
