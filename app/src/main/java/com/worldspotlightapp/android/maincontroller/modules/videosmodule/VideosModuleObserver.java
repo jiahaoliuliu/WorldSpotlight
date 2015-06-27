@@ -45,6 +45,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             return;
         }
 
+        final List<Video> videosListFromParseServer = new ArrayList<Video>();
+
         // Callback prepared to retrieve all the videos from the parse server
         final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
             @Override
@@ -57,13 +59,15 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
                     // Cache the query results
                     ParseObject.pinAllInBackground(videosList);
+                    // Add all the content to the general videos list so it will be available next time
                     mVideosList.addAll(videosList);
+                    // Add the video list to the temporal video list so it could be returned to the observer
+                    videosListFromParseServer.addAll(videosList);
                     if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
                         requestVideoToParse(mVideosList.size(), this, fromLocalDatabase);
                     } else {
                         VideosModuleVideosListResponse videosModuleVideosListResponse =
-                                new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
-
+                                new VideosModuleVideosListResponse(parseResponse, videosListFromParseServer, areExtraVideos);
                         setChanged();
                         notifyObservers(videosModuleVideosListResponse);
                     }
