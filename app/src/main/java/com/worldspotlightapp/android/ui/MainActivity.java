@@ -82,6 +82,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Center the map to the user
         centerMapToUser();
+
+        // Request all the videos when the map is ready
+        // This should be done since the map has started
+        mVideosModule.requestAllVideos(this);
+        mNotificationModule.showLoadingDialog(mContext);
     }
 
     private void setupMapIfNeeded() {
@@ -94,12 +99,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager = new ClusterManager<Video>(this, mMap);
         VideosRenderer videosRenderer = new VideosRenderer(mContext, mMap, mClusterManager);
         mClusterManager.setRenderer(videosRenderer);
-//        mMap.setOnCameraChangeListener(mClusterManager);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 mClusterManager.onCameraChange(cameraPosition);
-                Log.v(TAG, "Camera position changed. Is it automatic update? " + isAutomaticCameraUpdate);
                 if (!isAutomaticCameraUpdate) {
                     // Hide the viewpager
                     mVideosPreviewViewPager.setVisibility(View.GONE);
@@ -129,10 +132,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
-
-        mVideosModule.requestAllVideos(this);
-        mNotificationModule.showLoadingDialog(mContext);
-
     }
 
     @Override
@@ -148,7 +147,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     processDataIfExists();
                 }
 
-                observable.deleteObserver(this);
+                // The MainActivity will listen constantly to the changes on the list of videos
+                //observable.deleteObserver(this);
             }
         }
     }
@@ -161,6 +161,13 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // If there were not data received from backend, then
         // Not do anything
         if (mParseResponse == null) {
+            return;
+        }
+
+        // Special condition. At this point if the map is null
+        // the mClusterManager could not be initialized.
+        // Of course when the Map is null, there is nothing to do
+        if (mClusterManager == null) {
             return;
         }
 
@@ -200,6 +207,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Log.v(TAG, "Data contained is " + data);
         if (data != null) {
             String[] dataSplitted = data.toString().split("/");
+            // Reset data
+            getIntent().setData(null);
             return dataSplitted[dataSplitted.length - 1];
         }
         return null;
@@ -321,8 +330,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         }
     };
-
-
 
     /**
      * Show my actual location.
