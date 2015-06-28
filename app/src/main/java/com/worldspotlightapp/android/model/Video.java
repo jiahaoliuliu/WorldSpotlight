@@ -32,8 +32,11 @@ public class Video extends ParseObject implements ClusterItem {
     private static final String PARSE_COLUMN_LOCATION = "location";
     private LatLng mLocation;
 
-    // TODO: Add the method to get the country
-    // TODO: Add the method to get the city
+    public static final String INTENT_KEY_COUNTRY = "com.worldspotlightapp.android.model.video.country";
+    public static final String PARSE_COLUMN_COUNTRY = "country";
+
+    public static final String INTENT_KEY_CITY = "com.worldspotlightapp.android.model.video.city";
+    public static final String PARSE_COLUMN_CITY = "city";
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -57,6 +60,10 @@ public class Video extends ParseObject implements ClusterItem {
     public String getVideoId() {
         return getString(PARSE_COLUMN_VIDEO_ID);
     }
+
+    public String getCity(){ return getString(PARSE_COLUMN_CITY); }
+
+    public String getCountry(){ return getString(PARSE_COLUMN_COUNTRY); }
 
     public String getThumbnailUrl() {
         String videoId = getVideoId();
@@ -128,10 +135,11 @@ public class Video extends ParseObject implements ClusterItem {
 
     @Override
     public String toString() {
-        // TODO: Add the city and the country
         return "Video{" +
                 "title='" + getTitle() + '\'' +
                 "description='" + getDescription() + '\'' +
+                "city='" + getCity() + '\'' +
+                "country='" + getCountry() + '\'' +
                 "videoId='" + getVideoId() + '\'' +
                 "thumbnailUrl='" + getThumbnailUrl() + '\'' +
                 "location='" + getLocation() + '\'' +

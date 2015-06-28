@@ -154,24 +154,21 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             return;
         }
 
+        keyword=keyword.toLowerCase();
         for (Video video: mVideosList) {
             // By passing all the characters to lower case, we are looking for the
             // content of the string, instead of looking for Strings which has the
             // same characters in mayus and minus.
             // Looking for the title
-            if (video.getTitle().toLowerCase().contains(keyword.toLowerCase())) {
+            if (video.getTitle().toLowerCase().contains(keyword)) {
                 resultVideosList.add(video);
-                continue;
-            }
-
-            if (video.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+            } else if (video.getDescription().toLowerCase().contains(keyword)) {
                 resultVideosList.add(video);
-                continue;
+            } else if (video.getCity().toLowerCase().contains(keyword) || keyword.contains(video.getCity())){
+                resultVideosList.add(video);
+            } else if (video.getCountry().toLowerCase().contains(keyword) || keyword.contains(video.getCountry())){
+                resultVideosList.add(video);
             }
-
-            // TODO: Check for the country
-
-            // TODO: Check for the city
         }
 
         Log.v(TAG, "Number of videos find " + resultVideosList.size());
@@ -182,6 +179,5 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         setChanged();
         notifyObservers(videosModuleVideosListResponse);
-        return;
     }
 }

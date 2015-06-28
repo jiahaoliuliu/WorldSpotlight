@@ -399,6 +399,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     private void searchByKeyword() {
+
         // TODO: Show the editText on the action bar. Check for editText collapse
         // TODO: Capture the done button
         // TODO: Capture the keyword
