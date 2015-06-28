@@ -12,5 +12,5 @@ REST_API_KEY=
 MASTER_KEY=
 ```
 - ***API_KEY*** is the Google API Key.
-- ***APPLICATION_ID***, ***REST_API_KEY***, ***MASTER_KEY*** are the Keys of the Parse Project Keys.
+- ***APPLICATION_ID***, ***REST_API_KEY***, ***MASTER_KEY*** are the Parse Project Keys.
 - PS: Ensure Keys are not in String Format.
