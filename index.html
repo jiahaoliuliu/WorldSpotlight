@@ -1,76 +1,852 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+<!doctype html>
+<html lang="en">
+
+
+<head>
+  
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+<!-- =========================
+      BASIC PAGE INFORMATION
+============================== -->
+    <!-- PAGE TITLE -->
+    <title>World Spotlight App Landing Page</title>
+    
+    <!-- WHAT'S YOUR PAGE ABOUT? -->
+    <meta name="description" content="World Spotlight App Landing Page">
+    
+    <!-- KEYWORDS THAT DESCRIBES YOUR PAGE -->
+    <meta name="keywords" content="World Spotlight App Landing Page">
+      
+    <!-- HELP US SPREAD THE LOVE :-) -->
+    <meta name="author" content="http://www.worldspotlightapp.com/">
+    
+    <!-- ALLOW GOOGLE TO INDEX YOUR PAGE -->
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<!-- =========================
+      FAV & TOUCH ICONS  
+============================== -->
+    <!-- FAVICON FOR DESKTOPS -->
+    <link rel="icon" href="img/favicon/favicon.ico">
+    
+    <!-- SET OF FAVICONS FOR APPLE PRODUCTS -->
+    <link rel="apple-touch-icon" href="img/favicon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/favicon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/favicon/apple-touch-icon-114x114.png">
+
+
+<!-- =========================
+     FONTS  
+============================== -->
+    <!-- RALEWAY FONT FROM GOOGLE FONTS -->
+    <link href='http://fonts.googleapis.com/css?family=Raleway:300,400,600,700,900' rel='stylesheet' type='text/css'>
+      
+    <!-- ELEGANT ICON PACK FOR YOUR PAGE -->
+    <link href="css/icons/elegant.css" rel='stylesheet' type='text/css'>
+
+
+<!-- =========================
+     MAIN STYLESHEETS   
+============================== -->
+    <!-- BOOTSTRAP -->
+    <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
+      
+    <!-- ALIVE! THEME -->
+    <link href="css/style-blue.css" rel="stylesheet" id="theme-change">
+      
+    <!-- COLORBOX THEME -->
+    <!-- CAROUSEL THEME -->
+    <link href="css/plugins/plugins.css" rel="stylesheet">
+  
+  
+<!-- =========================
+     ANIMATIONS  
+============================== -->
+    <!-- ALIVE THEME ANIMATIONS -->
+    <!-- ANIMATIONS BASED ON ANIMATE.CSS -->
+    <link href="css/animations/animations.css" rel="stylesheet" type="text/css">
+  
+  
+<!-- =========================
+     INTERNET EXPLORER FIXES  
+============================== -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <title>World Spotlight by jiahaoliuliu</title>
-  </head>
+    
+    
+<!-- =========================
+     DEMO
+============================== -->
+    <link href="demo/demo.css" rel="stylesheet">
 
-  <body>
-    <div id="container">
-      <div class="inner">
+</head>
 
-        <header>
-          <h1>World Spotlight</h1>
-          <h2>An application to show interesting videos over the map</h2>
-        </header>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/jiahaoliuliu/WorldSpotlight/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/jiahaoliuliu/WorldSpotlight/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/jiahaoliuliu/WorldSpotlight" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
+<body id="body" class="page-loading">
+    
+<!-- =========================
+     PRELOADER
+============================== -->
+    <div id="preloader">
+        <div id="loading"></div>
+    </div>
+  
+  
+<!-- =========================
+     MAIN MENU
+============================== -->
+    <nav id="mainmenu" class="navbar navbar-fixed-top main-menu head-menu auto-height" role="navigation">
+        <div class="container">
+            
+            <!-- LOGO CONTAINER -->
+            <div class="logo-cont">
+                    <a class="navbar-brand" href="#header"><!-- SCROLLS TO TOP OF THE PAGE -->
+                        
+                        <!--PLACE URL OF YOUR LOGO BELOW-->
+                        <img src="img/01-logo-ORANGE.png" alt>
+                        
+                    </a>
+                    
+            </div>
+            
+            <!-- MAIN MENU BUTTONS CONTAINER -->
+            <div class="buttons-cont">
+                
+                <!-- OPEN MODAL WITH LOGIN FORM 
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#joinUs">Join us</button>-->
+                
+                <!-- DOWNLOAD BUTTON - PLACE LINK TO YOUR APP HERE -->
+               <button type="button" class="btn btn-success" onclick="location.reload();location.href='https://play.google.com/store/apps/details?id=com.worldspotlightapp.android&hl=en'">Download</button>
+                
+            </div>
+            
+            <!-- "BURGER MENU" FOR RESPONSIVE VIEW -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            
+            <!-- MAIN MENU CONTAINER -->
+            <div id="navbar" class="navbar-collapse collapse">
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                      
+                        <!-- MAIN MENU POSITIONS -->
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </nav>
 
-        <hr>
-
-        <section id="main_content">
-          <h3>
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a id="rather-drive-stick" class="anchor" href="#rather-drive-stick" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and weâ€™ll help you sort it out.</p>
-        </section>
-
-        <footer>
-          World Spotlight is maintained by <a href="https://github.com/jiahaoliuliu">jiahaoliuliu</a><br>
-          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
+  
+<!-- =========================
+     JOIN US MODAL
+============================== -->
+    <div class="modal fade" id="joinUs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            
+            <!-- CLOSE MODAL BUTTON -->
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            
+            <!-- MODAL TITLE -->
+            <h5 class="modal-title" id="myModalLabel">Join our community today!</h5>
+            
+            <!-- MODAL SUBTITLE -->
+            <h6>Register an account or login now</h6>
+            
+          </div>
+          
+          <!-- LOGIN FORM -->
+          <div class="modal-body" id="login">
+              <form class="form-horizontal" role="form" autocomplete="off" data-toggle="validator">
+                  <div class="form-group">
+                    
+                      <!-- E-MAIL INPUT -->
+                      <div class="input-group col-xs-12">
+                        
+                         <!-- ICON -->
+                         <div class="input-group-addon"><span class="elegant icon_mail_alt"></span></div>
+                         
+                         <!-- INPUT -->
+                         <input type="email" class="form-control" id="login-email" placeholder="e-mail adress" autocomplete="off" required>
+                          
+                      </div>
+                      
+                      <!-- ERROR MESSAGE BOX -->
+                      <div class="help-block with-errors"></div>
+                      
+                  </div>
+                  
+                  <div class="form-group">
+                    
+                      <!-- PASSWORD INPUT -->
+                      <div class="input-group col-xs-12">
+                        
+                          <!-- ICON -->
+                          <div class="input-group-addon"><span class="icon-password">*</span></div>
+                          
+                          <!-- INPUT -->
+                          <input type="password" class="form-control" id="login-password" placeholder="password" autocomplete="off" data-minlength="5" required>
+                            
+                      </div>
+                      
+                      <!-- ERROR MESSAGE BOX -->
+                      <div class="help-block with-errors"></div>
+                      
+                  </div>
+                  
+                  <div class="input-group col-xs-12">
+                    
+                      <!-- SUBMIT BUTTON -->
+                      <button type="submit" class="btn btn-success col-xs-12">
+                        
+                        <!-- ICON -->
+                        <span class="icon_profile"></span>
+                        
+                        <!-- BUTTON TEXT -->
+                        Login
+                      
+                      </button>
+                      
+                  </div>
+                  
+                  <!--CHANGE FORM TO PASSWORD REMINDER-->
+                  <p class="other" id="gotoRemind">forgot your password?</p>
+                  
+              </form>
+          </div>
+          
+          <!-- REGISTRATION FORM -->
+          <div class="modal-body noopacity nodisplay" id="register">
+              <form class="form-horizontal" role="form" autocomplete="off" data-toggle="validator">
+                  <div class="form-group">
+                    
+                      <!-- E-MAIL INPUT -->
+                      <div class="input-group col-xs-12">
+                        
+                         <!-- ICON -->
+                         <div class="input-group-addon"><span class="elegant icon_mail_alt"></span></div>
+                         
+                         <!-- INPUT -->
+                         <input type="email" class="form-control" id="register-email" placeholder="e-mail adress" autocomplete="off" required>
+                          
+                      </div>
+                      
+                      <!-- ERROR MESSAGE BOX -->
+                      <div class="help-block with-errors"></div>
+                      
+                  </div>
+                  
+                  <div class="form-group">
+                    
+                      <!-- PASSWORD INPUT -->
+                      <div class="input-group col-xs-12">
+                        
+                         <!-- ICON -->
+                         <div class="input-group-addon"><span class="icon-password">*</span></div>
+                         
+                         <!-- INPUT -->
+                         <input type="password" class="form-control" id="register-password" placeholder="password" autocomplete="off" data-minlength="5" required>
+                          
+                      </div>
+                      
+                      <!-- ERROR MESSAGE BOX -->
+                      <div class="help-block with-errors"></div>
+                      
+                  </div>
+                  
+                  <div class="form-group">
+                      
+                      <!-- PASSWORD REPEAT INPUT -->
+                      <div class="input-group col-xs-12">
+                         
+                         <!-- ICON -->
+                         <div class="input-group-addon"><span class="icon-repeat">**</span></div>
+                         
+                         <!-- INPUT -->
+                         <input type="password" class="form-control" id="register-repeat" placeholder="repeat password" autocomplete="off" data-match="#register-password" required>
+                          
+                      </div>
+                      
+                      <!-- ERROR MESSAGE BOX -->
+                      <div class="help-block with-errors"></div>
+                      
+                  </div>
+                  
+                  <div class="form-group">
+                      <div class="input-group col-xs-12">
+                          
+                          <!-- SUBMIT BUTTON -->
+                          <button type="submit" class="btn btn-success col-xs-12">
+                            
+                            <!-- ICON -->
+                            <span class="icon_profile"></span>
+                            
+                            <!--BUTTON TEXT-->
+                            Create Account
+                          
+                          </button>
+                          
+                      </div>
+                  </div>
+                  
+              </form>
+          </div>
+          
+          <!-- PASSWORD REMINDER FORM -->
+          <div class="modal-body noopacity nodisplay" id="remind">
+              <form class="form-horizontal" role="form" autocomplete="off" data-toggle="validator">
+                  <div class="form-group">
+                    
+                      <!-- E-MAIL INPUT -->
+                      <div class="input-group col-xs-12">
+                        
+                         <!-- ICON -->
+                         <div class="input-group-addon"><span class="elegant icon_mail_alt"></span></div>
+                         
+                         <!-- INPUT -->
+                         <input type="email" class="form-control" id="remind-email" placeholder="e-mail adress" autocomplete="off" required>
+                          
+                      </div>
+                      
+                      <!-- ERROR MESSAGE BOX -->
+                      <div class="help-block with-errors"></div>
+                      
+                  </div>
+                  
+                  <div class="form-group">
+                      <div class="input-group col-xs-12">
+                        
+                          <!-- SUBMIT BUTTON -->
+                          <button type="submit" class="btn btn-success col-xs-12">
+                            
+                            <!-- ICON -->
+                            <span class="icon_profile"></span>
+                            
+                            <!-- BUTTON TEXT -->
+                            Send me new password
+                          
+                          </button>
+                          
+                      </div>
+                  </div>
+                  
+              </form>
+          </div>
+          
+          <!-- MODAL FOOTERS -->
+          <div class="modal-footer">
+            
+            <!-- LOGIN & PASSWORD REMINDER FOOTER -->
+            <p id="gotoRegister">Need an account? <span>Register here.</span></p>
+            
+            <!-- REGISTRATION FOOTER -->
+            <p id="gotoLogin" class="noopacity nodisplay">Already have an account?  <span>Login here.</span></p>
+            
+          </div>
+          
+        </div>
       </div>
     </div>
-  </body>
+
+
+<!-- =========================
+     HEADER
+============================== -->
+    <section id="header" class="parallax">
+        
+      <!-- FOR COLOR OVERLAY, CHANGE CLASS TO color-overlay -->
+      <div class="overlay">
+         <div class="container">
+              <div class="row">
+                
+                  <!-- HEADER CONTENT LEFT -->
+                  <div class="header-cont col-xs-12 col-sm-12 col-md-8">
+                    
+                      <!-- MARGIN FROM TOP -->
+                      <div class="header-margin"></div>
+                      
+                      <!-- HEADER TEXT -->
+                      <header class="anim-bounce-up">
+                          
+                          <!-- HEADER TITLE -->
+                          <h1>
+                              
+                              <!-- SMALL TITLE -->
+                              <span class="header-txt-small">The app </span><br/>
+                              
+                              <!-- REGULAR TITLE -->
+                              You'll <span class="header-txt-color">love</span>
+                              
+                          </h1>
+                          
+                          <!-- SUBTITLE -->
+                          <h3>is finally here!</h3>
+                          
+                      </header>
+                      
+                      <!-- HEADER BUTTONS -->
+                      <div class="buttons-cont">
+                          
+                          <!-- DOWNLOAD BUTTON -->
+                          <div class="btn btn-lg btn-success anim-bounce-left">
+                            <a href="https://play.google.com/store/apps/details?id=com.worldspotlightapp.android&hl=en">
+                                
+                                <!-- ICON -->
+                                <span class="elegant icon_cloud-download_alt"></span>
+                                
+                                <!-- BUTTON TEXT -->
+                                Download
+                                
+                            </a>
+                          </div>
+                          
+                          <!-- LEARN MORE BUTTON -->
+                          <div class="btn btn-lg btn-info anim-bounce-right">
+                            <a href="#features">
+                                
+                                <!-- ICON -->
+                                <span class="elegant arrow_carrot-2down"></span>
+                                
+                                <!-- BUTTON TEXT -->
+                                Learn more
+                            
+                            </a>
+                          </div>
+                          
+                      </div>
+                      
+                  </div>
+                  
+                  <!-- HEADER CONTENT RIGHT -->
+                  <div class="header-cont col-md-4 hidden-sm hidden-xs">
+                    
+                    <!-- MARGIN FROM TOP -->
+                    <div class="header-margin"></div>
+                    
+                    <!-- PRODUCT IMAGE -->
+                    <div class="header-image-right">
+                        <img class="anim-from-right" src="img/header/img-iphone.png" alt>
+                    </div>
+                    
+                  </div>
+                  
+              </div>
+          </div>
+          
+      </div>
+    </section>
+
+
+<!-- =========================
+     FEATURES
+============================== -->
+    <section id="features">
+          <div class="container">
+            
+              <!-- VISABLE FEATURES -->
+              <div class="row">
+                
+                  <!-- FEATURE 1 -->
+                  <div class="feature col-md-4 col-sm-12">
+                    
+                      <!-- FEATURE ICON -->
+                      <span class="elegant social_share anim-bounce-left"></span>
+                      
+                      <!-- FEATURE TITLE -->
+                      <h5>Travel Story</h5>
+                      
+                      <!-- FEATURE DESCRIPTION -->
+                      <p>Create your travel story and Share with friends</p>
+                      
+                  </div>
+                  
+                  <!-- FEATURE 2 -->
+                  <div class="feature col-md-4 col-sm-12">
+                    
+                      <!-- FEATURE ICON -->
+                      <span class="elegant icon_heart anim-bounce"></span>
+                       
+                      <!-- FEATURE TITLE -->
+                      <h5>Love Travelling</h5>
+                       
+                      <!-- FEATURE DESCRIPTION -->
+                      <p>You will Love travelling even more with World Spotlight!</p>
+                       
+                  </div>
+                  
+                  <!-- FEATURE 3 -->
+                  <div class="feature col-md-4 col-sm-12">
+                    
+                      <!-- FEATURE ICON -->
+                      <span class="elegant icon_compass anim-bounce-right"></span>
+                      
+                      <!-- FEATURE TITLE -->
+                      <h5>Explore the world</h5>
+                      
+                      <!-- FEATURE DESCRIPTION -->
+                      <p>With Worldspolight you will know place better!</p>
+                      
+                  </div>
+              </div>
+              
+              <!-- LOAD MORE FEATURES BUTTON 
+              <div class="row load-more anim-fade-down">
+                  <button type="button" class="btn btn-lg btn-primary" data-toggle="collapse" data-target="#MoreFeatures">
+                    
+                    show more features
+                  
+                  </button>
+              </div>-->
+              
+              <!-- MORE FEATURES - VISABLE AFTER "SHOW MORE" IS CLICKED 
+              <div class="row">
+                  <div id="MoreFeatures" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <div class="row">-->
+                            
+                          <!--SAME MARKUP AS ABOWE-->
+                          
+                          <!-- FEATURE 4 
+                          <div class="feature col-md-4 col-sm-12">
+                              <span class="elegant icon_easel"></span>
+                              <h5>SEO Ready!</h5>
+                              <p>Alive was coded to take the top of Google search results. It has everything what it needs to make your product easy to find.</p>
+                          </div>
+                          -->
+                          <!-- FEATURE 5 
+                          <div class="feature col-md-4 col-sm-12">
+                              <span class="elegant icon_heart"></span>
+                              <h5>You'll love it. Just take a look.</h5>
+                              <p>Alive was design to be loved by people. It's not only beautiful, it's also very user friendly, thanks to UX test we made.</p>
+                          </div>-->
+                          
+                          <!-- FEATURE 6 
+                          <div class="feature col-md-4 col-sm-12">
+                              <span class="elegant icon_lifesaver"></span>
+                              <h5>Full support. Every day.</h5>
+                              <p>Any questions? Requests? Ideas? We'd love to hear from you. You're stuck? Just drop us a line. We'll replay as soon as possible.</p>
+                          </div>
+                          
+                        </div>
+                        
+                        <div class="row">-->
+                          
+                          <!-- FEATURE 7 
+                          <div class="feature col-md-4 col-sm-12">
+                              <span class="elegant icon_id"></span>
+                              <h5>Dynamic modals system</h5>
+                              <p>You want your visitors to stay connected? Use alive theme dynamic modals to make them register and login easily. Build your community!</p>
+                          </div>-->
+                          
+                          <!-- FEATURE 8
+                          <div class="feature col-md-4 col-sm-12">
+                              <span class="elegant icon_mail_alt"></span>
+                              <h5>Subscribe and drop a line</h5>
+                              <p>Gather e-mail addresses of you visitors, without editing a single line of code! Paste your e-mail address to get a line from your visitors.</p>
+                          </div> -->
+                          
+                          <!-- FEATURE 9
+                          <div class="feature col-md-4 col-sm-12">
+                              <span class="elegant icon_genius"></span>
+                              <h5>For your apps, products and more!</h5>
+                              <p>Alive theme gives you almost endless possibilities to present your app, products or event startups. In just few minutes!</p>
+                          </div>
+                          
+                        </div>
+                          
+                      </div>
+                  </div>
+              </div>-->
+              
+          </div>
+    </section>
+
+
+<!-- =========================
+     ABOUT
+============================== -->
+    <section id="about">
+      
+      <!-- SECTION TITLE -->
+      <h2 class="anim-fade-up">
+        
+          <!-- MAIN TITLE -->
+          Learn some more<br/>
+          
+          <!-- SUBTITLE -->
+          <span>about the best app theme</span>
+          
+      </h2>
+      
+      <!-- ABOUT CONTAINER - TEXT ALIGN TO RIGHT -->
+      <div class="about-cont bg-grey about-to-right">
+          <div class="container">
+              <div class="row">
+                
+                <!-- ABOUT TEXT SECTION -->
+                <div class="col-md-6">
+                  
+                  <!-- ABOUT TITLE -->
+                  <h3 class="anim-from-left">Spot your places to visit using World-Spotlight</h3>
+                  
+                  <!-- ABOUT DESCRIPTION -->
+                  <p class="anim-from-left">Before you pack your bag for your next big trip use World Spotlight to locate the best places to visit at your destination. </p>
+                  <p class="anim-from-left">Create your own travel story, cherish and share it with your friends. </p>
+                  
+                </div>
+                
+                <!-- ABOUT IMAGE -->
+                <div class="col-md-6 about-img">
+                  
+                    <!-- PLACE YOUR ABOUT IMAGE BELOW -->
+                    <img src="img/about/01.png" class="anim-from-right" alt>
+                      
+                </div>
+                
+              </div>
+          </div>
+      </div>
+    
+     
+      
+    </section>
+
+
+<!-- =========================
+     GALLERY
+============================== -->
+    <section id="gallery" class="caption-margin">
+      
+      <!-- SECTION TITLE -->
+      <h2 class="anim-fade-down">
+        
+          <!-- TITLE -->
+          Share your video<br/>
+          
+          <!-- SUBTITLE -->
+          <span>in an awesome way!</span>
+          
+      </h2>
+      
+      <!-- GALLERY CAROUSEL -->
+      <div class="container">
+          <div class="row carousel-gallery anim-fade" id="carousel-gallery">
+            
+              <!-- IMAGE 1 -->
+              <div class="image"><span><a class="gallery-1" href="img/gallery/big/01.jpg"><img src="img/gallery/01.jpg" alt></a></span></div>
+              
+              <!-- IMAGE 2 -->
+              <div class="image"><span><a class="gallery-1" href="img/gallery/big/02.jpg"><img src="img/gallery/02.jpg" alt></a></span></div>
+              
+              <!-- IMAGE 3 -->
+              <div class="image"><span><a class="gallery-1" href="img/gallery/big/03.jpg"><img src="img/gallery/03.jpg" alt></a></span></div>
+              
+              <!-- IMAGE 4 -->
+              <div class="image"><span><a class="gallery-1" href="img/gallery/big/04.jpg"><img src="img/gallery/04.jpg" alt></a></span></div>
+                       </div>
+      </div>
+    </section>
+
+
+<!-- =========================
+     FUN FACTS
+============================== -->
+    <section id="funfacts">
+      <div class="container">
+          <div class="row">
+            
+                  <!-- FUN FACTS CAROUSEL -->
+                  <div class="carousel-funfacts" id="carousel-funfacts">
+                    
+                      <!-- FACT 1 -->
+                      <div class="carousel-element col-md-12">
+                        
+                          <!-- ICON -->
+                          <span class="elegant icon_download anim-bounce"></span>
+                          
+                          <!-- NUMBER COUNT UP (DEFINATED IN alive.scripts.js) -->
+                          <p id="count01" class="count"></p>
+                          
+                          <!-- DESCRIPTION -->
+                          <p class="desc">Downloads</p>
+                          
+                      </div>
+                      
+                      <!-- FACT 2 -->
+                      <div class="carousel-element col-md-12">
+                        
+                          <!-- ICON -->
+                          <span class="elegant icon_film	 anim-bounce"></span>
+                          
+                          <!-- NUMBER COUNT UP (DEFINATED IN alive.scripts.js) -->
+                          <p id="count02" class="count"></p>
+                          
+                          <!-- DESCRIPTION -->
+                          <p class="desc">Videos</p>
+                          
+                      </div>
+                      
+                      <!-- FACT 3 -->
+                      <div class="carousel-element col-md-12">
+                        
+                          <!-- ICON -->
+                          <span class="elegant social_facebook anim-bounce"></span>
+                          
+                          <!-- NUMBER COUNT UP (DEFINATED IN alive.scripts.js) -->
+                          <p id="count03" class="count"></p>
+                          
+                          <!-- DESCRIPTION -->
+                          <p class="desc">Facebook Likes</p>
+                          
+                      </div>
+                      
+                      <!-- FACT 4 -->
+                      <div class="carousel-element col-md-12">
+                        
+                          <!-- ICON -->
+                          <span class="elegant icon_pin_alt anim-bounce"></span>
+                          
+                          <!-- NUMBER COUNT UP (DEFINATED IN alive.scripts.js) -->
+                          <p id="count04" class="count"></p>
+                          
+                          <!-- DESCRIPTION -->
+                          <p class="desc">Locations added on <br/>World Spotlight</p>
+                          
+                      </div>
+                      
+                      
+                </div>
+    
+          </div>
+      </div>
+    </section>
+
+
+
+<!-- =========================
+     FOOTER
+============================== -->
+    <footer>
+      <div class="container anim-fade-up">
+        
+          <!-- CREDITS - HELP US SPREAD THE LOVE :-) -->
+          <div class="col-sm-3 col-xs-12 hidden-xs"><a href="http://themeforest.net/user/ViventeThemes">World Spotlight</a></div>
+          
+          <!-- SOCIAL MEDIA -->
+          <div class="col-sm-6">
+            
+              <!-- FACEBOOK -->
+              <a href="https://www.facebook.com/pages/World-Spotlight/123986557933377" target="_blank">
+                  <div class="sm">
+                      <span class="elegant social_facebook"></span>
+                  </div>
+              </a>
+              
+              <!-- TWITTER -->
+              <a href="https://twitter.com/world_spotlight" target="_blank">
+                  <div class="sm">
+                      <span class="elegant social_twitter"></span>
+                  </div>
+              </a>
+              
+              <!-- GOOGLE PLUS
+              <a href="#">
+                  <div class="sm">
+                      <span class="elegant social_googleplus"></span>
+                  </div>
+              </a> -->
+              
+              <!-- INSTAGRAM
+              <a href="#">
+                  <div class="sm">
+                      <span class="elegant social_instagram"></span>
+                  </div>
+              </a> -->
+              
+              <!-- YOUTUBE
+              <a href="#">
+                  <div class="sm">
+                      <span class="elegant social_youtube"></span>
+                  </div>
+              </a> -->
+              
+              <!-- VIMEO
+              <a href="#">
+                  <div class="sm">
+                      <span class="elegant social_vimeo"></span>
+                  </div>
+              </a> -->
+              
+          </div>
+          
+          <!-- COPYRIGHT -->
+          <div class="col-sm-3 col-xs-12">© 2015 all rights reserved.</div>
+          
+      </div>
+    </footer>
+
+
+
+<!-- =========================
+     JS SCRIPTS
+============================== -->
+    <!-- JQUERY -->
+    <script type="text/javascript" src="js/jquery_1.11.1.min.js"></script>
+    
+    <!-- BOOTSTRAP SCRIPTS -->
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    
+    <!-- SMOOTH SCROLLING FIX -->
+    <script type="text/javascript" src="js/smoothscroll.js"></script>
+    
+    <!-- PARALLAX -->
+    <script type="text/javascript" src="js/parallax.js" id="parallax-change"></script>
+    
+    <!-- HEADROOM -->
+    <script type="text/javascript"  src="js/headroom.min.js"></script>      
+    <script type="text/javascript"  src="js/jQuery.headroom.js"></script>
+    
+    <!-- VIEWPORT DETECTION -->
+    <script type="text/javascript" src="js/jquery.inview.min.js"></script>
+    
+    <!-- CAROUSEL -->
+    <script type="text/javascript" src="js/owl.carousel.min.js"></script>
+    
+    <!-- COUTNUP -->
+    <script type="text/javascript" src="js/countUp.min.js"></script>
+    
+    <!-- FORM VALIDATION -->
+    <script type="text/javascript" src="js/validator.js"></script>
+    
+    <!-- IMAGE ZOOM - COLORBOX JS-->
+    <script type="text/javascript" src="js/jquery.colorbox-min.js"></script>
+    
+    <!--CUSTOM THEME SCRIPTS & SETTINGS -->
+    <script type="text/javascript" src="js/alive.scripts.js"></script>
+    <script type="text/javascript" src="demo/demo.js"></script>
+
+
+</body>
+
+
 </html>
