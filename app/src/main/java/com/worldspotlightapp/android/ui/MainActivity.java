@@ -6,19 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.support.v7.widget.SearchView;
 import android.widget.EditText;
-import android.widget.SearchView;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -405,45 +403,33 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     private void searchByKeyword() {
-        View searchActionView = menuItemSearch.getActionView();
-        final EditText searchEditText = (EditText) searchActionView.findViewById(R.id.search_edit_text);
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        Log.d("mytag", searchActionView.toString());
+        searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String keyword = s.toString();
+            public boolean onQueryTextSubmit(String query) {
                 mNotificationModule.showLoadingDialog(mContext);
-                mVideosModule.searchByKeyword(MainActivity.this, keyword);
+                mVideosModule.searchByKeyword(MainActivity.this, query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
-
-        /*Button b1 = (Button) findViewById(R.id.clear_txt);
-
-        try{
-            b1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    searchEditText.setText("");
-                    mNotificationModule.showLoadingDialog(mContext);
-                    mVideosModule.searchByKeyword(MainActivity.this, "");
-                }
-
-            });
-        } catch (NullPointerException e){
-            Log.d("tag", "Button not on screen." + e.toString());
-
-        }*/
-        // TODO: Set a cancel button in the editText. If the user press on cancel button
-        // Show all the videos.
-
+        ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNotificationModule.showLoadingDialog(mContext);
+                mVideosModule.searchByKeyword(MainActivity.this, "");
+                EditText et = (EditText) findViewById(R.id.search_src_text);
+                et.setText("");
+                searchActionView.setQuery("", false);
+                searchActionView.onActionViewCollapsed();
+                menuItemSearch.collapseActionView();
+            }
+        });
     }
 }
