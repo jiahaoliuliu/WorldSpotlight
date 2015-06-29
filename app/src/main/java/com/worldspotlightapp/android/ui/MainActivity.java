@@ -7,12 +7,18 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -67,6 +73,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Variable used to record if the camera update is automatic or manual
     private boolean isAutomaticCameraUpdate;
 
+    private MenuItem menuItemSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +89,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
-
         setupMapIfNeeded();
 
         // Center the map to the user
@@ -376,14 +382,14 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     // Action bar
-    // Action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Update user profile
-        MenuItem menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
+        menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
                 .NONE, R.string.action_bar_search)
-                .setIcon(R.drawable.ic_action_search);
-        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                .setIcon(R.drawable.ic_action_search)
+                .setActionView(R.layout.search_layout);
+        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         return true;
     }
 
@@ -399,15 +405,45 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     private void searchByKeyword() {
+        View searchActionView = menuItemSearch.getActionView();
+        final EditText searchEditText = (EditText) searchActionView.findViewById(R.id.search_edit_text);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        // TODO: Show the editText on the action bar. Check for editText collapse
-        // TODO: Capture the done button
-        // TODO: Capture the keyword
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String keyword = s.toString();
+                mNotificationModule.showLoadingDialog(mContext);
+                mVideosModule.searchByKeyword(MainActivity.this, keyword);
+            }
+        });
+
+        /*Button b1 = (Button) findViewById(R.id.clear_txt);
+
+        try{
+            b1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchEditText.setText("");
+                    mNotificationModule.showLoadingDialog(mContext);
+                    mVideosModule.searchByKeyword(MainActivity.this, "");
+                }
+
+            });
+        } catch (NullPointerException e){
+            Log.d("tag", "Button not on screen." + e.toString());
+
+        }*/
         // TODO: Set a cancel button in the editText. If the user press on cancel button
         // Show all the videos.
-        // TODO: Remove the follow hardcoded keyword
-        String keyword = "Dubai";
-        mNotificationModule.showLoadingDialog(mContext);
-        mVideosModule.searchByKeyword(this, keyword);
+
     }
 }
