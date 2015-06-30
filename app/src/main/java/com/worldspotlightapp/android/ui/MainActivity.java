@@ -6,9 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.support.v7.widget.SearchView;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +48,7 @@ import java.util.Stack;
 public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
+    private static final int MENU_ITEM_SEARCH_ID = 1000;
 
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
@@ -66,6 +75,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Variable used to record if the camera update is automatic or manual
     private boolean isAutomaticCameraUpdate;
 
+    private MenuItem menuItemSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,16 +93,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
-
         setupMapIfNeeded();
 
         // Center the map to the user
         centerMapToUser();
 
-        // Request all the videos when the map is ready
-        // This should be done since the map has started
-        mVideosModule.requestAllVideos(this);
-        mNotificationModule.showLoadingDialog(mContext);
     }
 
     private void setupMapIfNeeded() {
@@ -142,7 +147,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     public void update(Observable observable, Object o) {
-        Log.v(TAG, "Data received from " + observable + o);
+        Log.v(TAG, "Data received from " + observable + ", Object:" + o);
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
 
@@ -188,7 +193,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 if (videosModuleVideosListResponse.areExtraVideos()) {
                     if (!parseResponse.isError()) {
                         List<Video> extraVideos = videosModuleVideosListResponse.getVideosList();
-                        Log.v(TAG, "The list of extra videos received contains " + extraVideos + " videos");
+                        int numberVideoRetrieved = extraVideos == null? 0 : extraVideos.size();
+                        Log.v(TAG, "The list of extra videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList.addAll(extraVideos);
                         mClusterManager.addItems(extraVideos);
                         mClusterManager.cluster();
@@ -215,6 +221,34 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // 3. Remove the responses
         // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
         // there is not need to clean them
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Hide the softkeyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+
+        // If the map does not have the list of videos, request it
+        // to the backend
+        if (mVideosList == null) {
+            Log.v(TAG, "The list of videos is empty. Requesting it to the videos module");
+            mVideosModule.requestAllVideos(this);
+            mNotificationModule.showLoadingDialog(mContext);
+            return;
+        }
+
+        // Check if the app has started because url link
+        String videoId = getTriggeredVideoId();
+        if (videoId != null) {
+            centerVideo(videoId);
+            return;
+        }
     }
 
     /**
@@ -382,5 +416,63 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
         mMap.animateCamera(cameraUpdate);
+    }
+
+    // Action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Update user profile
+        menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
+                .NONE, R.string.action_bar_search)
+                .setIcon(R.drawable.ic_action_search)
+                .setActionView(R.layout.search_layout);
+        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_ITEM_SEARCH_ID:
+                searchByKeyword();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void searchByKeyword() {
+        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.v(TAG, "Searching the videos with the keyword " + query);
+                mNotificationModule.showLoadingDialog(mContext);
+                mVideosModule.searchByKeyword(MainActivity.this, query);
+                searchActionView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
+        closeButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(TAG, "The search has been cancelled. Requesting the list of all the videos to the module");
+                mNotificationModule.showLoadingDialog(mContext);
+                // Retrieve the list of all the videos
+                mVideosModule.requestAllVideos(MainActivity.this);
+                EditText et = (EditText) findViewById(R.id.search_src_text);
+                et.setText("");
+                searchActionView.setQuery("", false);
+                searchActionView.onActionViewCollapsed();
+                menuItemSearch.collapseActionView();
+            }
+        });;
     }
 }

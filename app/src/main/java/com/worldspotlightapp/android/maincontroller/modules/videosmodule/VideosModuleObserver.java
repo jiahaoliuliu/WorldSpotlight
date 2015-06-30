@@ -12,8 +12,10 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observer;
+import java.util.Set;
 
 /**
  * Created by jiahaoliuliu on 6/12/15.
@@ -175,5 +177,68 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 }
             }
         });
+    }
+
+    @Override
+    public void searchByKeyword(Observer observer, String keyword) {
+        // Register the observer
+        addObserver(observer);
+
+        if (mVideosList == null) {
+            Log.e(TAG, "The list of video is empty");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            // In case of error, do not update the existent list of videos
+            boolean areExtraVideos = true;
+            VideosModuleVideosListResponse videosModuleVideosListResponse =
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
+
+            setChanged();
+            notifyObservers(videosModuleVideosListResponse);
+            return;
+        }
+
+        if (keyword==null || keyword.isEmpty()){
+            Log.e(TAG, "The keyword is empty or null");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            // In case of error, do not update the existent list of videos
+            boolean areExtraVideos = true;
+            VideosModuleVideosListResponse videosModuleVideosListResponse =
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
+            setChanged();
+            notifyObservers(videosModuleVideosListResponse);
+            return;
+        }
+
+        List<Video> resultVideosList = new ArrayList<Video>();
+        keyword=keyword.toLowerCase();
+        for (Video video: mVideosList) {
+            // By passing all the characters to lower case, we are looking for the
+            // content of the string, instead of looking for Strings which has the
+            // same characters in mayus and minus.
+            // Looking for the title
+            String title = video.getTitle();
+            String description = video.getDescription();
+            String city = video.getCity();
+            String country = video.getCountry();
+            if (title.toLowerCase().contains(keyword) || keyword.contains(title)) {
+                resultVideosList.add(video);
+            } else if (description.toLowerCase().contains(keyword) || keyword.contains(description)) {
+                resultVideosList.add(video);
+            } else if (city.toLowerCase().contains(keyword) || keyword.contains(city)){
+                resultVideosList.add(video);
+            } else if (country.toLowerCase().contains(keyword) || keyword.contains(country)){
+                resultVideosList.add(video);
+            }
+        }
+
+        Log.v(TAG, "Number of videos find " + resultVideosList.size());
+
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        boolean areExtraVideos = false;
+        VideosModuleVideosListResponse videosModuleVideosListResponse =
+                new VideosModuleVideosListResponse(parseResponse, resultVideosList, areExtraVideos);
+
+        setChanged();
+        notifyObservers(videosModuleVideosListResponse);
     }
 }
