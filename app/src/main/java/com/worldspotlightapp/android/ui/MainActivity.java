@@ -403,13 +403,14 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     private void searchByKeyword() {
+
         final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
-        Log.d("mytag", searchActionView.toString());
         searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.searchByKeyword(MainActivity.this, query);
+                searchActionView.clearFocus();
                 return true;
             }
 
@@ -419,7 +420,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         });
         ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        closeButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mNotificationModule.showLoadingDialog(mContext);
@@ -430,6 +431,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 searchActionView.onActionViewCollapsed();
                 menuItemSearch.collapseActionView();
             }
-        });
+        });;
     }
 }

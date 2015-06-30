@@ -141,7 +141,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     public void searchByKeyword(Observer observer, String keyword) {
         // Register the observer
         addObserver(observer);
-        List<Video> resultVideosList = new ArrayList<Video>();
 
         if (mVideosList == null) {
             Log.e(TAG, "The list of video is empty");
@@ -154,6 +153,17 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             return;
         }
 
+        if (keyword==null || keyword.isEmpty()){
+            Log.e(TAG, "The keyword is empty or null");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            VideosModuleVideosListResponse videosModuleVideosListResponse =
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
+            setChanged();
+            notifyObservers(videosModuleVideosListResponse);
+            return;
+        }
+
+        List<Video> resultVideosList = new ArrayList<Video>();
         keyword=keyword.toLowerCase();
         for (Video video: mVideosList) {
             // By passing all the characters to lower case, we are looking for the
