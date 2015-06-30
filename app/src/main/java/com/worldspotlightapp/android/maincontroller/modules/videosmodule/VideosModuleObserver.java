@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
@@ -29,45 +30,53 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private List<Video> mVideosList;
 
     @Override
-    public void requestVideosList(Observer observer) {
+    public void requestAllVideos(Observer observer) {
 
         // Register the observer
         addObserver(observer);
-        // If the video list was retrieved before, don't do anything
+
+        // if the video list was retrieved before, don't do anything
         if (mVideosList != null) {
             Log.v(TAG, "The list of video is has been cached. Return it");
             ParseResponse parseResponse = new ParseResponse.Builder(null).build();
             VideosModuleVideosListResponse videosModuleVideosListResponse =
-                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList, true);
 
             setChanged();
             notifyObservers(videosModuleVideosListResponse);
             return;
         }
 
-        mVideosList = new ArrayList<Video>();
+        final List<Video> videosListFromParseServer = new ArrayList<Video>();
 
-        //Retrive element from background
-        final FindCallback<Video> findCallback = new FindCallback<Video>() {
+        // Callback prepared to retrieve all the videos from the parse server
+        final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
             @Override
             public void done(List<Video> videosList, ParseException e) {
+                boolean areExtraVideos = true;
+                boolean fromLocalDatabase = false;
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                Log.v(TAG, "List of videos received from the parse server");
                 if (!parseResponse.isError()) {
-                    Log.v(TAG, "The list of object has been retrieved " + videosList.size());
+                    Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
+                    // Cache the query results
+                    ParseObject.pinAllInBackground(videosList);
+                    // Add all the content to the general videos list so it will be available next time
                     mVideosList.addAll(videosList);
+                    // Add the video list to the temporal video list so it could be returned to the observer
+                    videosListFromParseServer.addAll(videosList);
                     if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
-                        requestVideosToParse(mVideosList.size(), this);
+                        requestVideoToParse(mVideosList.size(), this, fromLocalDatabase);
                     } else {
                         VideosModuleVideosListResponse videosModuleVideosListResponse =
-                                new VideosModuleVideosListResponse(parseResponse, mVideosList);
-
+                                new VideosModuleVideosListResponse(parseResponse, videosListFromParseServer, areExtraVideos);
                         setChanged();
                         notifyObservers(videosModuleVideosListResponse);
                     }
                 } else {
                     Log.e(TAG, "Error retrieving data from backend");
                     VideosModuleVideosListResponse videosModuleVideosListResponse =
-                            new VideosModuleVideosListResponse(parseResponse, null);
+                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
 
                     setChanged();
                     notifyObservers(videosModuleVideosListResponse);
@@ -75,23 +84,56 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             }
         };
 
-        requestVideosToParse(0, findCallback);
+        // 1. Retrieve the list of videos from the local database
+        final FindCallback<Video> findDataFromLocalDatabaseCallback = new FindCallback<Video>() {
+            @Override
+            public void done(List<Video> videosList, ParseException e) {
+                boolean areExtraVideos = false;
+                // Once the videos are retrieved from the local database, it is time to retrieve them from
+                // the parse server
+                boolean fromLocalDatabase = false;
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                Log.v(TAG, "Response received from the local database " + parseResponse);
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Videos list received correctly " + videosList.size());
+                    mVideosList = new ArrayList<Video>(videosList);
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
+
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+                    // 2. Ask the backend for more videos
+                    requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback, fromLocalDatabase);
+                } else {
+                    Log.e(TAG, "Error retrieving data from backend");
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
+
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+                }
+            }
+        };
+
+        // Start retrieving the data from the lcoal database
+        boolean fromLocalDatabase = true;
+        requestVideoToParse(0, findDataFromLocalDatabaseCallback, fromLocalDatabase);
+
     }
 
-    /**
-     * Request all the videos to parse starting from a certain position
-     * @param initialPosition
-     *      The initial position
-     * @param findCallback
-     *      The callback to call when Parse returns result
-     */
-    private void requestVideosToParse(
-            int initialPosition,
-            FindCallback<Video> findCallback) {
+    private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback, boolean fromLocalDatabase) {
         //Retrive element from background
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
         query.setSkip(initialPosition);
-        query.setLimit(MAX_PARSE_QUERY_RESULT);
+        query.orderByAscending("updateAt");
+
+        // If it is from the local database, set it
+        if (fromLocalDatabase) {
+            query.fromLocalDatastore();
+        // If it is not from local database, set the maximum limit
+        } else {
+            query.setLimit(MAX_PARSE_QUERY_RESULT);
+        }
         query.findInBackground(findCallback);
     }
 
@@ -145,8 +187,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         if (mVideosList == null) {
             Log.e(TAG, "The list of video is empty");
             ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            // In case of error, do not update the existent list of videos
+            boolean areExtraVideos = true;
             VideosModuleVideosListResponse videosModuleVideosListResponse =
-                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
 
             setChanged();
             notifyObservers(videosModuleVideosListResponse);
@@ -156,8 +200,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         if (keyword==null || keyword.isEmpty()){
             Log.e(TAG, "The keyword is empty or null");
             ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            // In case of error, do not update the existent list of videos
+            boolean areExtraVideos = true;
             VideosModuleVideosListResponse videosModuleVideosListResponse =
-                    new VideosModuleVideosListResponse(parseResponse, mVideosList);
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
             setChanged();
             notifyObservers(videosModuleVideosListResponse);
             return;
@@ -170,13 +216,17 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             // content of the string, instead of looking for Strings which has the
             // same characters in mayus and minus.
             // Looking for the title
-            if (video.getTitle().toLowerCase().contains(keyword)) {
+            String title = video.getTitle();
+            String description = video.getDescription();
+            String city = video.getCity();
+            String country = video.getCountry();
+            if (title.toLowerCase().contains(keyword) || keyword.contains(title)) {
                 resultVideosList.add(video);
-            } else if (video.getDescription().toLowerCase().contains(keyword)) {
+            } else if (description.toLowerCase().contains(keyword) || keyword.contains(description)) {
                 resultVideosList.add(video);
-            } else if (video.getCity().toLowerCase().contains(keyword) || keyword.contains(video.getCity())){
+            } else if (city.toLowerCase().contains(keyword) || keyword.contains(city)){
                 resultVideosList.add(video);
-            } else if (video.getCountry().toLowerCase().contains(keyword) || keyword.contains(video.getCountry())){
+            } else if (country.toLowerCase().contains(keyword) || keyword.contains(country)){
                 resultVideosList.add(video);
             }
         }
@@ -184,8 +234,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         Log.v(TAG, "Number of videos find " + resultVideosList.size());
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        boolean areExtraVideos = false;
         VideosModuleVideosListResponse videosModuleVideosListResponse =
-                new VideosModuleVideosListResponse(parseResponse, resultVideosList);
+                new VideosModuleVideosListResponse(parseResponse, resultVideosList, areExtraVideos);
 
         setChanged();
         notifyObservers(videosModuleVideosListResponse);

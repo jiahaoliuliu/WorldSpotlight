@@ -29,6 +29,7 @@ public class MainApplication extends Application {
         sInstance = this;
 
         // Initialize Parse
+        Parse.enableLocalDatastore(sInstance);
         ParseObject.registerSubclass(Video.class);
         if (IS_PRODUCTION) {
             Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID_PRODUCTION, LocalConstants.PARSE_CLIENT_KEY_PRODUCTION);

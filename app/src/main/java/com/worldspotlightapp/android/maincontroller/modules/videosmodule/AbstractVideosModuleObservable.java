@@ -14,11 +14,13 @@ import java.util.UUID;
 public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleObservable {
 
     /**
-     * Get the list of videos from background
+     * Get the list of all videos from background.
+     * It checks the videos saved in the local database and based
+     * on those videos, ask the backend to refresh the list of videos
      * @param observer
      *      The Observer to notify when the videos is ready
      */
-    public abstract void requestVideosList(Observer observer);
+    public abstract void requestAllVideos(Observer observer);
 
     /**
      * Retrieve the information about a video from the backend
