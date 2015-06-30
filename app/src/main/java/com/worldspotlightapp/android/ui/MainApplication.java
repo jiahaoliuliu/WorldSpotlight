@@ -30,7 +30,11 @@ public class MainApplication extends Application {
 
         // Initialize Parse
         ParseObject.registerSubclass(Video.class);
-        Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID, LocalConstants.PARSE_CLIENT_KEY);
+        if (IS_PRODUCTION) {
+            Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID_PRODUCTION, LocalConstants.PARSE_CLIENT_KEY_PRODUCTION);
+        } else {
+            Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID_DEBUG, LocalConstants.PARSE_CLIENT_KEY_DEBUG);
+        }
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
