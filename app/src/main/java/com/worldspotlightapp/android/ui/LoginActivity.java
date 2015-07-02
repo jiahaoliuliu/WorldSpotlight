@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
 
 import java.util.Observable;
@@ -77,5 +78,11 @@ public class LoginActivity extends AbstractBaseActivityObserver {
     @Override
     public void update(Observable observable, Object o) {
         // TODO: Implement this
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 }

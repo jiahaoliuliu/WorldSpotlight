@@ -4,8 +4,10 @@ import android.app.Application;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
@@ -46,6 +48,12 @@ public class MainApplication extends Application {
                 }
             }
         });
+
+        // Initialize Facebook utils provided by Parse
+        ParseFacebookUtils.initialize(sInstance);
+
+        // Initialize Facebook SDK
+        FacebookSdk.sdkInitialize(sInstance);
 
         // Initialize Fabric/Crashlytics
         if (!IS_PRODUCTION) {
