@@ -54,7 +54,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
     @Override
     public void loginWithFacebook(Observer observer, Activity activity) {
-        // TODO: implement this
+        // TODO: Implement this
     }
 
     /**

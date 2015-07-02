@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">World Spotlight</string>
 
+    <!-- Login Activity -->
+    <string name="login_facebook_login">Login with Facebook</string>
+
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
