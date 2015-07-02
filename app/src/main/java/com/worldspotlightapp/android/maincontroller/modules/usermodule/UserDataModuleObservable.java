@@ -1,12 +1,14 @@
 package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 
-import java.text.SimpleDateFormat;
+import java.util.Observer;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
+import com.parse.ParseUser;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.ui.MainApplication;
@@ -20,6 +22,8 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
     private final Preferences mPreferences;
 
+    private ParseUser mParseUser;
+
     /**
      * The unique identifier of the device/user
      */
@@ -31,6 +35,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         super();
         this.mPreferences = preferences;
         generateUUID();
+        mParseUser = ParseUser.getCurrentUser();
     }
 
     @Override
@@ -40,6 +45,16 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         }
 
         return mUuid;
+    }
+
+    @Override
+    public boolean hasUserData() {
+        return mParseUser != null;
+    }
+
+    @Override
+    public void loginWithFacebook(Observer observer, Activity activity) {
+        // TODO: implement this
     }
 
     /**
