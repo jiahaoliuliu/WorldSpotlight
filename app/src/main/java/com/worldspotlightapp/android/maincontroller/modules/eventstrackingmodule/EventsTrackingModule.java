@@ -6,7 +6,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.ui.MainApplication;
-import com.worldspotlightapp.android.utils.LocalConstants;
+import com.worldspotlightapp.android.utils.Secret;
 
 import org.json.JSONObject;
 
@@ -29,8 +29,8 @@ public class EventsTrackingModule implements IEventsTrackingModule {
         // Initialize Mixpanel
         String mixPanelToken =
                 MainApplication.IS_PRODUCTION?
-                        LocalConstants.MIX_PANEL_API_PRODUCTION :
-                        LocalConstants.MIX_PANEL_API_DEBUG;
+                        Secret.MIX_PANEL_API_PRODUCTION :
+                        Secret.MIX_PANEL_API_DEBUG;
         mMixpanel = MixpanelAPI.getInstance(context, mixPanelToken);
 
         // Identify the user
