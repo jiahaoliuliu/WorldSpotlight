@@ -157,16 +157,6 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
 
     //------------------------------ Google Plus ----------------------/
 
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
     @Override
     public void onConnected(Bundle bundle) {
         // We've resolved any connection errors. mGoogle ApiClient can be used to
@@ -179,14 +169,17 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
             String personName = currentPerson.getDisplayName();
             Log.v(TAG, "Person name " + personName);
 
-            String personPhotoUrl = currentPerson.getImage().getUrl();
-            Log.v(TAG, "Person Photo url " + personPhotoUrl);
+            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            Log.v(TAG, "Person Email address " + email);
 
             String personGooglePlusProfile = currentPerson.getUrl();
             Log.v(TAG, "Person Google Plus Profile url " + personGooglePlusProfile);
 
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            Log.v(TAG, "Person Email address " + email);
+            String personPhotoUrl = currentPerson.getImage().getUrl();
+            Log.v(TAG, "Person Photo url " + personPhotoUrl);
+
+            mNotificationModule.showLoadingDialog(mContext);
+            mUserDataModule.signupForGooglePlusUsers(this, personName, email, personGooglePlusProfile, personPhotoUrl);
         }
     }
 
@@ -199,6 +192,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.e(TAG, "Google Plus connection failed. The result is " + result);
+
         if (!mIntentInProgress && result.hasResolution()) {
             try {
                 mIntentInProgress = true;

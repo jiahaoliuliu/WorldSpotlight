@@ -106,6 +106,11 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         });
     }
 
+    @Override
+    public void signupForGooglePlusUsers(Observer observer, String name, String email, String profileUrl, String profilePhotoUrl) {
+        //
+    }
+
     /**
      * Based on the code in StackOverFlow:
      * http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id Returns a
