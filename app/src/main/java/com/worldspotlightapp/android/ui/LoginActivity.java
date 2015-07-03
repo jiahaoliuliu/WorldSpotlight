@@ -1,32 +1,49 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
 import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 
 import java.util.Observable;
-import java.util.Stack;
 
-public class LoginActivity extends AbstractBaseActivityObserver {
+public class LoginActivity extends AbstractBaseActivityObserver implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "LoginActivity";
 
+    /**
+     * Request code used to invoke sing in user interactions.
+     */
+    private static final int RC_SIGN_IN = 0;
+
+    /**
+     * Client used to interact with Google APIs.
+     */
+    private GoogleApiClient mGoogleApiClient;
+
+    /**
+     * A flag indicating that a PendingIntent is in progress and prevents us from starting further
+     * intents
+     */
+    private boolean mIntentInProgress;
+
     // Views
-    private Button mFacebookLoginButton;
     private ImageView mCancelImageView;
+    private Button mFacebookLoginButton;
+    private SignInButton mGooglePlusSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +56,23 @@ public class LoginActivity extends AbstractBaseActivityObserver {
             goToMainActivity();
         }
 
+        // Initialize Google API Clients
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(Plus.API)
+                    .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
+
         // Link the views
         mCancelImageView = (ImageView)findViewById(R.id.cancel_image_view);
         mCancelImageView.setOnClickListener(onClickListener);
 
         mFacebookLoginButton = (Button)findViewById(R.id.facebook_login_button);
         mFacebookLoginButton.setOnClickListener(onClickListener);
+
+        mGooglePlusSignInButton = (SignInButton)findViewById(R.id.google_plus_login_buttn);
+        mGooglePlusSignInButton.setOnClickListener(onClickListener);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener(){
@@ -57,6 +85,10 @@ public class LoginActivity extends AbstractBaseActivityObserver {
                 case R.id.facebook_login_button:
                     mNotificationModule.showLoadingDialog(mContext);
                     mUserDataModule.loginWithFacebook(LoginActivity.this, LoginActivity.this);
+                    break;
+                case R.id.google_plus_login_buttn:
+                    mNotificationModule.showLoadingDialog(mContext);
+                    mGoogleApiClient.connect();
                     break;
             }
         }
@@ -102,5 +134,68 @@ public class LoginActivity extends AbstractBaseActivityObserver {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Log.v(TAG, "The user is asked to sign in. Result returned with result code " + resultCode
+                    + ", and with data " + data);
+            mIntentInProgress = false;
+
+            switch (resultCode) {
+                case RESULT_CANCELED:
+                    Log.v(TAG, "The Google Plus Sign in has been canceled. Dismissing the loading dialog");
+                    mNotificationModule.dismissLoadingDialog();
+                    break;
+                default:
+                    if (!mGoogleApiClient.isConnecting()) {
+                        mGoogleApiClient.connect();
+                    }
+                    break;
+            }
+        }
+    }
+
+    //------------------------------ Google Plus ----------------------/
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        // We've resolved any connection errors. mGoogle ApiClient can be used to
+        // access Google APIs on behalf of the user
+        Log.v(TAG, "Google Plus connected");
+        mNotificationModule.dismissLoadingDialog();
+        // TODO: Get user data
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.w(TAG, "Google Plus suspended. Trying to connect again.");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.e(TAG, "Google Plus connection failed. The result is " + result);
+        if (!mIntentInProgress && result.hasResolution()) {
+            try {
+                mIntentInProgress = true;
+                startIntentSenderForResult(result.getResolution().getIntentSender(),
+                        RC_SIGN_IN, null, 0, 0, 0);
+            } catch (IntentSender.SendIntentException e) {
+                // The intent was canceled before it was sent. Return to the default
+                // state and attempt to connect to get an updated ConnectionResult
+                Log.e(TAG, "Error start intent sender for result. Trying to connect again ", e);
+                mIntentInProgress = false;
+                mGoogleApiClient.connect();
+            }
+        }
     }
 }

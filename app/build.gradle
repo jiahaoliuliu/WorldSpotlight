@@ -73,4 +73,8 @@ dependencies {
     // Facebook login
     compile 'com.facebook.android:facebook-android-sdk:4.1.0'
 
+    // Support library for Google Plus login
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.google.android.gms:play-services-plus:7.5.+'
+
 }
