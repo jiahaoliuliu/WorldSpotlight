@@ -460,7 +460,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         });
 
         ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
-        closeButton.setOnClickListener( new View.OnClickListener() {
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "The search has been cancelled. Requesting the list of all the videos to the module");
@@ -473,6 +473,21 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 searchActionView.onActionViewCollapsed();
                 menuItemSearch.collapseActionView();
             }
-        });;
+        });
+
+        MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mVideosModule.requestAllVideos(MainActivity.this);
+                searchActionView.setQuery("", false);
+                searchActionView.onActionViewCollapsed();
+                return true;
+            }
+        });
     }
 }
