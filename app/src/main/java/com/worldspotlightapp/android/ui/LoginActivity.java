@@ -12,8 +12,13 @@ import android.widget.ImageView;
 
 import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 
 import java.util.Observable;
+import java.util.Stack;
 
 public class LoginActivity extends AbstractBaseActivityObserver {
 
@@ -71,13 +76,26 @@ public class LoginActivity extends AbstractBaseActivityObserver {
         // Check if the user has logged in
         if (mUserDataModule.hasUserData()) {
             Log.v(TAG, "The user has already logged in");
+            mNotificationModule.dismissLoadingDialog();
             goToMainActivity();
         }
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        // TODO: Implement this
+        Log.v(TAG, "Data received from " + observable + ", Object:" + o);
+        if (observable instanceof UserDataModuleObservable) {
+            if (o instanceof UserDataModuleResponse) {
+
+                // There is not need to store the data
+
+                if (mIsInForeground) {
+                    processDataIfExists();
+                }
+
+                observable.deleteObserver(this);
+            }
+        }
     }
 
     @Override

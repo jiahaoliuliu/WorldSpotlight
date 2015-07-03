@@ -21,9 +21,7 @@ import com.worldspotlightapp.android.ui.MainApplication;
 
 public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
-    private static final String LOG_TAG = "UserDataModule";
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String TAG = "UserDataModule";
 
     private final Preferences mPreferences;
 
@@ -54,6 +52,10 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
     @Override
     public boolean hasUserData() {
+        if (mParseUser == null) {
+            mParseUser = ParseUser.getCurrentUser();
+        }
+
         return mParseUser != null;
     }
 
