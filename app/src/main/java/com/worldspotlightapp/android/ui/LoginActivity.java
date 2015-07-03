@@ -12,6 +12,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
@@ -172,7 +173,21 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         // access Google APIs on behalf of the user
         Log.v(TAG, "Google Plus connected");
         mNotificationModule.dismissLoadingDialog();
-        // TODO: Get user data
+        // Get user data
+        if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            String personName = currentPerson.getDisplayName();
+            Log.v(TAG, "Person name " + personName);
+
+            String personPhotoUrl = currentPerson.getImage().getUrl();
+            Log.v(TAG, "Person Photo url " + personPhotoUrl);
+
+            String personGooglePlusProfile = currentPerson.getUrl();
+            Log.v(TAG, "Person Google Plus Profile url " + personGooglePlusProfile);
+
+            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            Log.v(TAG, "Person Email address " + email);
+        }
     }
 
     @Override
