@@ -49,11 +49,11 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      *      The name of the user
      * @param email
      *      The email address of the user
-     * @param profileUrl
-     *      The Google Plus profile url
      * @param profilePhotoUrl
      *      The Url for the profile photo
+     * @param profileUrl
+     *      The Google Plus profile url
      */
-    public abstract void signupForGooglePlusUsers(Observer observer, String name, String email, String profileUrl, String profilePhotoUrl);
+    public abstract void signupForGooglePlusUsers(Observer observer, String name, String email, String profilePhotoUrl, String profileUrl);
 
 }

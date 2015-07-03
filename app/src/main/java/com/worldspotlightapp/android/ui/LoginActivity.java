@@ -162,7 +162,6 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         // We've resolved any connection errors. mGoogle ApiClient can be used to
         // access Google APIs on behalf of the user
         Log.v(TAG, "Google Plus connected");
-        mNotificationModule.dismissLoadingDialog();
         // Get user data
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
@@ -179,7 +178,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
             Log.v(TAG, "Person Photo url " + personPhotoUrl);
 
             mNotificationModule.showLoadingDialog(mContext);
-            mUserDataModule.signupForGooglePlusUsers(this, personName, email, personGooglePlusProfile, personPhotoUrl);
+            mUserDataModule.signupForGooglePlusUsers(this, personName, email, personPhotoUrl, personGooglePlusProfile);
         }
     }
 

@@ -32,6 +32,11 @@ public class ParseResponse extends ParseException {
      */
     public static final int ERROR_LOGIN_WITH_FACEBOOK = 10002;
 
+    /**
+     * Generic error login with Google Plus
+     */
+    public static final int ERROR_LOGIN_WITH_GOOGLE = 10003;
+
     // Status code
     // This should be the same as ParseException.
     // Since the variable code from the class ParseException is private
@@ -275,6 +280,9 @@ public class ParseResponse extends ParseException {
                 break;
             case ERROR_LOGIN_WITH_FACEBOOK:
                 resultMessage = context.getResources().getString(R.string.error_message_login_with_facebook);
+                break;
+            case ERROR_LOGIN_WITH_GOOGLE:
+                resultMessage = context.getResources().getString(R.string.error_message_login_with_google);
                 break;
             default:
                 Log.w(TAG, "Request status not recognized " + getCode());

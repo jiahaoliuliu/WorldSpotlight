@@ -12,11 +12,14 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
+import com.worldspotlightapp.android.model.User;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.utils.Secret;
 
 
 public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
@@ -25,7 +28,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
     private final Preferences mPreferences;
 
-    private ParseUser mParseUser;
+    private User mUser;
 
     /**
      * The unique identifier of the device/user
@@ -38,7 +41,10 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         super();
         this.mPreferences = preferences;
         generateUUID();
-        mParseUser = ParseUser.getCurrentUser();
+        ParseUser parseUser = ParseUser.getCurrentUser();
+        if (parseUser != null) {
+            mUser = new User(parseUser);
+        }
     }
 
     @Override
@@ -52,11 +58,11 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
     @Override
     public boolean hasUserData() {
-        if (mParseUser == null) {
-            mParseUser = ParseUser.getCurrentUser();
+        if (mUser == null && ParseUser.getCurrentUser() != null) {
+            mUser = new User(ParseUser.getCurrentUser());
         }
 
-        return mParseUser != null;
+        return mUser != null;
     }
 
     @Override
@@ -68,8 +74,9 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
                     if (parseUser != null) {
-                        UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse);
-                        if (parseUser.isNew()) {
+                        mUser = new User(parseUser);
+                        UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                        if (mUser.isNew()) {
                             // User signed up and logged in through Facebook
                             setChanged();
                             notifyObservers(userDataModuleResponse);
@@ -82,7 +89,8 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                     } else {
                         // if the current user exists
                         if (ParseUser.getCurrentUser() != null) {
-                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse);
+                            mUser = new User(ParseUser.getCurrentUser());
+                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
                             setChanged();
                             notifyObservers(userDataModuleResponse);
                             // The user has logged with Facebook but the current user does not exists.
@@ -91,14 +99,14 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                             // Update the Parse response
                             ParseResponse loginErrorParseResponse =
                                     new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_FACEBOOK).build();
-                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(loginErrorParseResponse);
+                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(loginErrorParseResponse, null);
                             setChanged();
                             notifyObservers(userDataModuleResponse);
                         }
                     }
                     // Some error happend. Show them to the user
                 } else {
-                    UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse);
+                    UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, null);
                     setChanged();
                     notifyObservers(userDataModuleResponse);
                 }
@@ -107,8 +115,74 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     }
 
     @Override
-    public void signupForGooglePlusUsers(Observer observer, String name, String email, String profileUrl, String profilePhotoUrl) {
-        //
+    public void signupForGooglePlusUsers(Observer observer, final String name, final String email, final String profilePhotoUrl, final String profileUrl) {
+        addObserver(observer);
+        final String password = Secret.generatePassword(name, email);
+
+        ParseUser.logInInBackground(email, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                // If there is not error on login
+                if (!parseResponse.isError()) {
+                    if (parseUser != null) {
+                        mUser = new User(parseUser);
+                        UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                        if (mUser.isNew()) {
+                            // User signed up and logged in through Facebook
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                        } else {
+                            // User logged in through Facebook
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                        }
+                        // User has signed in but the parse user is false. This is an inconsistent state.
+                    } else {
+                        // if the current user exists
+                        if (ParseUser.getCurrentUser() != null) {
+                            mUser = new User(parseUser.getCurrentUser());
+                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                            // The user has logged with Facebook but the current user does not exists.
+                            // Show the error to the user
+                        } else {
+                            // Update the Parse response
+                            ParseResponse loginErrorParseResponse =
+                                    new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_GOOGLE).build();
+                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(loginErrorParseResponse, null);
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                        }
+                    }
+                // If there is any error on login, try to sign up
+                } else {
+                    mUser = new User(name, email, email, password, profilePhotoUrl, true, profileUrl);
+                    mUser.signUpInBackground(new SignUpCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                            // If sign up was ok
+                            if (!parseResponse.isError()) {
+                                UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                                setChanged();
+                                notifyObservers(userDataModuleResponse);
+                                // If there is any problem on Sign up
+                            } else {
+                                // Reset the value of User
+                                mUser = null;
+                                ParseResponse signupErrorParseResponse =
+                                        new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_GOOGLE).build();
+                                UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(signupErrorParseResponse, null);
+                                setChanged();
+                                notifyObservers(userDataModuleResponse);
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**
