@@ -62,7 +62,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mCardView = (CardView) findViewById(R.id.card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
-        initializeYouTubePlaerFragment();
+        initializeYouTubePlayerFragment();
 
         // Retrieve the data
         mNotificationModule.showLoadingDialog(mContext);
@@ -159,7 +159,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
             // Retry initialization if user performed a recovery action
-            initializeYouTubePlaerFragment();
+            initializeYouTubePlayerFragment();
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -174,7 +174,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         super.onBackPressed();
     }
 
-    private void initializeYouTubePlaerFragment() {
+    private void initializeYouTubePlayerFragment() {
         if (MainApplication.IS_PRODUCTION) {
             mYoutubePlayerFragment.initialize(LocalConstants.GOOGLE_API_PRODUCTION, this);
         } else {
