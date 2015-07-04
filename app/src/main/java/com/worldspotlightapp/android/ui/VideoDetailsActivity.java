@@ -73,6 +73,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mAuthorCardView = (CardView) findViewById(R.id.author_card_view);
         mAuthorThumbnailImageView = (ImageView) findViewById(R.id.author_thumbnail_image_view);
         mAuthorNameTextView = (TextView) findViewById(R.id.author_name_text_view);
+
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
@@ -134,15 +135,24 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mActionBar.setTitle(mVideo.getTitle());
         mDescriptionTextView.setText(mVideo.getDescription());
 
-        if (mVideo.hasAuthorInfo()) {
-            mPicasso.load(mVideo.getAuthorThumbnailUrl()).into(mAuthorThumbnailImageView);
-            mAuthorNameTextView.setText(mVideo.getAuthorName());
-        }
+        updateAuthorInfo();
 
         // If the youtube player has been already initialized
         if (mYouTubePlayer != null) {
             mYouTubePlayer.cueVideo(mVideo.getVideoId());
         }
+    }
+
+    private void updateAuthorInfo() {
+        if (mVideo == null || !mVideo.hasAuthorInfo()){
+            mAuthorCardView.setVisibility(View.GONE);
+            return;
+        }
+
+        mAuthorCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
+
+        mPicasso.load(mVideo.getAuthorThumbnailUrl()).into(mAuthorThumbnailImageView);
+        mAuthorNameTextView.setText(mVideo.getAuthorName());
     }
 
     @Override
@@ -152,9 +162,11 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
                 @Override
                 public void onFullscreen(boolean isFullScreen) {
-                    mAuthorCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
                     mDescriptionCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
                     mIsFullScreen = isFullScreen;
+
+                    // Update author card view
+                    updateAuthorInfo();
                 }
             });
 

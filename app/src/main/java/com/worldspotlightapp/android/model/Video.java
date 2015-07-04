@@ -45,9 +45,12 @@ public class Video extends ParseObject implements ClusterItem {
     private String mThumbnailUrl;
 
     // Author info
+    // TODO: Remove the default values
     private String mAuthorThumbnailUrl;
+            //= "https://yt3.ggpht.com/-qk_30IRAR1Y/AAAAAAAAAAI/AAAAAAAAAAA/Ix39Vgeu7Cs/s88-c-k-no/photo.jpg";
 
     private String mAuthorName;
+            //= "Gear-TV";
 
     /**
      * The empty constructor
