@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
@@ -48,6 +49,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     // Check if it was full screen or not
     private boolean mIsFullScreen;
 
+    // Others
+    private Picasso mPicasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             throw new IllegalArgumentException("You must pass the video id using intent");
         }
         mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
+
+        mPicasso = Picasso.with(mContext);
 
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -128,7 +134,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mActionBar.setTitle(mVideo.getTitle());
         mDescriptionTextView.setText(mVideo.getDescription());
 
-        // TODO: Fill the information about the author
+        if (mVideo.hasAuthorInfo()) {
+            mPicasso.load(mVideo.getAuthorThumbnailUrl()).into(mAuthorThumbnailImageView);
+            mAuthorNameTextView.setText(mVideo.getAuthorName());
+        }
 
         // If the youtube player has been already initialized
         if (mYouTubePlayer != null) {
