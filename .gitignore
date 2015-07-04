@@ -40,7 +40,7 @@ crashlytics.properties
 fabric.properties
 
 #API secrets
-app/src/main/java/com/worldspotlightapp/android/utils/LocalConstants.java
+app/src/main/java/com/worldspotlightapp/android/utils/Secret.java
 app/src/main/res/values/secret.xml
 keys.txt
 keys_debug.txt

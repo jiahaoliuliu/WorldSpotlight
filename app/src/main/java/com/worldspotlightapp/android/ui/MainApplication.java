@@ -11,8 +11,10 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.model.User;
 import com.worldspotlightapp.android.model.Video;
-import com.worldspotlightapp.android.utils.LocalConstants;
+import com.worldspotlightapp.android.utils.Secret;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -33,10 +35,11 @@ public class MainApplication extends Application {
         // Initialize Parse
         Parse.enableLocalDatastore(sInstance);
         ParseObject.registerSubclass(Video.class);
+        ParseObject.registerSubclass(User.class);
         if (IS_PRODUCTION) {
-            Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID_PRODUCTION, LocalConstants.PARSE_CLIENT_KEY_PRODUCTION);
+            Parse.initialize(this, Secret.PARSE_APPLICATION_ID_PRODUCTION, Secret.PARSE_CLIENT_KEY_PRODUCTION);
         } else {
-            Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID_DEBUG, LocalConstants.PARSE_CLIENT_KEY_DEBUG);
+            Parse.initialize(this, Secret.PARSE_APPLICATION_ID_DEBUG, Secret.PARSE_CLIENT_KEY_DEBUG);
         }
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
