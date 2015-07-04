@@ -23,4 +23,5 @@
     <!-- Video details -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
     <dimen name="video_details_group_margin_vertical">3dp</dimen>
+    <dimen name="video_details_author_image_size">50dp</dimen>
 </resources>
