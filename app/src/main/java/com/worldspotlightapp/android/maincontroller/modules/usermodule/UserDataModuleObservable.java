@@ -1,24 +1,31 @@
 package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 
-import java.text.SimpleDateFormat;
+import java.util.Observer;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
 import com.worldspotlightapp.android.ui.MainApplication;
 
 
 public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
-    private static final String LOG_TAG = "UserDataModule";
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String TAG = "UserDataModule";
 
     private final Preferences mPreferences;
+
+    private ParseUser mParseUser;
 
     /**
      * The unique identifier of the device/user
@@ -31,6 +38,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         super();
         this.mPreferences = preferences;
         generateUUID();
+        mParseUser = ParseUser.getCurrentUser();
     }
 
     @Override
@@ -40,6 +48,62 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         }
 
         return mUuid;
+    }
+
+    @Override
+    public boolean hasUserData() {
+        if (mParseUser == null) {
+            mParseUser = ParseUser.getCurrentUser();
+        }
+
+        return mParseUser != null;
+    }
+
+    @Override
+    public void loginWithFacebook(Observer observer, Activity activity) {
+        addObserver(observer);
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(activity, null, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    if (parseUser != null) {
+                        UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse);
+                        if (parseUser.isNew()) {
+                            // User signed up and logged in through Facebook
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                        } else {
+                            // User logged in through Facebook
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                        }
+                        // User has signed in but the parse user is false. This is an inconsistent state.
+                    } else {
+                        // if the current user exists
+                        if (ParseUser.getCurrentUser() != null) {
+                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse);
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                            // The user has logged with Facebook but the current user does not exists.
+                            // Show the error to the user
+                        } else {
+                            // Update the Parse response
+                            ParseResponse loginErrorParseResponse =
+                                    new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_FACEBOOK).build();
+                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(loginErrorParseResponse);
+                            setChanged();
+                            notifyObservers(userDataModuleResponse);
+                        }
+                    }
+                    // Some error happend. Show them to the user
+                } else {
+                    UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse);
+                    setChanged();
+                    notifyObservers(userDataModuleResponse);
+                }
+            }
+        });
     }
 
     /**

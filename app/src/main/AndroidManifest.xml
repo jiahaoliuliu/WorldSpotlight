@@ -45,23 +45,27 @@
         android:label="@string/app_name"
         android:theme="@style/Indigo" >
         <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name" >
+            android:name=".ui.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/IndigoWithoutActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="@string/app_name" >
 
             <!-- Tracking video id shared -->
             <intent-filter>
                 <data
                     android:host="www.worldspotlightapp.com"
                     android:scheme="http" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
@@ -103,15 +107,26 @@
             </intent-filter>
         </receiver>
 
+        <!-- Facebook Login activity -->
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
+
         <activity
             android:name=".ui.VideoDetailsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_video_details" >
+            android:label="@string/app_name" >
         </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="2d4649e8c5a3039ba9e81abc7c93ab2cd1e025b0" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodul
 
 import android.content.Context;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.ui.MainApplication;
@@ -39,11 +40,19 @@ public class EventsTrackingModule implements IEventsTrackingModule {
     @Override
     public void trackAppInitialization() {
         mMixpanel.track(mContext.getString(R.string.mp_login), new JSONObject());
+
+        // Facebook logs
+        // Log 'install' and 'app activate' App Events
+        AppEventsLogger.activateApp(mContext);
     }
 
     @Override
     public void trackAppFinalization() {
         mMixpanel.track(mContext.getString(R.string.mp_logout), new JSONObject());
         mMixpanel.flush();
+
+        // Facebook logs
+        // Logs 'app deactivate' App Event
+        AppEventsLogger.deactivateApp(mContext);
     }
 }
