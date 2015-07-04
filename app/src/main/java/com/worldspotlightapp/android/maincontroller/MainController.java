@@ -115,7 +115,7 @@ public final class MainController {
         UUID uuid = newMainController.mUserDataModule.getUuid();
         newMainController.mNotificationModule = new NotificationModule(context);
         newMainController.mGpsLocalizationModule = new GpsLocalizationModule(context, preferences);
-        newMainController.mVideosModuleObservable = new VideosModuleObserver();
+        newMainController.mVideosModuleObservable = new VideosModuleObserver(context);
         newMainController.mEventTrackingModule = new EventsTrackingModule(context, uuid);
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
 
