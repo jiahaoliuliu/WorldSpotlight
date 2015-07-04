@@ -40,4 +40,13 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The keyword to be searched
      */
     public abstract void searchByKeyword(Observer observer, String keyword);
+
+    /**
+     * Get the author info based on the video id
+     * @param observer
+     *      The observer to be notified when the data is ready
+     * @param videoId
+     *      The id of the video which the author is looking for
+     */
+    public abstract void requestAuthorInfo(Observer observer, String videoId);
 }

@@ -16,7 +16,10 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataM
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.AbstractVideosModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 
+import java.lang.ref.SoftReference;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The Session class models a user's session. It is the intermediate level between Controllers and
@@ -50,6 +53,7 @@ public final class MainController {
     private static MainController currentMainController = null;
 
     // Modules
+    private ExecutorServiceHolder mExecutorServiceHolder;
     private INotificationModule mNotificationModule;
     private AbstractUserDataModuleObservable mUserDataModule;
     private IGpsLocalizationModule mGpsLocalizationModule;
@@ -110,12 +114,15 @@ public final class MainController {
         final MainController newMainController = MainController.getInstance();
         newMainController.setPreferences(preferences);
 
+        // Create the executor pool
+        newMainController.mExecutorServiceHolder = new ExecutorServiceHolder();
+
         // Set the modules
         newMainController.mUserDataModule = new UserDataModuleObservable(preferences);
         UUID uuid = newMainController.mUserDataModule.getUuid();
         newMainController.mNotificationModule = new NotificationModule(context);
         newMainController.mGpsLocalizationModule = new GpsLocalizationModule(context, preferences);
-        newMainController.mVideosModuleObservable = new VideosModuleObserver();
+        newMainController.mVideosModuleObservable = new VideosModuleObserver(context, newMainController.mExecutorServiceHolder.createExecutorService());
         newMainController.mEventTrackingModule = new EventsTrackingModule(context, uuid);
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
 
@@ -168,5 +175,47 @@ public final class MainController {
 
     public IActivityTrackerModule getActivityTRackerModule() {
         return mActivityTrackerModule;
+    }
+
+    /**
+     * The class which creates the threadPool
+     */
+    public static final class ExecutorServiceHolder {
+
+        /**
+         * The number of the threads which are running in parallel.
+         */
+        private static final int MAXIMUM_NUM_RUNNING_THREAD = 5;
+
+        /**
+         * Creates the executor server as soft reference.
+         */
+        private SoftReference<ExecutorService> executorServiceReference = new SoftReference<ExecutorService>(
+                createExecutorService());
+
+        /**
+         * Method used to get the executor service.
+         * @return The executor service. Create it if it has not been created before
+         */
+        ExecutorService getExecutorService() {
+            ExecutorService executorService = executorServiceReference.get();
+
+            if (executorService == null) {
+                // (the reference was cleared)
+                executorService = createExecutorService();
+                executorServiceReference = new SoftReference<ExecutorService>(executorService);
+            }
+
+            return executorService;
+        }
+
+        /**
+         * The method which creates a threadPool with limit number of threads.
+         * Those threads will be re-utilized and they should exist while the application is running.
+         * @return A threadPool with always same number of threads
+         */
+        private ExecutorService createExecutorService() {
+            return Executors.newFixedThreadPool(MAXIMUM_NUM_RUNNING_THREAD);
+        }
     }
 }

@@ -1,21 +1,35 @@
 package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Channel;
+import com.google.api.services.youtube.model.ChannelListResponse;
+import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.SearchResult;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
+import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.utils.LocalConstants;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Observer;
-import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by jiahaoliuliu on 6/12/15.
@@ -28,6 +42,14 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     // The list of all the videos
     private List<Video> mVideosList;
+
+    private Context mContext;
+    private ExecutorService mExecutorService;
+
+    public VideosModuleObserver(Context context, ExecutorService executorService) {
+        mContext = context;
+        mExecutorService = executorService;
+    }
 
     @Override
     public void requestAllVideos(Observer observer) {
@@ -130,7 +152,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         // If it is from the local database, set it
         if (fromLocalDatabase) {
             query.fromLocalDatastore();
-        // If it is not from local database, set the maximum limit
+            // If it is not from local database, set the maximum limit
         } else {
             query.setLimit(MAX_PARSE_QUERY_RESULT);
         }
@@ -197,7 +219,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             return;
         }
 
-        if (keyword==null || keyword.isEmpty()){
+        if (keyword == null || keyword.isEmpty()) {
             Log.e(TAG, "The keyword is empty or null");
             ParseResponse parseResponse = new ParseResponse.Builder(null).build();
             // In case of error, do not update the existent list of videos
@@ -210,8 +232,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         }
 
         List<Video> resultVideosList = new ArrayList<Video>();
-        keyword=keyword.toLowerCase();
-        for (Video video: mVideosList) {
+        keyword = keyword.toLowerCase();
+        for (Video video : mVideosList) {
             // By passing all the characters to lower case, we are looking for the
             // content of the string, instead of looking for Strings which has the
             // same characters in mayus and minus.
@@ -224,9 +246,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 resultVideosList.add(video);
             } else if (description.toLowerCase().contains(keyword) || keyword.contains(description)) {
                 resultVideosList.add(video);
-            } else if (city.toLowerCase().contains(keyword) || keyword.contains(city)){
+            } else if (city.toLowerCase().contains(keyword) || keyword.contains(city)) {
                 resultVideosList.add(video);
-            } else if (country.toLowerCase().contains(keyword) || keyword.contains(country)){
+            } else if (country.toLowerCase().contains(keyword) || keyword.contains(country)) {
                 resultVideosList.add(video);
             }
         }
@@ -240,5 +262,88 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         setChanged();
         notifyObservers(videosModuleVideosListResponse);
+    }
+
+    @Override
+    public void requestAuthorInfo(Observer observer, final String videoId) {
+        addObserver(observer);
+
+        mExecutorService.execute(new RetrieveAuthorInfoRunnable(videoId, new RequestAuthorInfoCallback() {
+            @Override
+            public void done(Author author) {
+                if (author != null) {
+                    ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+                    VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author);
+                    setChanged();
+                    notifyObservers(videosModuleAuthorResponse);
+                }
+            }
+        }));
+    }
+
+    private class RetrieveAuthorInfoRunnable implements Runnable {
+
+        private String mVideoId;
+        private RequestAuthorInfoCallback mRequestAuthorInfoCallback;
+
+        public RetrieveAuthorInfoRunnable(String videoId, RequestAuthorInfoCallback requestAuthorInfoCallback) {
+            mVideoId = videoId;
+            mRequestAuthorInfoCallback = requestAuthorInfoCallback;
+        }
+
+        @Override
+        public void run() {
+            Author author = null;
+
+            YouTube youtube =
+                    new YouTube.Builder(new NetHttpTransport(),
+                            new JacksonFactory(), new HttpRequestInitializer() {
+                        @Override
+                        public void initialize(HttpRequest httpRequest) throws IOException{}
+                    }).setApplicationName(mContext.getString(R.string.app_name)).build();
+
+            try {
+                YouTube.Search.List query = youtube.search().list("id,snippet");
+                query.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
+                query.setType("video");
+                query.setFields("items(id/videoId,snippet/channelId,snippet/channelTitle)");
+                query.setQ("v=" + mVideoId);
+                query.setType("video");
+                SearchListResponse response = query.execute();
+                List<SearchResult> results = response.getItems();
+                Log.v(TAG, "List of search results retrieved. " + results.size());
+                for (final SearchResult searchResult : results) {
+                    Log.v(TAG, searchResult.toPrettyString());
+                    if (!searchResult.getId().getVideoId().equals(mVideoId)) {
+                        continue;
+                    }
+
+                    // Get the channel id
+                    YouTube.Channels.List queryChannel = youtube.channels().list("id, snippet");
+                    queryChannel.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
+                    queryChannel.setFields("items(id,snippet/thumbnails/medium,snippet/title)");
+                    queryChannel.setId(searchResult.getSnippet().getChannelId());
+                    ChannelListResponse channelListResponse = queryChannel.execute();
+                    List<Channel> channelsList = channelListResponse.getItems();
+                    Log.v(TAG, "List of channels retrieved " + channelsList);
+                    for (final Channel channel : channelsList) {
+                        Log.v(TAG, channel.toPrettyString());
+                        author = new Author(channel.getId(), channel.getSnippet().getTitle(), channel.getSnippet().getThumbnails().getMedium().getUrl());
+                    }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Could not search video data: ", e);
+            }
+
+            mRequestAuthorInfoCallback.done(author);
+        }
+    }
+
+    /**
+     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
+     * info is ready
+     */
+    private interface RequestAuthorInfoCallback {
+        void done(Author author);
     }
 }
