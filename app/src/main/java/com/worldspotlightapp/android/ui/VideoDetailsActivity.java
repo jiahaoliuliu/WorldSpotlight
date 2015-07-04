@@ -122,7 +122,13 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 ParseResponse parseResponse = videosModuleAuthorResponse.getParseResponse();
                 if (!parseResponse.isError()) {
                     mAuthor = videosModuleAuthorResponse.getAuthor();
-                    updateAuthorInfo();
+                    // Ensure the follow code run on the UI thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateAuthorInfo();
+                        }
+                    });
                 } else {
                     // Some error happened
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);

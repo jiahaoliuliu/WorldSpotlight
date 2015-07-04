@@ -17,6 +17,8 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.MainController;
+import com.worldspotlightapp.android.maincontroller.MainController.ExecutorServiceHolder;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
@@ -29,6 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by jiahaoliuliu on 6/12/15.
@@ -43,9 +47,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private List<Video> mVideosList;
 
     private Context mContext;
+    private ExecutorService mExecutorService;
 
-    public VideosModuleObserver(Context context) {
+    public VideosModuleObserver(Context context, ExecutorService executorService) {
         mContext = context;
+        mExecutorService = executorService;
     }
 
     @Override
@@ -262,72 +268,85 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void requestAuthorInfo(Observer observer, String videoId) {
-        // TODO: Implement this
+    public void requestAuthorInfo(Observer observer, final String videoId) {
         addObserver(observer);
 
-        new Thread(new GetUserIdRunnable(videoId)).start();
-
-        // Use Fake author info
-        Author author = new Author("1234567", "Gear-TV", "https://yt3.ggpht.com/-qk_30IRAR1Y/AAAAAAAAAAI/AAAAAAAAAAA/Ix39Vgeu7Cs/s88-c-k-no/photo.jpg");
-        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
-        VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author);
-        setChanged();
-        notifyObservers(videosModuleAuthorResponse);
+        mExecutorService.execute(new RetrieveAuthorInfoRunnable(videoId, new RequestAuthorInfoCallback() {
+            @Override
+            public void done(Author author) {
+                if (author != null) {
+                    ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+                    VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author);
+                    setChanged();
+                    notifyObservers(videosModuleAuthorResponse);
+                }
+            }
+        }));
     }
 
-    private class GetUserIdRunnable implements Runnable {
+    private class RetrieveAuthorInfoRunnable implements Runnable {
 
         private String mVideoId;
+        private RequestAuthorInfoCallback mRequestAuthorInfoCallback;
 
-        public GetUserIdRunnable(String videoId) {
+        public RetrieveAuthorInfoRunnable(String videoId, RequestAuthorInfoCallback requestAuthorInfoCallback) {
             mVideoId = videoId;
+            mRequestAuthorInfoCallback = requestAuthorInfoCallback;
         }
 
         @Override
         public void run() {
-            getUserIdByVideoId(mVideoId);
+            Author author = null;
+
+            YouTube youtube =
+                    new YouTube.Builder(new NetHttpTransport(),
+                            new JacksonFactory(), new HttpRequestInitializer() {
+                        @Override
+                        public void initialize(HttpRequest httpRequest) throws IOException{}
+                    }).setApplicationName(mContext.getString(R.string.app_name)).build();
+
+            try {
+                YouTube.Search.List query = youtube.search().list("id,snippet");
+                query.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
+                query.setType("video");
+                query.setFields("items(id/videoId,snippet/channelId,snippet/channelTitle)");
+                query.setQ("v=" + mVideoId);
+                query.setType("video");
+                SearchListResponse response = query.execute();
+                List<SearchResult> results = response.getItems();
+                Log.v(TAG, "List of search results retrieved. " + results.size());
+                for (final SearchResult searchResult : results) {
+                    Log.v(TAG, searchResult.toPrettyString());
+                    if (!searchResult.getId().getVideoId().equals(mVideoId)) {
+                        continue;
+                    }
+
+                    // Get the channel id
+                    YouTube.Channels.List queryChannel = youtube.channels().list("id, snippet");
+                    queryChannel.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
+                    queryChannel.setFields("items(id,snippet/thumbnails/medium,snippet/title)");
+                    queryChannel.setId(searchResult.getSnippet().getChannelId());
+                    ChannelListResponse channelListResponse = queryChannel.execute();
+                    List<Channel> channelsList = channelListResponse.getItems();
+                    Log.v(TAG, "List of channels retrieved " + channelsList);
+                    for (final Channel channel : channelsList) {
+                        Log.v(TAG, channel.toPrettyString());
+                        author = new Author(channel.getId(), channel.getSnippet().getTitle(), channel.getSnippet().getThumbnails().getMedium().getUrl());
+                    }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Could not search video data: ", e);
+            }
+
+            mRequestAuthorInfoCallback.done(author);
         }
     }
 
-    private void getUserIdByVideoId(String videoId) {
-        YouTube youtube =
-                new YouTube.Builder(new NetHttpTransport(),
-                        new JacksonFactory(), new HttpRequestInitializer() {
-                    @Override
-                    public void initialize(HttpRequest httpRequest) throws IOException{}
-                }).setApplicationName(mContext.getString(R.string.app_name)).build();
-
-        try {
-            YouTube.Search.List query = youtube.search().list("id,snippet");
-            query.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
-            query.setType("video");
-            query.setFields("items(id/videoId,snippet/channelId,snippet/channelTitle)");
-            query.setQ("v=" + videoId);
-            query.setType("video");
-            SearchListResponse response = query.execute();
-            List<SearchResult> results = response.getItems();
-            Log.v(TAG, "List of search results retrieved. " + results.size());
-            for (final SearchResult searchResult : results) {
-                Log.v(TAG, searchResult.toPrettyString());
-                if (!searchResult.getId().getVideoId().equals(videoId)) {
-                    continue;
-                }
-
-                // Get the channel id
-                YouTube.Channels.List queryChannel = youtube.channels().list("id, snippet");
-                queryChannel.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
-                queryChannel.setFields("items(id,snippet/thumbnails/medium,snippet/title)");
-                queryChannel.setId(searchResult.getSnippet().getChannelId());
-                ChannelListResponse channelListResponse = queryChannel.execute();
-                List<Channel> channelsList = channelListResponse.getItems();
-                Log.v(TAG, "List of channels retrieved " + channelsList);
-                for (final Channel channel : channelsList) {
-                    Log.v(TAG, channel.toPrettyString());
-                }
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Could not search video data: ", e);
-        }
+    /**
+     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
+     * info is ready
+     */
+    private interface RequestAuthorInfoCallback {
+        void done(Author author);
     }
 }
