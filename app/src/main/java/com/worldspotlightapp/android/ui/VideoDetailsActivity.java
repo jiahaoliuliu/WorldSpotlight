@@ -18,12 +18,14 @@ import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.LocalConstants;
 
 import java.util.Observable;
+import java.util.Stack;
 
 public class VideoDetailsActivity extends AbstractBaseActivityObserver implements YouTubePlayer.OnInitializedListener {
 
@@ -33,8 +35,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
     private String mVideoObjectId;
 
-    private ParseResponse mParseResponse;
+    // The stack of responses from backend
+    private Stack<Object> mResponsesStack;
     private Video mVideo;
+    private Author mAuthor;
 
     // Views
     private CardView mAuthorCardView;
@@ -65,6 +69,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         }
         mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
 
+        mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mContext);
 
         // Action bar
@@ -87,43 +92,74 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
     @Override
     protected void processDataIfExists() {
+        Log.v(TAG, "Processing data is exists");
         // 1. Check if the data exists
         // If there were not data received from backend, then
         // Not do anything
-        if (mParseResponse == null) {
+        if (mResponsesStack.isEmpty()) {
             return;
         }
 
         // 2. Process the data
-        if (!mParseResponse.isError()) {
-            updateVideoDetails();
-        } else {
-            // Some error happend
-            mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
-            finish();
+        while(!mResponsesStack.isEmpty()) {
+            Object response = mResponsesStack.pop();
+            Log.v(TAG, "Response get " + response);
+            if (response instanceof VideosModuleVideoResponse) {
+                Log.v(TAG, "VideoModuleVideoResponse received");
+                VideosModuleVideoResponse videosModuleVideoResponse = (VideosModuleVideoResponse) response;
+                ParseResponse parseResponse = videosModuleVideoResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mVideo = videosModuleVideoResponse.getVideo();
+                    updateVideoDetails();
+                } else {
+                    // Some error happened
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                    finish();
+                }
+            } else if (response instanceof VideosModuleAuthorResponse) {
+                Log.v(TAG, "videos module author response received");
+                VideosModuleAuthorResponse videosModuleAuthorResponse = (VideosModuleAuthorResponse) response;
+                ParseResponse parseResponse = videosModuleAuthorResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mAuthor = videosModuleAuthorResponse.getAuthor();
+                    updateAuthorInfo();
+                } else {
+                    // Some error happened
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            }
         }
 
         mNotificationModule.dismissLoadingDialog();
 
-        // 3. Remove the answers
-        mParseResponse = null;
+        // 3. Remove the responses
+        // Since we are using a stack, there is not need to remove the responses
     }
 
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Update received from " + observable);
         if (observable instanceof VideosModuleObserver) {
+
+            // Add the data to the list of responses
+            mResponsesStack.push(o);
+
+            // Specific method that only could be triggered when the video is available
             if (o instanceof VideosModuleVideoResponse) {
-                VideosModuleVideoResponse videosModuleVideoResponse = (VideosModuleVideoResponse)o;
-                mVideo = videosModuleVideoResponse.getVideo();
-                mParseResponse = videosModuleVideoResponse.getParseResponse();
-
-                if (mIsInForeground) {
-                    processDataIfExists();
+                Log.v(TAG, "Video received");
+                VideosModuleVideoResponse videosModuleVideoResponse = (VideosModuleVideoResponse) o;
+                if (!videosModuleVideoResponse.getParseResponse().isError()) {
+                    Log.v(TAG, "Requesting the author info");
+                    mVideosModule.requestAuthorInfo(this, videosModuleVideoResponse.getVideo().getVideoId());
                 }
-
-                observable.deleteObserver(this);
             }
+
+            if (mIsInForeground) {
+                processDataIfExists();
+            }
+
+            // The VideoDetailsActivity will listen constantly to the changes on the video details
+            //observable.deleteObserver(this);
         }
     }
 
@@ -136,8 +172,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mActionBar.setTitle(mVideo.getTitle());
         mDescriptionTextView.setText(mVideo.getDescription());
 
-        updateAuthorInfo();
-
         // If the youtube player has been already initialized
         if (mYouTubePlayer != null) {
             mYouTubePlayer.cueVideo(mVideo.getVideoId());
@@ -145,16 +179,16 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     }
 
     private void updateAuthorInfo() {
-        if (mVideo == null || !mVideo.hasAuthor()){
+        Log.v(TAG, "Updating author info");
+        if (mAuthor == null){
             mAuthorCardView.setVisibility(View.GONE);
             return;
         }
 
         mAuthorCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
 
-        Author author = mVideo.getAuthor();
-        mPicasso.load(author.getThumbnailUrl()).into(mAuthorThumbnailImageView);
-        mAuthorNameTextView.setText(author.getName());
+        mPicasso.load(mAuthor.getThumbnailUrl()).into(mAuthorThumbnailImageView);
+        mAuthorNameTextView.setText(mAuthor.getName());
     }
 
     @Override

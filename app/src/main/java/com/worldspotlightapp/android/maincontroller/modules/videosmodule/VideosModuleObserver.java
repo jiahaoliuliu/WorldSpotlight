@@ -7,8 +7,10 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
+import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
@@ -240,5 +242,18 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         setChanged();
         notifyObservers(videosModuleVideosListResponse);
+    }
+
+    @Override
+    public void requestAuthorInfo(Observer observer, String videoId) {
+        // TODO: Implement this
+        addObserver(observer);
+
+        // Use Fake author info
+        Author author = new Author("1234567", "Gear-TV", "https://yt3.ggpht.com/-qk_30IRAR1Y/AAAAAAAAAAI/AAAAAAAAAAA/Ix39Vgeu7Cs/s88-c-k-no/photo.jpg");
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author);
+        setChanged();
+        notifyObservers(videosModuleAuthorResponse);
     }
 }

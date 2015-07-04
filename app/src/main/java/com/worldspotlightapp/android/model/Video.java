@@ -44,9 +44,6 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_THUMBNAIL_URL = "com.worldspotlightapp.android.model.video.thumbnailUrl";
     private String mThumbnailUrl;
 
-    // Author of the video
-    private Author mAuthor;
-
     /**
      * The empty constructor
      */
@@ -115,21 +112,6 @@ public class Video extends ParseObject implements ClusterItem {
         }
 
         return mVideoUrl;
-    }
-
-    // Author of the video
-
-
-    public Author getAuthor() {
-        return mAuthor;
-    }
-
-    public void setAuthor(Author author) {
-        this.mAuthor = author;
-    }
-
-    public boolean hasAuthor() {
-        return getAuthor() != null;
     }
 
     @Override

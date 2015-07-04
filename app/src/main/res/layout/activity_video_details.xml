@@ -26,6 +26,7 @@
         card_view:cardElevation="@dimen/card_view_card_elevation"
         android:layout_marginTop="@dimen/video_details_group_margin_vertical"
         android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
+        android:visibility="gone"
         >
 
         <RelativeLayout
