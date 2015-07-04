@@ -16,4 +16,5 @@
     <dimen name="main_activity_video_preview_image_height">80dp</dimen>
     <dimen name="main_activity_video_preview_image_width">145dp</dimen>
 
+    <!-- Video details -->
 </resources>

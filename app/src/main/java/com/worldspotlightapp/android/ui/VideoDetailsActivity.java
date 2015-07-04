@@ -34,7 +34,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private Video mVideo;
 
     // Views
-    private CardView mCardView;
+    private CardView mAuthorCardView;
+    private CardView mDescriptionCardView;
     private TextView mDescriptionTextView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
@@ -59,7 +60,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the views
-        mCardView = (CardView) findViewById(R.id.card_view);
+        mAuthorCardView = (CardView) findViewById(R.id.author_card_view);
+        mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
         initializeYouTubePlayerFragment();
@@ -133,7 +135,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
                 @Override
                 public void onFullscreen(boolean isFullScreen) {
-                    mCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
+                    mAuthorCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
+                    mDescriptionCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
                     mIsFullScreen = isFullScreen;
                 }
             });
