@@ -2,6 +2,10 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="card_view_card_corner_radius">4dp</dimen>
+    <dimen name="card_view_card_elevation">4dp</dimen>
+    <dimen name="card_view_inside_padding">16dp</dimen>
+    <dimen name="card_view_title_size">25sp</dimen>
 
     <!-- Main activity -->
     <dimen name="main_activity_view_pager_indicator_height">5dp</dimen>
@@ -17,4 +21,6 @@
     <dimen name="main_activity_video_preview_image_width">145dp</dimen>
 
     <!-- Video details -->
+    <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
+    <dimen name="video_details_group_margin_vertical">3dp</dimen>
 </resources>
