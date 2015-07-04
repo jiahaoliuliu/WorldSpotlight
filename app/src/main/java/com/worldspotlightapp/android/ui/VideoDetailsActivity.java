@@ -19,6 +19,7 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
+import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.LocalConstants;
 
@@ -95,7 +96,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
         // 2. Process the data
         if (!mParseResponse.isError()) {
-            showVideoDetails();
+            updateVideoDetails();
         } else {
             // Some error happend
             mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
@@ -129,7 +130,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     /**
      * Show details about the video
      */
-    private void showVideoDetails() {
+    private void updateVideoDetails() {
         Log.v(TAG, mVideo.toString());
 
         mActionBar.setTitle(mVideo.getTitle());
@@ -144,15 +145,16 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     }
 
     private void updateAuthorInfo() {
-        if (mVideo == null || !mVideo.hasAuthorInfo()){
+        if (mVideo == null || !mVideo.hasAuthor()){
             mAuthorCardView.setVisibility(View.GONE);
             return;
         }
 
         mAuthorCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
 
-        mPicasso.load(mVideo.getAuthorThumbnailUrl()).into(mAuthorThumbnailImageView);
-        mAuthorNameTextView.setText(mVideo.getAuthorName());
+        Author author = mVideo.getAuthor();
+        mPicasso.load(author.getThumbnailUrl()).into(mAuthorThumbnailImageView);
+        mAuthorNameTextView.setText(author.getName());
     }
 
     @Override

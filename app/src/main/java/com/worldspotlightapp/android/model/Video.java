@@ -44,13 +44,8 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_THUMBNAIL_URL = "com.worldspotlightapp.android.model.video.thumbnailUrl";
     private String mThumbnailUrl;
 
-    // Author info
-    // TODO: Remove the default values
-    private String mAuthorThumbnailUrl;
-            //= "https://yt3.ggpht.com/-qk_30IRAR1Y/AAAAAAAAAAI/AAAAAAAAAAA/Ix39Vgeu7Cs/s88-c-k-no/photo.jpg";
-
-    private String mAuthorName;
-            //= "Gear-TV";
+    // Author of the video
+    private Author mAuthor;
 
     /**
      * The empty constructor
@@ -122,35 +117,19 @@ public class Video extends ParseObject implements ClusterItem {
         return mVideoUrl;
     }
 
-    // Author info
-    //      Author Thumbnail
-    public String getAuthorThumbnailUrl() {
-        return mAuthorThumbnailUrl;
+    // Author of the video
+
+
+    public Author getAuthor() {
+        return mAuthor;
     }
 
-    public void setAuthorThumbnailUrl(String authorThumbnailUrl) {
-        this.mAuthorThumbnailUrl = authorThumbnailUrl;
+    public void setAuthor(Author author) {
+        this.mAuthor = author;
     }
 
-    public boolean hasAuthorThumbnailUrl() {
-        return getAuthorThumbnailUrl() != null;
-    }
-
-    //      Author name
-    public String getAuthorName() {
-        return mAuthorName;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.mAuthorName = authorName;
-    }
-
-    public boolean hasAuthorName() {
-        return getAuthorName() != null;
-    }
-
-    public boolean hasAuthorInfo() {
-        return hasAuthorName() && hasAuthorThumbnailUrl();
+    public boolean hasAuthor() {
+        return getAuthor() != null;
     }
 
     @Override
