@@ -44,6 +44,11 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_THUMBNAIL_URL = "com.worldspotlightapp.android.model.video.thumbnailUrl";
     private String mThumbnailUrl;
 
+    // Author info
+    private String mAuthorThumbnailUrl;
+
+    private String mAuthorName;
+
     /**
      * The empty constructor
      */
@@ -112,6 +117,37 @@ public class Video extends ParseObject implements ClusterItem {
         }
 
         return mVideoUrl;
+    }
+
+    // Author info
+    //      Author Thumbnail
+    public String getAuthorThumbnailUrl() {
+        return mAuthorThumbnailUrl;
+    }
+
+    public void setAuthorThumbnailUrl(String authorThumbnailUrl) {
+        this.mAuthorThumbnailUrl = authorThumbnailUrl;
+    }
+
+    public boolean hasAuthorThumbnailUrl() {
+        return getAuthorThumbnailUrl() != null;
+    }
+
+    //      Author name
+    public String getAuthorName() {
+        return mAuthorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.mAuthorName = authorName;
+    }
+
+    public boolean hasAuthorName() {
+        return getAuthorName() != null;
+    }
+
+    public boolean hasAuthorInfo() {
+        return hasAuthorName() && hasAuthorThumbnailUrl();
     }
 
     @Override

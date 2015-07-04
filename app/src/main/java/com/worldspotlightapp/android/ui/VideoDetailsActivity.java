@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
     // Views
     private CardView mAuthorCardView;
+    private ImageView mAuthorThumbnailImageView;
+    private TextView mAuthorNameTextView;
+
     private CardView mDescriptionCardView;
     private TextView mDescriptionTextView;
 
@@ -61,6 +65,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
         // Link the views
         mAuthorCardView = (CardView) findViewById(R.id.author_card_view);
+        mAuthorThumbnailImageView = (ImageView) findViewById(R.id.author_thumbnail_image_view);
+        mAuthorNameTextView = (TextView) findViewById(R.id.author_name_text_view);
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
@@ -121,6 +127,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
         mActionBar.setTitle(mVideo.getTitle());
         mDescriptionTextView.setText(mVideo.getDescription());
+
+        // TODO: Fill the information about the author
 
         // If the youtube player has been already initialized
         if (mYouTubePlayer != null) {
