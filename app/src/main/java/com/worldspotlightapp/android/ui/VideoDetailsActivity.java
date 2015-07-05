@@ -22,7 +22,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Video;
-import com.worldspotlightapp.android.utils.LocalConstants;
+import com.worldspotlightapp.android.utils.Secret;
 
 import java.util.Observable;
 import java.util.Stack;
@@ -250,9 +250,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
     private void initializeYouTubePlayerFragment() {
         if (MainApplication.IS_PRODUCTION) {
-            mYoutubePlayerFragment.initialize(LocalConstants.GOOGLE_API_PRODUCTION, this);
+            mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_PRODUCTION, this);
         } else {
-            mYoutubePlayerFragment.initialize(LocalConstants.GOOGLE_API_DEBUG, this);
+            mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_DEBUG, this);
         }
     }
 

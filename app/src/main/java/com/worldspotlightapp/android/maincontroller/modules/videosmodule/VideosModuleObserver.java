@@ -23,7 +23,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Video;
-import com.worldspotlightapp.android.utils.LocalConstants;
+import com.worldspotlightapp.android.utils.Secret;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -304,7 +304,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
             try {
                 YouTube.Search.List query = youtube.search().list("id,snippet");
-                query.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
+                query.setKey(Secret.YOUTUBE_DATA_API_KEY);
                 query.setType("video");
                 query.setFields("items(id/videoId,snippet/channelId,snippet/channelTitle)");
                 query.setQ("v=" + mVideoId);
@@ -320,7 +320,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
                     // Get the channel id
                     YouTube.Channels.List queryChannel = youtube.channels().list("id, snippet");
-                    queryChannel.setKey(LocalConstants.YOUTUBE_DATA_API_KEY);
+                    queryChannel.setKey(Secret.YOUTUBE_DATA_API_KEY);
                     queryChannel.setFields("items(id,snippet/thumbnails/medium,snippet/title)");
                     queryChannel.setId(searchResult.getSnippet().getChannelId());
                     ChannelListResponse channelListResponse = queryChannel.execute();

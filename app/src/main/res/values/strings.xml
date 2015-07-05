@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">World Spotlight</string>
 
+    <!-- Login Activity -->
+    <string name="login_facebook_login">Login with Facebook</string>
+
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
@@ -30,7 +33,7 @@
     <string name="error_message_generic">It seems that there is a problem. Could you try it later?</string>
     <string name="error_message_video_not_found">The video you are looking for does not exists.</string>
     <string name="error_message_username_already_taken">There is already some user with that email address. Could you pick another one?</string>
-    <string name="title_activity_video_details">VideoDetailsActivity</string>
-    <string name="title_activity_search">SearchActivity</string>
-    <string name="search_title">Search</string>
+    <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
+    <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
+
 </resources>
