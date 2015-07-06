@@ -5,13 +5,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-import com.jiahaoliuliu.avec.database.daos.CourseDao;
-import com.jiahaoliuliu.avec.model.Course;
+import com.worldspotlightapp.android.maincontroller.database.daos.VideoDao;
+import com.worldspotlightapp.android.model.Video;
+
+import java.util.List;
 
 /**
  * Data layer of videos. This class is intended to be used to access the database of the
  * application for Video purposes, and converting from internal relational
- * representations to Java model objects. All database accesses to course operations should be
+ * representations to Java model objects. All database accesses to video operations should be
  * done through this class.
  * 
  * @author Jiahao Liu
@@ -20,10 +22,10 @@ import com.jiahaoliuliu.avec.model.Course;
 public class VideoDataLayer {
     private static final String TAG = "VideoDataLayer";
 
-    private CourseDao mCourseDao;
+    private VideoDao mVideoDao;
 
     private VideoDataLayer() {
-        mCourseDao = new CourseDao();
+        mVideoDao = new VideoDao();
     }
 
     /**
@@ -31,32 +33,50 @@ public class VideoDataLayer {
      * access to SingletonHolder.INSTANCE, not before.
      */
     private static class SingletonHolder {
-        public static final CourseDataLayer INSTANCE = new CourseDataLayer();
+        public static final VideoDataLayer INSTANCE = new VideoDataLayer();
     }
 
     /**
      * Returns the only instance of this class.
      */
-    public static CourseDataLayer getInstance() {
+    public static VideoDataLayer getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
     /**
-     * Returns a {@link Cursor} over the Course table that contains a specific Course. If
-     * the course does not exist, an empty cursor is returned.
+     * Returns a {@link Cursor} over the Video table that contains a specific Video. If
+     * the video does not exist, an empty cursor is returned.
      * 
-     * @param courseId
-     *            the ID of the course to retrieve.
+     * @param objectId
+     *            the object id of the video to retrieve.
      * @return The specific Cursor object build based on the data in the database.
-     *         Null if there are not course with such id
+     *         Null if there are not video with such id
      */
-    public Course getCourse(long courseId) {
+    public Video getVideoDetails(String objectId) {
         try {
-            Cursor dataCursor = mCourseDao.queryData(courseId);
-            return mCourseDao.dataFromCursor(dataCursor);
+            Cursor dataCursor = mVideoDao.queryData(objectId);
+            return mVideoDao.getDataFromCursor(dataCursor, true);
         } catch (SQLiteException e) {
-            Log.e(TAG, "Exception while querying course with id " + courseId, e);
+            Log.e(TAG, "Exception while querying video with id " + objectId, e);
             return null;
         }
+    }
+
+    /**
+     * Get the list of all videos from the database
+     * @return
+     */
+    public List<Video> getListAllVideos() {
+        try {
+            Cursor dataCursor = mVideoDao.queryAllData();
+            return mVideoDao.getListDataFromCursor(dataCursor);
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Exception while querying list of all videos", e);
+            return null;
+        }
+    }
+
+    public long getVideoCounts() {
+        return mVideoDao.getVideosCount();
     }
 }

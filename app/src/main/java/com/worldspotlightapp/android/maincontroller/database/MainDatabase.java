@@ -75,22 +75,6 @@ public class MainDatabase {
          */
         public static final String LONGITUDE = "longitude";
 
-        /**
-         * The time when the video was created
-         */
-        public static final String CREATION_TIME = "createdAt";
-
-        /**
-         * The time when the video was updated
-         */
-        public static final String UPDATED_TIME = "updatedAt";
-
-        /**
-         * Special permissions set by Parse.
-         * // TODO: Check if this field is necessary and its data type
-         */
-        public static final String ACL = "ACL";
-
         public static final String CREATE = "CREATE TABLE IF NOT EXISTS "  + TABLE_NAME + " (" +
             _ID + " TEXT PRIMARY KEY NOT NULL, " +
             TITLE + " TEXT NOT NULL, " +
@@ -100,13 +84,10 @@ public class MainDatabase {
             COUNTRY + " TEXT, " +
             LATITUDE + " DOUBLE, " +
             LONGITUDE + " DOUBLE, " +
-            CREATION_TIME + " TEXT NOT NULL, " +
-            UPDATED_TIME + " TEXT NOT NULL, " +
-            ACL + " TEXT NOT NULL, " +
             ");";
 
         public static final String[] COLUMNS = {
-                _ID, TITLE, DESCRIPTION, VIDEO_ID, CITY, COUNTRY, LATITUDE, LONGITUDE, CREATION_TIME, UPDATED_TIME, ACL
+                _ID, TITLE, DESCRIPTION, VIDEO_ID, CITY, COUNTRY, LATITUDE, LONGITUDE
         };
 
         // TODO: Initialize database with some videos
