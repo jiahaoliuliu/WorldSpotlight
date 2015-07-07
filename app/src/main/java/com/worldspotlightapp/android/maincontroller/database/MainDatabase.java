@@ -76,14 +76,14 @@ public class MainDatabase {
         public static final String LONGITUDE = "longitude";
 
         public static final String CREATE = "CREATE TABLE IF NOT EXISTS "  + TABLE_NAME + " (" +
-            _ID + " TEXT PRIMARY KEY NOT NULL, " +
-            TITLE + " TEXT NOT NULL, " +
-            DESCRIPTION + " TEXT, " +
-            VIDEO_ID + " TEXT NOT NULL, " +
-            CITY + " TEXT, " +
-            COUNTRY + " TEXT, " +
-            LATITUDE + " DOUBLE, " +
-            LONGITUDE + " DOUBLE, " +
+            _ID + " TEXT PRIMARY KEY NOT NULL" +
+            ", " + TITLE + " TEXT NOT NULL" +
+            ", " + DESCRIPTION + " TEXT" +
+            ", " + VIDEO_ID + " TEXT NOT NULL" +
+            ", " + CITY + " TEXT" +
+            ", " + COUNTRY + " TEXT" +
+            ", " + LATITUDE + " DOUBLE" +
+            ", " + LONGITUDE + " DOUBLE" +
             ");";
 
         public static final String[] COLUMNS = {

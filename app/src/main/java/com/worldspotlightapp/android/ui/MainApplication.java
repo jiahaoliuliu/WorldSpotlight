@@ -33,7 +33,7 @@ public class MainApplication extends Application {
         sInstance = this;
 
         // Initialize Parse
-        Parse.enableLocalDatastore(sInstance);
+//        Parse.enableLocalDatastore(sInstance);
         ParseObject.registerSubclass(Video.class);
         ParseObject.registerSubclass(User.class);
         if (IS_PRODUCTION) {

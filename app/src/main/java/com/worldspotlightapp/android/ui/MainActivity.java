@@ -84,6 +84,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // Data initialization
         mFragmentManager = getSupportFragmentManager();
         mResponsesStack = new Stack<Object>();
+        mVideosList = new ArrayList<Video>();
 
         registerForLocalizationService();
 

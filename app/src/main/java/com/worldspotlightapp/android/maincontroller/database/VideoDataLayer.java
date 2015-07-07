@@ -24,23 +24,8 @@ public class VideoDataLayer {
 
     private VideoDao mVideoDao;
 
-    private VideoDataLayer() {
+    public VideoDataLayer() {
         mVideoDao = new VideoDao();
-    }
-
-    /**
-     * SingletonHolder is loaded on the first execution of Singleton.getInstance() or the first
-     * access to SingletonHolder.INSTANCE, not before.
-     */
-    private static class SingletonHolder {
-        public static final VideoDataLayer INSTANCE = new VideoDataLayer();
-    }
-
-    /**
-     * Returns the only instance of this class.
-     */
-    public static VideoDataLayer getInstance() {
-        return SingletonHolder.INSTANCE;
     }
 
     /**
@@ -73,6 +58,14 @@ public class VideoDataLayer {
         } catch (SQLiteException e) {
             Log.e(TAG, "Exception while querying list of all videos", e);
             return null;
+        }
+    }
+
+    public void insertListDataToDatabase(List<Video> videoList) {
+        try {
+            mVideoDao.insertListDataToDatabase(videoList);
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Error inserting the list of videos into the database", e);
         }
     }
 

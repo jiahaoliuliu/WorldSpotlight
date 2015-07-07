@@ -16,6 +16,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.worldspotlightapp.android.maincontroller.MainController;
+import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;

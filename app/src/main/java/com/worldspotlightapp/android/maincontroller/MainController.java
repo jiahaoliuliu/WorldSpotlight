@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller;
 import android.content.Context;
 
 import com.parse.ParseException;
+import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.ActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.EventsTrackingModule;
@@ -122,7 +123,8 @@ public final class MainController {
         UUID uuid = newMainController.mUserDataModule.getUuid();
         newMainController.mNotificationModule = new NotificationModule(context);
         newMainController.mGpsLocalizationModule = new GpsLocalizationModule(context, preferences);
-        newMainController.mVideosModuleObservable = new VideosModuleObserver(context, newMainController.mExecutorServiceHolder.createExecutorService());
+        newMainController.mVideosModuleObservable = new VideosModuleObserver(context,
+                newMainController.mExecutorServiceHolder.createExecutorService(), new VideoDataLayer());
         newMainController.mEventTrackingModule = new EventsTrackingModule(context, uuid);
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
 
