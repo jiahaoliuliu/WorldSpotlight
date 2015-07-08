@@ -60,7 +60,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     public void requestAllVideos(Observer observer) {
 
         Log.v(TAG, "All the videos requested from the observer " + observer);
-        Log.v(TAG, "The number of observers before add is " + countObservers());
 
         // Register the observer
         addObserver(observer);

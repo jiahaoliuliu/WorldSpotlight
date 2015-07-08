@@ -165,8 +165,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 // Add the data to the list of responses
                 mResponsesStack.push(o);
 
-                if (mIsInForeground) {
+                if (isInForeground()) {
+                    Log.v(TAG, "This activity is in foreground. Processing data if exists");
                     processDataIfExists();
+                } else {
+                    Log.v(TAG, "This activity is not in foregorund. Not do anything");
                 }
 
                 // The MainActivity will listen constantly to the changes on the list of videos
@@ -177,6 +180,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     protected void processDataIfExists() {
+        Log.v(TAG, "Processing data if exists. Is the activity in foreground " + isInForeground());
         setupMapIfNeeded();
 
         // 1. Check if the data exists
@@ -242,6 +246,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
     protected void onResume() {
         super.onResume();
 
+        Log.v(TAG, "Is this activity in foreground? " + isInForeground());
+
         // Hide the softkeyboard
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -253,8 +259,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // to the backend
         if (mVideosList == null || mVideosList.isEmpty()) {
             Log.v(TAG, "The list of videos is empty. Requesting it to the videos module");
-            mVideosModule.requestAllVideos(this);
             mNotificationModule.showLoadingDialog(mContext);
+            mVideosModule.requestAllVideos(this);
             return;
         }
 
@@ -504,19 +510,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        return o instanceof MainActivity;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
     }
 
 }
