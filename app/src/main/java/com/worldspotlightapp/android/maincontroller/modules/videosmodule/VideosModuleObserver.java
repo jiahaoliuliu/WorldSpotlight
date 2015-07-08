@@ -13,6 +13,7 @@ import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -58,23 +59,39 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     @Override
     public void requestAllVideos(Observer observer) {
 
+        Log.v(TAG, "All the videos requested from the observer " + observer);
+        Log.v(TAG, "The number of observers before add is " + countObservers());
+
         // Register the observer
         addObserver(observer);
+
+        Log.v(TAG, "The number of observers after add is " + countObservers());
 
         // if the video list was retrieved before, don't do anything
         if (mVideosList != null) {
             Log.v(TAG, "The list of video is has been cached. Return it");
             ParseResponse parseResponse = new ParseResponse.Builder(null).build();
             VideosModuleVideosListResponse videosModuleVideosListResponse =
-                    new VideosModuleVideosListResponse(parseResponse, mVideosList, true);
+                    new VideosModuleVideosListResponse(parseResponse, mVideosList, false);
 
             setChanged();
             notifyObservers(videosModuleVideosListResponse);
             return;
         }
 
-        final List<Video> videosListFromParseServer = new ArrayList<Video>();
+        // 1. Retrieve the list of the videos from the database
+        mVideosList = mVideoDataLayer.getListAllVideos();
+        Log.v(TAG, mVideosList.size() + " retrieved from local database");
+        // TODO: Rename ParseResponse to something else
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        boolean areExtraVideos = false;
+        VideosModuleVideosListResponse videosModuleVideosListResponse =
+                new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
+        setChanged();
+        notifyObservers(videosModuleVideosListResponse);
 
+        // 2. Retrieve the rest of the videos from the parse server
+        final List<Video> videosListFromParseServer = new ArrayList<Video>();
         // Callback prepared to retrieve all the videos from the parse server
         final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
             @Override
@@ -85,7 +102,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
                     // Save the query results
-//                    ParseObject.pinAllInBackground(videosList);
                     mVideoDataLayer.insertListDataToDatabase(videosList);
                     // Add all the content to the general videos list so it will be available next time
                     mVideosList.addAll(videosList);
@@ -109,44 +125,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 }
             }
         };
-
-        // 1. Retrieve the list of videos from the local database
-//        final FindCallback<Video> findDataFromLocalDatabaseCallback = new FindCallback<Video>() {
-//            @Override
-//            public void done(List<Video> videosList, ParseException e) {
-//                boolean areExtraVideos = false;
-//                // Once the videos are retrieved from the local database, it is time to retrieve them from
-//                // the parse server
-//                boolean fromLocalDatabase = false;
-//                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-//                Log.v(TAG, "Response received from the local database " + parseResponse);
-//                if (!parseResponse.isError()) {
-//                    Log.v(TAG, "Videos list received correctly " + videosList.size());
-//                    mVideosList = new ArrayList<Video>(videosList);
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                    // 2. Ask the backend for more videos
-//                    requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback, fromLocalDatabase);
-//                } else {
-//                    Log.e(TAG, "Error retrieving data from backend");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                }
-//            }
-//        };
-//
-//        // Start retrieving the data from the lcoal database
-//        boolean fromLocalDatabase = true;
-//        requestVideoToParse(0, findDataFromLocalDatabaseCallback, fromLocalDatabase);
-
-        mVideosList = mVideoDataLayer.getListAllVideos();
-        Log.v(TAG, mVideosList.size() + " retrieved from local database");
         requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback);
     }
 

@@ -152,6 +152,16 @@ public class MainActivity extends AbstractBaseActivityObserver {
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
 
+                // TODO: Remove this
+                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
+                ParseResponse parseResponse =videosModuleVideosListResponse.getParseResponse();
+                Log.d(TAG, "Parse response received " + parseResponse);
+                if (!parseResponse.isError()) {
+                    List<Video> videoListReceived = videosModuleVideosListResponse.getVideosList();
+                    int numberVideos = videoListReceived == null? 0 : videoListReceived.size();
+                    Log.v(TAG, "The list of videos has " + numberVideos + " videos. Are extra videos? " + videosModuleVideosListResponse.areExtraVideos());
+                }
+
                 // Add the data to the list of responses
                 mResponsesStack.push(o);
 
@@ -220,6 +230,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         }
 
+        Log.v(TAG, "Dismissing the loading dialog");
         mNotificationModule.dismissLoadingDialog();
 
         // 3. Remove the responses
@@ -494,4 +505,18 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         });
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        return o instanceof MainActivity;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
 }
