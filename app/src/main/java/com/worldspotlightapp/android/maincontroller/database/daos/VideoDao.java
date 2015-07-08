@@ -126,8 +126,10 @@ public class VideoDao {
 
         List<Video> results = new ArrayList<Video>();
 
-        // Ask the cursor to move to the first position.
-        cursor.moveToFirst();
+        // Ask the cursor to move to position -1, so when
+        // cursor.moveToNext is called for the first time
+        // the position is 0
+        cursor.moveToPosition(-1);
 
         while (cursor.moveToNext()) {
             results.add(getDataFromCursor(cursor, false));

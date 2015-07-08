@@ -205,6 +205,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 // if the list of videos received should replace the existence list of videos
                 } else {
                     if (!parseResponse.isError()) {
+                        List<Video> videoList = videosModuleVideosListResponse.getVideosList();
+                        int numberVideoRetrieved = videoList == null? 0 : videoList.size();
+                        Log.v(TAG, "The list of videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList = new ArrayList<>(videosModuleVideosListResponse.getVideosList());
                         mClusterManager.clearItems();
                         mClusterManager.addItems(mVideosList);
@@ -237,7 +240,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // If the map does not have the list of videos, request it
         // to the backend
-        if (mVideosList == null) {
+        if (mVideosList == null || mVideosList.isEmpty()) {
             Log.v(TAG, "The list of videos is empty. Requesting it to the videos module");
             mVideosModule.requestAllVideos(this);
             mNotificationModule.showLoadingDialog(mContext);

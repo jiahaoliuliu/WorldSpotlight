@@ -80,7 +80,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             @Override
             public void done(List<Video> videosList, ParseException e) {
                 boolean areExtraVideos = true;
-                boolean fromLocalDatabase = false;
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 Log.v(TAG, "List of videos received from the parse server");
                 if (!parseResponse.isError()) {
@@ -93,7 +92,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     // Add the video list to the temporal video list so it could be returned to the observer
                     videosListFromParseServer.addAll(videosList);
                     if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
-                        requestVideoToParse(mVideosList.size(), this, fromLocalDatabase);
+                        requestVideoToParse(mVideosList.size(), this);
                     } else {
                         VideosModuleVideosListResponse videosModuleVideosListResponse =
                                 new VideosModuleVideosListResponse(parseResponse, videosListFromParseServer, areExtraVideos);
@@ -147,23 +146,16 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 //        requestVideoToParse(0, findDataFromLocalDatabaseCallback, fromLocalDatabase);
 
         mVideosList = mVideoDataLayer.getListAllVideos();
-        Log.v(TAG, mVideosList + " retrieved from local database");
-        requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback, false);
+        Log.v(TAG, mVideosList.size() + " retrieved from local database");
+        requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback);
     }
 
-    private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback, boolean fromLocalDatabase) {
+    private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback) {
         //Retrive element from background
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
         query.setSkip(initialPosition);
         query.orderByAscending("updateAt");
-
-        // If it is from the local database, set it
-//        if (fromLocalDatabase) {
-//            query.fromLocalDatastore();
-//            // If it is not from local database, set the maximum limit
-//        } else {
-//            query.setLimit(MAX_PARSE_QUERY_RESULT);
-//        }
+        query.setLimit(MAX_PARSE_QUERY_RESULT);
         query.findInBackground(findCallback);
     }
 
