@@ -26,4 +26,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- Login screen -->
+    <style name="LoginButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:maxWidth">@dimen/login_activity_button_max_width</item>
+        <item name="android:layout_height">@dimen/login_activity_button_height</item>
+        <item name="android:maxHeight">@dimen/login_activity_button_height</item>
+    </style>
+
 </resources>
