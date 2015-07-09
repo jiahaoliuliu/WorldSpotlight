@@ -219,13 +219,13 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             String description = video.getDescription();
             String city = video.getCity();
             String country = video.getCountry();
-            if (title.toLowerCase().contains(keyword) || keyword.contains(title)) {
+            if (title != null && (title.toLowerCase().contains(keyword) || keyword.contains(title))) {
                 resultVideosList.add(video);
-            } else if (description.toLowerCase().contains(keyword) || keyword.contains(description)) {
+            } else if (description != null && (description.toLowerCase().contains(keyword) || keyword.contains(description))) {
                 resultVideosList.add(video);
-            } else if (city.toLowerCase().contains(keyword) || keyword.contains(city)) {
+            } else if (city != null && (city.toLowerCase().contains(keyword) || keyword.contains(city))) {
                 resultVideosList.add(video);
-            } else if (country.toLowerCase().contains(keyword) || keyword.contains(country)) {
+            } else if (country != null && (country.toLowerCase().contains(keyword) || keyword.contains(country))) {
                 resultVideosList.add(video);
             }
         }
