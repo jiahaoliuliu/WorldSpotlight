@@ -160,7 +160,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 }
             }
 
-            if (mIsInForeground) {
+            if (isInForeground()) {
                 processDataIfExists();
             }
 

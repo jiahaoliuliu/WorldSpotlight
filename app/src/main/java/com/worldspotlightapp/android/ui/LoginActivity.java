@@ -122,7 +122,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
 
                 // There is not need to store the data
 
-                if (mIsInForeground) {
+                if (isInForeground()) {
                     processDataIfExists();
                 }
 
