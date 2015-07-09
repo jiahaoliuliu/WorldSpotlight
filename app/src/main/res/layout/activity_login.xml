@@ -16,43 +16,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/login_logo"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="@dimen/login_activity_group_margin_vertical"
         />
 
     <!-- Facebook Log in button -->
-    <com.facebook.login.widget.LoginButton
+    <Button
         android:id="@+id/facebook_login_button"
-        style="@style/LoginButton"
+        style="@style/FacebookLoginButton"
         android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/login_activity_group_margin_vertical"
+        android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
         />
 
     <!-- Google Plus Log in button -->
-    <com.google.android.gms.common.SignInButton
+    <Button
         android:id="@+id/google_plus_login_buttn"
-        style="@style/LoginButton"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        style="@style/GooglePlusLoginButton"
+        android:layout_marginTop="@dimen/login_activity_element_margin_vertical"
+        android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
         />
 
     <!-- Separation line -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1sp"
-        android:background="@android:color/black"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
+        android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
         />
 
     <!-- Skip image -->
-    <ImageView
+    <Button
         android:id="@+id/cancel_image_view"
-        style="@style/LoginButton"
-        android:src="@drawable/ic_cancel"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        style="@style/SkipButton"
+        android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
+        android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
         />
 </LinearLayout>

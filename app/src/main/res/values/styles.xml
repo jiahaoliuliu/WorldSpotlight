@@ -34,4 +34,32 @@
         <item name="android:maxHeight">@dimen/login_activity_button_height</item>
     </style>
 
+    <!--    Login button with a drawable on the left -->
+    <style name="LoginButtonWithDrawableOnLeft" parent="LoginButton">
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:paddingLeft">30dp</item>
+        <item name="android:paddingRight">26dp</item>
+    </style>
+
+    <!--    Facebook Sign in button -->
+    <style name="FacebookLoginButton" parent="LoginButtonWithDrawableOnLeft">
+        <item name="android:background">@color/login_activity_facebook_background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:text">@string/login_activity_sign_in_with_facebook</item>
+        <item name="android:drawableLeft">@drawable/login_facebook_logo</item>
+    </style>
+
+    <!--    Google Sign in button -->
+    <style name="GooglePlusLoginButton" parent="LoginButtonWithDrawableOnLeft">
+        <item name="android:background">@color/login_activity_google_plus_background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:text">@string/login_activity_sign_in_with_google_plus</item>
+        <item name="android:drawableLeft">@drawable/login_google_plus_logo</item>
+    </style>
+
+    <style name="SkipButton" parent="LoginButton">
+        <item name="android:background">@color/login_activity_skip_background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:text">@string/login_activity_skip</item>
+    </style>
 </resources>

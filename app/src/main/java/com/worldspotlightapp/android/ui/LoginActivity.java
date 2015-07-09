@@ -42,9 +42,9 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     private boolean mIntentInProgress;
 
     // Views
-    private ImageView mCancelImageView;
+    private Button mSkipButton;
     private Button mFacebookLoginButton;
-    private SignInButton mGooglePlusSignInButton;
+    private Button mGooglePlusSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +66,13 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
                 .build();
 
         // Link the views
-        mCancelImageView = (ImageView)findViewById(R.id.cancel_image_view);
-        mCancelImageView.setOnClickListener(onClickListener);
+        mSkipButton = (Button)findViewById(R.id.cancel_image_view);
+        mSkipButton.setOnClickListener(onClickListener);
 
         mFacebookLoginButton = (Button)findViewById(R.id.facebook_login_button);
         mFacebookLoginButton.setOnClickListener(onClickListener);
 
-        mGooglePlusSignInButton = (SignInButton)findViewById(R.id.google_plus_login_buttn);
+        mGooglePlusSignInButton = (Button)findViewById(R.id.google_plus_login_buttn);
         mGooglePlusSignInButton.setOnClickListener(onClickListener);
     }
 
