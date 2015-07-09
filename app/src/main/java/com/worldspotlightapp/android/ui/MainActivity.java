@@ -6,9 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.support.v7.widget.SearchView;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,21 +39,26 @@ import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
+import java.util.Set;
+import java.util.Stack;
 
 public class MainActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "MainActivity";
+    private static final int MENU_ITEM_SEARCH_ID = 1000;
 
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
     private List<Video> mVideosList;
 
-    // The last parse response before processed.
-    // If a parse response has been processed, it will be null
-    private ParseResponse mParseResponse;
+    /**
+     * The set of response retrieved from the modules
+     */
+    private Stack<Object> mResponsesStack;
 
     // Views
     private GoogleMap mMap;
@@ -62,12 +75,16 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Variable used to record if the camera update is automatic or manual
     private boolean isAutomaticCameraUpdate;
 
+    private MenuItem menuItemSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Data initialization
         mFragmentManager = getSupportFragmentManager();
+        mResponsesStack = new Stack<Object>();
+        mVideosList = new ArrayList<Video>();
 
         registerForLocalizationService();
 
@@ -77,11 +94,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
-
         setupMapIfNeeded();
 
         // Center the map to the user
         centerMapToUser();
+
     }
 
     private void setupMapIfNeeded() {
@@ -94,12 +111,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mClusterManager = new ClusterManager<Video>(this, mMap);
         VideosRenderer videosRenderer = new VideosRenderer(mContext, mMap, mClusterManager);
         mClusterManager.setRenderer(videosRenderer);
-//        mMap.setOnCameraChangeListener(mClusterManager);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 mClusterManager.onCameraChange(cameraPosition);
-                Log.v(TAG, "Camera position changed. Is it automatic update? " + isAutomaticCameraUpdate);
                 if (!isAutomaticCameraUpdate) {
                     // Hide the viewpager
                     mVideosPreviewViewPager.setVisibility(View.GONE);
@@ -129,63 +144,132 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
-
-        mVideosModule.requestVideosList(this);
-        mNotificationModule.showLoadingDialog(mContext);
-
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        Log.v(TAG, "Data received from " + observable + o);
+        Log.v(TAG, "Data received from " + observable + ", Object:" + o);
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
-                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
-                mParseResponse = videosModuleVideosListResponse.getParseResponse();
-                mVideosList = videosModuleVideosListResponse.getVideosList();
 
-                if (mIsInForeground) {
-                    processDataIfExists();
+                // TODO: Remove this
+                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
+                ParseResponse parseResponse =videosModuleVideosListResponse.getParseResponse();
+                Log.d(TAG, "Parse response received " + parseResponse);
+                if (!parseResponse.isError()) {
+                    List<Video> videoListReceived = videosModuleVideosListResponse.getVideosList();
+                    int numberVideos = videoListReceived == null? 0 : videoListReceived.size();
+                    Log.v(TAG, "The list of videos has " + numberVideos + " videos. Are extra videos? " + videosModuleVideosListResponse.areExtraVideos());
                 }
 
-                observable.deleteObserver(this);
+                // Add the data to the list of responses
+                mResponsesStack.push(o);
+
+                if (isInForeground()) {
+                    Log.v(TAG, "This activity is in foreground. Processing data if exists");
+                    processDataIfExists();
+                } else {
+                    Log.v(TAG, "This activity is not in foregorund. Not do anything");
+                }
+
+                // The MainActivity will listen constantly to the changes on the list of videos
+                //observable.deleteObserver(this);
             }
         }
     }
 
     @Override
     protected void processDataIfExists() {
+        Log.v(TAG, "Processing data if exists. Is the activity in foreground " + isInForeground());
         setupMapIfNeeded();
 
         // 1. Check if the data exists
         // If there were not data received from backend, then
         // Not do anything
-        if (mParseResponse == null) {
+        if (mResponsesStack.isEmpty()) {
+            return;
+        }
+
+        // Special condition. At this point if the map is null
+        // the mClusterManager could not be initialized.
+        // Of course when the Map is null, there is nothing to do
+        if (mClusterManager == null) {
             return;
         }
 
         // 2. Process the data
-        if (!mParseResponse.isError()) {
-            // The sign up was correct. Go to the Main activity
-            mClusterManager.addItems(mVideosList);
-            mClusterManager.cluster();
-
-            // Check if the app has started because url link
-            String videoId = getTriggeredVideoId();
-            Log.d(TAG, "The video id is " + videoId);
-            if (videoId != null) {
-                centerVideo(videoId);
+        while (!mResponsesStack.isEmpty()) {
+            Object response = mResponsesStack.pop();
+            // Checking the type of data
+            if (response instanceof VideosModuleVideosListResponse) {
+                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse) response;
+                // If the list of videos received are extra videos to be added to the list of existence videos
+                ParseResponse parseResponse = videosModuleVideosListResponse.getParseResponse();
+                if (videosModuleVideosListResponse.areExtraVideos()) {
+                    if (!parseResponse.isError()) {
+                        List<Video> extraVideos = videosModuleVideosListResponse.getVideosList();
+                        int numberVideoRetrieved = extraVideos == null? 0 : extraVideos.size();
+                        Log.v(TAG, "The list of extra videos received contains " + numberVideoRetrieved + " videos");
+                        mVideosList.addAll(extraVideos);
+                        mClusterManager.addItems(extraVideos);
+                        mClusterManager.cluster();
+                    } else {
+                        Log.v(TAG, "Error updating the list of videos");
+                    }
+                // if the list of videos received should replace the existence list of videos
+                } else {
+                    if (!parseResponse.isError()) {
+                        List<Video> videoList = videosModuleVideosListResponse.getVideosList();
+                        int numberVideoRetrieved = videoList == null? 0 : videoList.size();
+                        Log.v(TAG, "The list of videos received contains " + numberVideoRetrieved + " videos");
+                        mVideosList = new ArrayList<>(videosModuleVideosListResponse.getVideosList());
+                        mClusterManager.clearItems();
+                        mClusterManager.addItems(mVideosList);
+                        mClusterManager.cluster();
+                    } else {
+                        // Some error happend
+                        mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                    }
+                }
             }
-
-        } else {
-            // Some error happend
-            mNotificationModule.showToast(mParseResponse.getHumanRedableResponseMessage(mContext), true);
         }
 
+        Log.v(TAG, "Dismissing the loading dialog");
         mNotificationModule.dismissLoadingDialog();
 
-        // 3. Remove the answers
-        mParseResponse = null;
+        // 3. Remove the responses
+        // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
+        // there is not need to clean them
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.v(TAG, "Is this activity in foreground? " + isInForeground());
+
+        // Hide the softkeyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+
+        // If the map does not have the list of videos, request it
+        // to the backend
+        if (mVideosList == null || mVideosList.isEmpty()) {
+            Log.v(TAG, "The list of videos is empty. Requesting it to the videos module");
+            mNotificationModule.showLoadingDialog(mContext);
+            mVideosModule.requestAllVideos(this);
+            return;
+        }
+
+        // Check if the app has started because url link
+        String videoId = getTriggeredVideoId();
+        if (videoId != null) {
+            centerVideo(videoId);
+            return;
+        }
     }
 
     /**
@@ -200,6 +284,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Log.v(TAG, "Data contained is " + data);
         if (data != null) {
             String[] dataSplitted = data.toString().split("/");
+            // Reset data
+            getIntent().setData(null);
             return dataSplitted[dataSplitted.length - 1];
         }
         return null;
@@ -322,8 +408,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
     };
 
-
-
     /**
      * Show my actual location.
      * If the map is null, don't do anything
@@ -354,4 +438,78 @@ public class MainActivity extends AbstractBaseActivityObserver {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
         mMap.animateCamera(cameraUpdate);
     }
+
+    // Action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Update user profile
+        menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
+                .NONE, R.string.action_bar_search)
+                .setIcon(R.drawable.ic_action_search)
+                .setActionView(R.layout.search_layout);
+        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_ITEM_SEARCH_ID:
+                searchByKeyword();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void searchByKeyword() {
+        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.v(TAG, "Searching the videos with the keyword " + query);
+                mNotificationModule.showLoadingDialog(mContext);
+                mVideosModule.searchByKeyword(MainActivity.this, query);
+                searchActionView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(TAG, "The search has been cancelled. Requesting the list of all the videos to the module");
+                mNotificationModule.showLoadingDialog(mContext);
+                // Retrieve the list of all the videos
+                mVideosModule.requestAllVideos(MainActivity.this);
+                EditText et = (EditText) findViewById(R.id.search_src_text);
+                et.setText("");
+                searchActionView.setQuery("", false);
+                searchActionView.onActionViewCollapsed();
+                menuItemSearch.collapseActionView();
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mVideosModule.requestAllVideos(MainActivity.this);
+                searchActionView.setQuery("", false);
+                searchActionView.onActionViewCollapsed();
+                return true;
+            }
+        });
+    }
+
 }

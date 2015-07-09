@@ -4,13 +4,17 @@ import android.app.Application;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.model.User;
 import com.worldspotlightapp.android.model.Video;
-import com.worldspotlightapp.android.utils.LocalConstants;
+import com.worldspotlightapp.android.utils.Secret;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -30,7 +34,12 @@ public class MainApplication extends Application {
 
         // Initialize Parse
         ParseObject.registerSubclass(Video.class);
-        Parse.initialize(this, LocalConstants.PARSE_APPLICATION_ID, LocalConstants.PARSE_CLIENT_KEY);
+        ParseObject.registerSubclass(User.class);
+        if (IS_PRODUCTION) {
+            Parse.initialize(this, Secret.PARSE_APPLICATION_ID_PRODUCTION, Secret.PARSE_CLIENT_KEY_PRODUCTION);
+        } else {
+            Parse.initialize(this, Secret.PARSE_APPLICATION_ID_DEBUG, Secret.PARSE_CLIENT_KEY_DEBUG);
+        }
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -41,6 +50,12 @@ public class MainApplication extends Application {
                 }
             }
         });
+
+        // Initialize Facebook utils provided by Parse
+        ParseFacebookUtils.initialize(sInstance);
+
+        // Initialize Facebook SDK
+        FacebookSdk.sdkInitialize(sInstance);
 
         // Initialize Fabric/Crashlytics
         if (!IS_PRODUCTION) {

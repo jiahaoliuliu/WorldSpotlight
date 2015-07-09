@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">World Spotlight</string>
 
+    <!-- Login Activity -->
+    <string name="login_activity_sign_in_with_facebook">Sign in with Facebook</string>
+    <string name="login_activity_sign_in_with_google_plus">Sign in with Google</string>
+    <string name="login_activity_skip">Skip</string>
+
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
+    <string name="action_bar_search">Search</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
@@ -10,6 +16,10 @@
     <string name="action_bar_share">Share</string>
     <string name="share_title">Share it with &#8230;</string>
     <string name="share_subject">Check out this great video! %1$s</string>
+
+    <!-- Search Filter activity -->
+    <string name="keyword_edit_text_hint">Enter the city or the keyword</string>
+    <string name="error_keyword_empty">You must entered a keyword to start search</string>
 
     <!-- Notification manager -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
@@ -25,6 +35,7 @@
     <string name="error_message_generic">It seems that there is a problem. Could you try it later?</string>
     <string name="error_message_video_not_found">The video you are looking for does not exists.</string>
     <string name="error_message_username_already_taken">There is already some user with that email address. Could you pick another one?</string>
-    <string name="title_activity_video_details">VideoDetailsActivity</string>
+    <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
+    <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
 
 </resources>

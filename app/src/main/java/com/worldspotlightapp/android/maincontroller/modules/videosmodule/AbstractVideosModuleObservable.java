@@ -14,11 +14,13 @@ import java.util.UUID;
 public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleObservable {
 
     /**
-     * Get the list of videos from background
+     * Get the list of all videos from background.
+     * It checks the videos saved in the local database and based
+     * on those videos, ask the backend to refresh the list of videos
      * @param observer
      *      The Observer to notify when the videos is ready
      */
-    public abstract void requestVideosList(Observer observer);
+    public abstract void requestAllVideos(Observer observer);
 
     /**
      * Retrieve the information about a video from the backend
@@ -28,4 +30,23 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The id of the video object
      */
     public abstract void requestVideoInfo(Observer observer, String videoObjectId);
+
+    /**
+     * Search the videos by keyword. Return a list of video which either the
+     * title either the description contains the keyword
+     * @param observer
+     *      The observer to inform when the data is ready
+     * @param keyword
+     *      The keyword to be searched
+     */
+    public abstract void searchByKeyword(Observer observer, String keyword);
+
+    /**
+     * Get the author info based on the video id
+     * @param observer
+     *      The observer to be notified when the data is ready
+     * @param videoId
+     *      The id of the video which the author is looking for
+     */
+    public abstract void requestAuthorInfo(Observer observer, String videoId);
 }

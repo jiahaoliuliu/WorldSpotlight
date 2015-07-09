@@ -43,11 +43,12 @@ public class NotificationModule implements INotificationModule {
         loadingDialog = new ProgressDialog(context);
         loadingDialog.setMessage(message);
         loadingDialog.setIndeterminate(true);
-        loadingDialog.setCancelable(false);
+        loadingDialog.setCancelable(true);
         loadingDialog.show();
     }
 
     @Override
+
     public void dismissLoadingDialog() {
         if (isLoadingDialogShowing()) {
             loadingDialog.dismiss();

@@ -23,8 +23,8 @@ android {
         applicationId "com.worldspotlightapp.android"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 4
-        versionName "1.03"
+        versionCode 5
+        versionName "1.04"
     }
     buildTypes {
         release {
@@ -69,4 +69,12 @@ dependencies {
 
     // Mixpanel
     compile "com.mixpanel.android:mixpanel-android:4.5.3"
+
+    // Facebook login
+    compile 'com.facebook.android:facebook-android-sdk:4.1.0'
+
+    // Support library for Google Plus login
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.google.android.gms:play-services-plus:7.5.+'
+
 }
