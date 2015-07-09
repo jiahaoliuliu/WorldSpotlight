@@ -15,8 +15,8 @@
 
     <!-- Logo -->
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/login_activity_logo"
+        android:layout_height="@dimen/login_activity_logo"
         android:src="@drawable/login_logo"
         android:layout_marginBottom="@dimen/login_activity_group_margin_vertical"
         />
