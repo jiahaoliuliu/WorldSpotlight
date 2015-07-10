@@ -1,5 +1,7 @@
 package com.worldspotlightapp.android.ui;
 
+import android.util.Log;
+
 import java.util.Observer;
 
 /**
@@ -15,7 +17,9 @@ import java.util.Observer;
  */
 public abstract class AbstractBaseActivityObserver extends AbstractBaseActivity implements Observer {
 
-    protected boolean mIsInForeground;
+    private static final String TAG = "AbstractBaseActivity";
+
+    private boolean mIsInForeground;
 
     /**
      * method used to process possible data retrieved
@@ -25,14 +29,21 @@ public abstract class AbstractBaseActivityObserver extends AbstractBaseActivity 
 
     @Override
     protected void onResume() {
-        super.onResume();
         mIsInForeground = true;
+        super.onResume();
+        Log.v(TAG, "On Resume. The activity is in foreground");
         processDataIfExists();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         mIsInForeground = false;
+        super.onPause();
+        Log.v(TAG, "On Pause. The activity is not in foreground");
+    }
+
+    public boolean isInForeground() {
+        Log.v(TAG, "Checking if the activity is in foreground or not " + mIsInForeground);
+        return mIsInForeground;
     }
 }

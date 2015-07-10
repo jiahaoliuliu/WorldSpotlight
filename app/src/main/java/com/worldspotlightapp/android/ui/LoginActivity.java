@@ -42,9 +42,15 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     private boolean mIntentInProgress;
 
     // Views
+<<<<<<< HEAD
     private ImageView mCancelImageView;
     private Button mFacebookLoginButton;
     private SignInButton mGooglePlusSignInButton;
+=======
+    private Button mSkipButton;
+    private Button mFacebookLoginButton;
+    private Button mGooglePlusSignInButton;
+>>>>>>> release_1.05
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +72,22 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
                 .build();
 
         // Link the views
+<<<<<<< HEAD
         mCancelImageView = (ImageView)findViewById(R.id.cancel_image_view);
         mCancelImageView.setOnClickListener(onClickListener);
+=======
+        mSkipButton = (Button)findViewById(R.id.cancel_image_view);
+        mSkipButton.setOnClickListener(onClickListener);
+>>>>>>> release_1.05
 
         mFacebookLoginButton = (Button)findViewById(R.id.facebook_login_button);
         mFacebookLoginButton.setOnClickListener(onClickListener);
 
+<<<<<<< HEAD
         mGooglePlusSignInButton = (SignInButton)findViewById(R.id.google_plus_login_buttn);
+=======
+        mGooglePlusSignInButton = (Button)findViewById(R.id.google_plus_login_buttn);
+>>>>>>> release_1.05
         mGooglePlusSignInButton.setOnClickListener(onClickListener);
     }
 
@@ -122,7 +137,11 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
 
                 // There is not need to store the data
 
+<<<<<<< HEAD
                 if (mIsInForeground) {
+=======
+                if (isInForeground()) {
+>>>>>>> release_1.05
                     processDataIfExists();
                 }
 

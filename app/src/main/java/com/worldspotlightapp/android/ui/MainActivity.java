@@ -84,6 +84,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // Data initialization
         mFragmentManager = getSupportFragmentManager();
         mResponsesStack = new Stack<Object>();
+        mVideosList = new ArrayList<Video>();
 
         registerForLocalizationService();
 
@@ -151,11 +152,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
         if (observable instanceof VideosModuleObserver) {
             if (o instanceof VideosModuleVideosListResponse) {
 
+                // TODO: Remove this
+                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
+                ParseResponse parseResponse =videosModuleVideosListResponse.getParseResponse();
+                Log.d(TAG, "Parse response received " + parseResponse);
+                if (!parseResponse.isError()) {
+                    List<Video> videoListReceived = videosModuleVideosListResponse.getVideosList();
+                    int numberVideos = videoListReceived == null? 0 : videoListReceived.size();
+                    Log.v(TAG, "The list of videos has " + numberVideos + " videos. Are extra videos? " + videosModuleVideosListResponse.areExtraVideos());
+                }
+
                 // Add the data to the list of responses
                 mResponsesStack.push(o);
 
-                if (mIsInForeground) {
+                if (isInForeground()) {
+                    Log.v(TAG, "This activity is in foreground. Processing data if exists");
                     processDataIfExists();
+                } else {
+                    Log.v(TAG, "This activity is not in foregorund. Not do anything");
                 }
 
                 // The MainActivity will listen constantly to the changes on the list of videos
@@ -166,6 +180,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     protected void processDataIfExists() {
+        Log.v(TAG, "Processing data if exists. Is the activity in foreground " + isInForeground());
         setupMapIfNeeded();
 
         // 1. Check if the data exists
@@ -204,6 +219,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 // if the list of videos received should replace the existence list of videos
                 } else {
                     if (!parseResponse.isError()) {
+                        List<Video> videoList = videosModuleVideosListResponse.getVideosList();
+                        int numberVideoRetrieved = videoList == null? 0 : videoList.size();
+                        Log.v(TAG, "The list of videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList = new ArrayList<>(videosModuleVideosListResponse.getVideosList());
                         mClusterManager.clearItems();
                         mClusterManager.addItems(mVideosList);
@@ -216,6 +234,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         }
 
+        Log.v(TAG, "Dismissing the loading dialog");
         mNotificationModule.dismissLoadingDialog();
 
         // 3. Remove the responses
@@ -227,6 +246,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
     protected void onResume() {
         super.onResume();
 
+        Log.v(TAG, "Is this activity in foreground? " + isInForeground());
+
         // Hide the softkeyboard
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -236,10 +257,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // If the map does not have the list of videos, request it
         // to the backend
-        if (mVideosList == null) {
+        if (mVideosList == null || mVideosList.isEmpty()) {
             Log.v(TAG, "The list of videos is empty. Requesting it to the videos module");
-            mVideosModule.requestAllVideos(this);
             mNotificationModule.showLoadingDialog(mContext);
+            mVideosModule.requestAllVideos(this);
             return;
         }
 
@@ -490,4 +511,5 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         });
     }
+
 }
