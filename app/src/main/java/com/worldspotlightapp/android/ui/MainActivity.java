@@ -417,6 +417,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.my_location_floating_action_button:
+                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.USER_LOCALIZED);
                     centerMapToUser();
                     break;
             }

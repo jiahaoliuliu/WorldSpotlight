@@ -124,6 +124,10 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
                         mContext.getString(R.string.mp_main_activity_search_finished), new JSONObject());
                 break;
+            case USER_LOCALIZED:
+                mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                        mContext.getString(R.string.mp_main_activity_localize_user), new JSONObject());
+                break;
             default:
                 throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
                         "to Main screen, so it cannot be tracked");

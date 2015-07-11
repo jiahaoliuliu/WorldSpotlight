@@ -23,4 +23,7 @@
     <string name="mp_main_activity_search_by_keyword_keyword">Keyword</string>
     <string name="mp_main_activity_search_finished">Search finished</string>
 
+    <!--    Localization -->
+    <string name="mp_main_activity_localize_user">User localized</string>
+
 </resources>
