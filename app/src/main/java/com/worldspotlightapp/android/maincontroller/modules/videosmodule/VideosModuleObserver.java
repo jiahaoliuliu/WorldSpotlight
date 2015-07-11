@@ -141,41 +141,16 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         // Register the observer
         addObserver(observer);
 
-        // Retrieve element from background
-        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
-        query.whereEqualTo(Video.PARSE_COLUMN_OBJECT_ID, videoObjectId);
-        query.findInBackground(new FindCallback<Video>() {
-            @Override
-            public void done(List<Video> list, ParseException e) {
-                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-                if (!parseResponse.isError()) {
-                    Log.v(TAG, "The video has been retrieved " + list);
-                    if (list.size() >= 1) {
-                        VideosModuleVideoResponse videosModuleVideoResponse =
-                                new VideosModuleVideoResponse(parseResponse, list.get(0));
+        // Get the list of the videos directly from the list of videos in the database
+        Video video = mVideoDataLayer.getVideoDetails(videoObjectId);
+        ParseResponse parseResponse =
+                video == null ?
+                        new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_VIDEO_NOT_FOUND).build() :
+                        new ParseResponse.Builder(null).build();
 
-                        setChanged();
-                        notifyObservers(videosModuleVideoResponse);
-                    } else {
-                        parseResponse =
-                                new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_VIDEO_NOT_FOUND).build();
-                        VideosModuleVideoResponse videosModuleVideoResponse =
-                                new VideosModuleVideoResponse(parseResponse, null);
-
-                        setChanged();
-                        notifyObservers(videosModuleVideoResponse);
-                    }
-                } else {
-                    Log.v(TAG, "There was some error retrieveing the video");
-
-                    VideosModuleVideoResponse videosModuleVideoResponse =
-                            new VideosModuleVideoResponse(parseResponse, null);
-
-                    setChanged();
-                    notifyObservers(videosModuleVideoResponse);
-                }
-            }
-        });
+        VideosModuleVideoResponse videosModuleVideoResponse = new VideosModuleVideoResponse(parseResponse, video);
+        setChanged();
+        notifyObservers(videosModuleVideoResponse);
     }
 
     @Override

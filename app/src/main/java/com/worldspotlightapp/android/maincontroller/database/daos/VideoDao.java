@@ -69,6 +69,8 @@ public class VideoDao {
             return null;
         }
 
+        cursor.moveToFirst();
+
         Video video = new Video();
 
         // ID. The primary key
