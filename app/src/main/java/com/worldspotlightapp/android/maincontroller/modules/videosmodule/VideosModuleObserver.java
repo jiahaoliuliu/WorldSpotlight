@@ -137,20 +137,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void requestVideoInfo(Observer observer, String videoObjectId) {
-        // Register the observer
-        addObserver(observer);
-
-        // Get the list of the videos directly from the list of videos in the database
-        Video video = mVideoDataLayer.getVideoDetails(videoObjectId);
-        ParseResponse parseResponse =
-                video == null ?
-                        new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_VIDEO_NOT_FOUND).build() :
-                        new ParseResponse.Builder(null).build();
-
-        VideosModuleVideoResponse videosModuleVideoResponse = new VideosModuleVideoResponse(parseResponse, video);
-        setChanged();
-        notifyObservers(videosModuleVideoResponse);
+    public Video getVideoInfo(String videoObjectId) {
+        // Get the video directly from the list of videos in the database
+        return mVideoDataLayer.getVideoDetails(videoObjectId);
     }
 
     @Override

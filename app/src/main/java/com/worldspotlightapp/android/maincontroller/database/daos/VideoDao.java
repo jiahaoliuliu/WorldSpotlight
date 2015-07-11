@@ -41,8 +41,13 @@ public class VideoDao {
      *             if any error while accessing the database.
      */
     public Cursor queryData(String id) {
-       return mDatabase.query(TableVideo.TABLE_NAME, null, TableVideo._ID + "=?",
+       Cursor cursor = mDatabase.query(TableVideo.TABLE_NAME, null, TableVideo._ID + "=?",
                 new String[] {id}, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        return cursor;
     }
 
     public Cursor queryAllData() {
@@ -68,8 +73,6 @@ public class VideoDao {
         if (cursor == null) {
             return null;
         }
-
-        cursor.moveToFirst();
 
         Video video = new Video();
 

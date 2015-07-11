@@ -308,6 +308,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
             }
         }
 
+        // Try to get the video from the database
+
         // If the video was found
         if (videoToBeCentered == null) {
             return;

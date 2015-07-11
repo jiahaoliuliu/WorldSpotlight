@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 
 import com.worldspotlightapp.android.maincontroller.AbstractBaseModuleObservable;
+import com.worldspotlightapp.android.model.Video;
 
 import java.util.Observer;
 import java.util.UUID;
@@ -23,13 +24,12 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
     public abstract void requestAllVideos(Observer observer);
 
     /**
-     * Retrieve the information about a video from the backend
-     * @param observer
-     *      The observer to notify
+     * Retrieve the information about a video from the database.
+     * Note this is a synchronous method
      * @param videoObjectId
      *      The id of the video object
      */
-    public abstract void requestVideoInfo(Observer observer, String videoObjectId);
+    public abstract Video getVideoInfo(String videoObjectId);
 
     /**
      * Search the videos by keyword. Return a list of video which either the

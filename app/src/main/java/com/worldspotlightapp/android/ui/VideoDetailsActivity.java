@@ -86,10 +86,24 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
         initializeYouTubePlayerFragment();
+    }
 
-        // Retrieve the data
-        mNotificationModule.showLoadingDialog(mContext);
-        mVideosModule.requestVideoInfo(this, mVideoObjectId);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Fill the video info if it is empty
+        if (mVideo == null) {
+            mVideo = mVideosModule.getVideoInfo(mVideoObjectId);
+
+            // Finish if there is any problem with the video
+            if (mVideo == null) {
+                Log.e(TAG, "Error retrieving the video from the backend. The video with id " + mVideoObjectId + " no existe");
+                finish();
+            }
+            updateVideoDetails();
+            mVideosModule.requestAuthorInfo(this, mVideo.getVideoId());
+        }
     }
 
     @Override
@@ -106,19 +120,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         while(!mResponsesStack.isEmpty()) {
             Object response = mResponsesStack.pop();
             Log.v(TAG, "Response get " + response);
-            if (response instanceof VideosModuleVideoResponse) {
-                Log.v(TAG, "VideoModuleVideoResponse received");
-                VideosModuleVideoResponse videosModuleVideoResponse = (VideosModuleVideoResponse) response;
-                ParseResponse parseResponse = videosModuleVideoResponse.getParseResponse();
-                if (!parseResponse.isError()) {
-                    mVideo = videosModuleVideoResponse.getVideo();
-                    updateVideoDetails();
-                } else {
-                    // Some error happened
-                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
-                    finish();
-                }
-            } else if (response instanceof VideosModuleAuthorResponse) {
+            if (response instanceof VideosModuleAuthorResponse) {
                 Log.v(TAG, "videos module author response received");
                 VideosModuleAuthorResponse videosModuleAuthorResponse = (VideosModuleAuthorResponse) response;
                 ParseResponse parseResponse = videosModuleAuthorResponse.getParseResponse();
@@ -151,16 +153,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
             // Add the data to the list of responses
             mResponsesStack.push(o);
-
-            // Specific method that only could be triggered when the video is available
-            if (o instanceof VideosModuleVideoResponse) {
-                Log.v(TAG, "Video received");
-                VideosModuleVideoResponse videosModuleVideoResponse = (VideosModuleVideoResponse) o;
-                if (!videosModuleVideoResponse.getParseResponse().isError()) {
-                    Log.v(TAG, "Requesting the author info");
-                    mVideosModule.requestAuthorInfo(this, videosModuleVideoResponse.getVideo().getVideoId());
-                }
-            }
 
             if (isInForeground()) {
                 processDataIfExists();
