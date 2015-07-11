@@ -191,7 +191,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 //        }
 
         mActivityTrackerModule.notifyActivityDestroyed();
-        if (mActivityTrackerModule.isThereAnyActivityRunning()) {
+        // If there is not activity running, then finalize
+        if (!mActivityTrackerModule.isThereAnyActivityRunning()) {
             mEventTrackingModule.trackAppFinalization();
         }
 

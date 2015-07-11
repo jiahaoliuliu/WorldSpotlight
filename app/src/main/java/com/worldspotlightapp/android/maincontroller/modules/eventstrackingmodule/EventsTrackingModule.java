@@ -263,6 +263,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
 
     @Override
     public void trackAppInitialization() {
+        Log.v(TAG, "App initialized.");
         mMixpanel.track(mContext.getString(R.string.mp_app_initialized), new JSONObject());
 
         // Facebook logs
@@ -272,6 +273,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
 
     @Override
     public void trackAppFinalization() {
+        Log.v(TAG, "App finalized");
         mMixpanel.track(mContext.getString(R.string.mp_app_finished), new JSONObject());
         mMixpanel.flush();
 
