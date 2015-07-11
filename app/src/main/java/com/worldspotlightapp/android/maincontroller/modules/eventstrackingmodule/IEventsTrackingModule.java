@@ -5,15 +5,57 @@ package com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodul
  */
 public interface IEventsTrackingModule {
 
+    enum ScreenId {
+        LOGIN_SCREEN, MAIN_SCREEN, VIDEO_DETAILS_SCREEN;
+    }
+
+    enum EventId {
+        // Login screen
+        LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE_PLUS, SKIP_LOGIN,
+
+        // Main screen
+        //      SEARCH
+        SEARCH_STARTED, SEARCH_FINISHED, SEARCH_BY_KEYWORD,
+
+        //      Self localization
+        USER_LOCALIZED,
+
+        //      Videos Preview
+        VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK,
+
+        // Video details screen
+        FULL_SCREEN, SHARE;
+
+    }
+
+    /**
+     * Track the user action event. Note there could be a list of objects as parameters
+     * @param screenId
+     *      The id of the screen. See {@link com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId}
+     * @param eventId
+     *      The id of the Event. See {@link com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId}
+     * @param objects
+     *      Optionally the event is associated with a set of objects. It depends on the screen id and the event id.
+     *
+     *      This is the list
+     *      ScreenId            EventId             Objects
+     *      --------------------------------------------------------
+     *      MAIN_SCREEN         SELECT_DISH         DishSimple
+     *
+     */
+    void trackUserAction(ScreenId screenId, EventId eventId, Object... objects);
+
     /**
      * Track the app has been initialized
      */
-    public abstract void trackAppInitialization();
+    void trackAppInitialization();
 
     /**
      * Track the app has been finalized
      */
-    public abstract void trackAppFinalization();
+    void trackAppFinalization();
 
-
+    public static interface OnEventTrackingModuleRequestedListener{
+        IEventsTrackingModule getEventsTrackingModule();
+    }
 }

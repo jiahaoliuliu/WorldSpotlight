@@ -15,29 +15,31 @@ import android.util.Log;
  */
 public class ActivityTrackerModule implements IActivityTrackerModule {
 
-    private static final String LOG_TAG = "ActivityTrackerModule";
+    private static final String TAG = "ActivityTrackerModule";
 
     private int mNumberActivities;
 
     @Override
     public void notifyActivityCreated() {
         mNumberActivities++;
-        Log.d(LOG_TAG, "New activity created. The total number of activities is " + mNumberActivities);
+        Log.d(TAG, "New activity created. The total number of activities is " + mNumberActivities);
     }
 
     @Override
     public void notifyActivityDestroyed() {
         mNumberActivities--;
-        Log.d(LOG_TAG, "activity destroyed. The total number of activities is " + mNumberActivities);
+        Log.d(TAG, "activity destroyed. The total number of activities is " + mNumberActivities);
     }
 
     @Override
     public boolean isThereOnlyOneActivityRunning() {
+        Log.v(TAG, "Asking if there is only one activity running. The number of activities is " + mNumberActivities);
         return mNumberActivities == 1;
     }
 
     @Override
     public boolean isThereAnyActivityRunning() {
+        Log.v(TAG, "Asking if there are any activity running. The number of activities is " + mNumberActivities);
         return mNumberActivities > 0;
     }
 

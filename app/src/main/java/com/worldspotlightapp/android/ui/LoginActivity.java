@@ -6,15 +6,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
 
@@ -42,9 +42,9 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     private boolean mIntentInProgress;
 
     // Views
-    private Button mSkipButton;
     private Button mFacebookLoginButton;
     private Button mGooglePlusSignInButton;
+    private Button mSkipButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,30 +66,33 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
                 .build();
 
         // Link the views
-        mSkipButton = (Button)findViewById(R.id.cancel_image_view);
-        mSkipButton.setOnClickListener(onClickListener);
-
         mFacebookLoginButton = (Button)findViewById(R.id.facebook_login_button);
         mFacebookLoginButton.setOnClickListener(onClickListener);
 
         mGooglePlusSignInButton = (Button)findViewById(R.id.google_plus_login_buttn);
         mGooglePlusSignInButton.setOnClickListener(onClickListener);
+
+        mSkipButton = (Button)findViewById(R.id.skip_login_image_view);
+        mSkipButton.setOnClickListener(onClickListener);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.cancel_image_view:
-                    goToMainActivity();
-                    break;
                 case R.id.facebook_login_button:
+                    mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.LOGIN_WITH_FACEBOOK);
                     mNotificationModule.showLoadingDialog(mContext);
                     mUserDataModule.loginWithFacebook(LoginActivity.this, LoginActivity.this);
                     break;
                 case R.id.google_plus_login_buttn:
+                    mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.LOGIN_WITH_GOOGLE_PLUS);
                     mNotificationModule.showLoadingDialog(mContext);
                     mGoogleApiClient.connect();
+                    break;
+                case R.id.skip_login_image_view:
+                    mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.SKIP_LOGIN);
+                    goToMainActivity();
                     break;
             }
         }
@@ -166,16 +169,9 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
             String personName = currentPerson.getDisplayName();
-            Log.v(TAG, "Person name " + personName);
-
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            Log.v(TAG, "Person Email address " + email);
-
             String personGooglePlusProfile = currentPerson.getUrl();
-            Log.v(TAG, "Person Google Plus Profile url " + personGooglePlusProfile);
-
             String personPhotoUrl = currentPerson.getImage().getUrl();
-            Log.v(TAG, "Person Photo url " + personPhotoUrl);
 
             mNotificationModule.showLoadingDialog(mContext);
             mUserDataModule.signupForGooglePlusUsers(this, personName, email, personPhotoUrl, personGooglePlusProfile);

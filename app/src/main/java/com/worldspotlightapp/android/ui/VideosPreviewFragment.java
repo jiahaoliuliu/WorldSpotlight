@@ -12,8 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.model.Video;
 
 public class VideosPreviewFragment extends Fragment {
@@ -40,7 +45,12 @@ public class VideosPreviewFragment extends Fragment {
     private ImageView mLeftArrowImageView;
     private ImageView mRightArrowImageView;
 
-    public static VideosPreviewFragment newInstance(String objectId, String thumbnailUrl, String title, String description, boolean showArrows) {
+    // Others
+    private OnEventTrackingModuleRequestedListener mOnEventTrackingModuleRequestedListener;
+    private IEventsTrackingModule mEventTrackingModule;
+
+    public static VideosPreviewFragment newInstance(
+            String objectId, String thumbnailUrl, String title, String description, boolean showArrows) {
         VideosPreviewFragment videosPreviewFragment = new VideosPreviewFragment();
         Bundle args = new Bundle();
         args.putString(Video.INTENT_KEY_OBJECT_ID, objectId);
@@ -50,6 +60,17 @@ public class VideosPreviewFragment extends Fragment {
         args.putBoolean(INTENT_KEY_SHOW_ARROWS, showArrows);
         videosPreviewFragment.setArguments(args);
         return videosPreviewFragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mActivity = activity;
+        try {
+            mOnEventTrackingModuleRequestedListener = (OnEventTrackingModuleRequestedListener)activity;
+        } catch (ClassCastException classCastException) {
+            throw new ClassCastException(activity.toString() + " must implements the mOnEventTrackingModuleRequestedListener interface");
+        }
     }
 
     @Override
@@ -69,12 +90,6 @@ public class VideosPreviewFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.mActivity = activity;
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Get the offer Id from the arguments
@@ -90,6 +105,9 @@ public class VideosPreviewFragment extends Fragment {
         }
 
         mObjectId = bundle.getString(Video.INTENT_KEY_OBJECT_ID);
+
+        // Get the Event module
+        mEventTrackingModule = mOnEventTrackingModuleRequestedListener.getEventsTrackingModule();
 
         // Load images
         mThumbnailUrl = bundle.getString(Video.INTENT_KEY_THUMBNAIL_URL);
@@ -123,6 +141,9 @@ public class VideosPreviewFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.video_preview_relative_layout:
+                    // Register the event
+                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, mObjectId);
+
                     // Start the video details activity
                     Intent startVideoDetailsActivityIntent = new Intent(mActivity, VideoDetailsActivity.class);
                     startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mObjectId);

@@ -33,6 +33,8 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Video;
@@ -134,7 +136,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             public boolean onClusterItemClick(Video video) {
                 isAutomaticCameraUpdate = true;
 
-                centerMapToVideo(video);
+                showVideoPreview(video);
                 return true;
             }
         });
@@ -143,8 +145,21 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
                 isAutomaticCameraUpdate = true;
+                if (cluster == null) {
+                    return true;
+                }
 
-                centerMaptoCluster(cluster);
+                Collection<Video> clusterVideos = cluster.getItems();
+                if (clusterVideos == null || clusterVideos.size() == 0) {
+                    return true;
+                }
+
+                List<Video> videosListToShow = new ArrayList<Video>();
+                for (Video video: clusterVideos) {
+                    videosListToShow.add(video);
+                }
+
+                showVideosPreview(videosListToShow, cluster.getPosition());
                 return true;
             }
         });
@@ -270,7 +285,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // Check if the app has started because url link
         String videoId = getTriggeredVideoId();
         if (videoId != null) {
-            centerVideo(videoId);
+            showVideoPreview(videoId);
             return;
         }
     }
@@ -298,7 +313,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
      * Center the map to a specific video
      * @param videoId
      */
-    private void centerVideo(String videoId) {
+    private void showVideoPreview(String videoId) {
         Log.v(TAG, "Trying to center the map to the video " + videoId);
         Video videoToBeCentered = null;
         for (Video video: mVideosList) {
@@ -322,15 +337,15 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return;
         }
 
-        centerMapToVideo(videoToBeCentered);
+        showVideoPreview(videoToBeCentered);
     }
 
     /**
-     * Center the map to a specific video
+     * Show the preview of a specific video
      * @param video
      *      The video to be centered. If it is null, don't do anything
      */
-    private void centerMapToVideo(Video video) {
+    private void showVideoPreview(Video video) {
         if (video == null) {
             return;
         }
@@ -338,34 +353,15 @@ public class MainActivity extends AbstractBaseActivityObserver {
         List<Video> videosListToShow = new ArrayList<Video>();
         videosListToShow.add(video);
 
-        centerMapToVideos(videosListToShow, video.getPosition());
+        showVideosPreview(videosListToShow, video.getPosition());
     }
 
-    /**
-     * Center the map to a specific cluster
-     * @param cluster
-     *      The cluster with the data to be centered
-     */
-    private void centerMaptoCluster(Cluster<Video> cluster) {
-        if (cluster == null) {
-            return;
-        }
-
-        Collection<Video> clusterVideos = cluster.getItems();
-        if (clusterVideos == null || clusterVideos.size() == 0) {
-            return;
-        }
-
-        List<Video> videosListToShow = new ArrayList<Video>();
-        for (Video video: clusterVideos) {
-            videosListToShow.add(video);
-        }
-
-        centerMapToVideos(videosListToShow, cluster.getPosition());
-    }
-
-    private void centerMapToVideos(List<Video> videosList, LatLng position) {
+    private void showVideosPreview(List<Video> videosList, LatLng position) {
         Log.v(TAG, "Centering the videos on the position " + position);
+
+        // Tracking user action
+        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEOS_PREVIEW, videosList, position);
+
         isAutomaticCameraUpdate = true;
 
         // Move to the point
@@ -415,6 +411,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.my_location_floating_action_button:
+                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.USER_LOCALIZED);
                     centerMapToUser();
                     break;
             }
@@ -468,6 +465,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_SEARCH_ID:
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
                 searchByKeyword();
                 return true;
             default:
@@ -481,6 +479,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.v(TAG, "Searching the videos with the keyword " + query);
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, query);
                 mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.searchByKeyword(MainActivity.this, query);
                 searchActionView.clearFocus();
@@ -498,6 +497,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "The search has been cancelled. Requesting the list of all the videos to the module");
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_FINISHED);
                 mNotificationModule.showLoadingDialog(mContext);
                 // Retrieve the list of all the videos
                 mVideosModule.requestAllVideos(MainActivity.this);
@@ -517,6 +517,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_FINISHED);
+                mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.requestAllVideos(MainActivity.this);
                 searchActionView.setQuery("", false);
                 searchActionView.onActionViewCollapsed();

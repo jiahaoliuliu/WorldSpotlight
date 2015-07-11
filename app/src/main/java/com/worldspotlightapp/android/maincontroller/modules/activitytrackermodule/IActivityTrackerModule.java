@@ -33,8 +33,8 @@ public interface IActivityTrackerModule {
     /**
      * Check if there is any activity running
      *
-     * @return True if the number of activity running is 0
-     *         False if there is any activity running
+     * @return True if the number of activity running is bigger than zero
+     *         False if there is zero activity running
      */
     public boolean isThereAnyActivityRunning();
 

@@ -49,7 +49,7 @@
 
     <!-- Skip image -->
     <Button
-        android:id="@+id/cancel_image_view"
+        android:id="@+id/skip_login_image_view"
         style="@style/SkipButton"
         android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
         android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
