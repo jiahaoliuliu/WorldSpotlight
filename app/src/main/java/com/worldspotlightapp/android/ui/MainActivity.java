@@ -136,7 +136,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             public boolean onClusterItemClick(Video video) {
                 isAutomaticCameraUpdate = true;
 
-                centerMapToVideo(video);
+                showVideoPreview(video);
                 return true;
             }
         });
@@ -159,8 +159,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     videosListToShow.add(video);
                 }
 
-                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEOS_PREVIEW, videosListToShow, cluster.getPosition());
-                centerMapToVideos(videosListToShow, cluster.getPosition());
+                showVideosPreview(videosListToShow, cluster.getPosition());
                 return true;
             }
         });
@@ -286,7 +285,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // Check if the app has started because url link
         String videoId = getTriggeredVideoId();
         if (videoId != null) {
-            centerVideo(videoId);
+            showVideoPreview(videoId);
             return;
         }
     }
@@ -314,7 +313,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
      * Center the map to a specific video
      * @param videoId
      */
-    private void centerVideo(String videoId) {
+    private void showVideoPreview(String videoId) {
         Log.v(TAG, "Trying to center the map to the video " + videoId);
         Video videoToBeCentered = null;
         for (Video video: mVideosList) {
@@ -338,15 +337,15 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return;
         }
 
-        centerMapToVideo(videoToBeCentered);
+        showVideoPreview(videoToBeCentered);
     }
 
     /**
-     * Center the map to a specific video
+     * Show the preview of a specific video
      * @param video
      *      The video to be centered. If it is null, don't do anything
      */
-    private void centerMapToVideo(Video video) {
+    private void showVideoPreview(Video video) {
         if (video == null) {
             return;
         }
@@ -354,11 +353,15 @@ public class MainActivity extends AbstractBaseActivityObserver {
         List<Video> videosListToShow = new ArrayList<Video>();
         videosListToShow.add(video);
 
-        centerMapToVideos(videosListToShow, video.getPosition());
+        showVideosPreview(videosListToShow, video.getPosition());
     }
 
-    private void centerMapToVideos(List<Video> videosList, LatLng position) {
+    private void showVideosPreview(List<Video> videosList, LatLng position) {
         Log.v(TAG, "Centering the videos on the position " + position);
+
+        // Tracking user action
+        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEOS_PREVIEW, videosList, position);
+
         isAutomaticCameraUpdate = true;
 
         // Move to the point
