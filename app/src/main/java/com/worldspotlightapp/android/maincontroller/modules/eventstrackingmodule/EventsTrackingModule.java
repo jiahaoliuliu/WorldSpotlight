@@ -19,6 +19,8 @@ import java.util.UUID;
  */
 public class EventsTrackingModule implements IEventsTrackingModule {
 
+    private static final String TAG = "EventsTrackingModule";
+
     private Context mContext;
     private UUID mUUID;
 
@@ -46,7 +48,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 trackLoginScreenAction(eventId, objects);
                 break;
             case MAIN_SCREEN:
-//                trackMainScreenAction(eventId, objects);
+                trackMainScreenAction(eventId, objects);
                 break;
             case VIDEO_DETAILS_SCREEN:
 //                trackVideoScreenAction(eventId, objects);
@@ -83,32 +85,50 @@ public class EventsTrackingModule implements IEventsTrackingModule {
         }
     }
 
-//    /**
-//     * Track the actions from the main screen
-//     * @param eventId
-//     *      The id of the event happened
-//     * @param objects
-//     *      The details to be tracked
-//     */
-//    private void trackMainScreenAction(EventId eventId, Object... objects) {
-//        switch (eventId) {
-//            case REFRESH:
-//                mMixpanel.track(mContext.getString(R.string.mp_main_prefix) + " " +
-//                        mContext.getString(R.string.mp_main_refresh_event), new JSONObject());
-//                break;
-//            case SEE_USER_PROFILE:
-//                mMixpanel.track(mContext.getString(R.string.mp_main_prefix) + " " +
-//                        mContext.getString(R.string.mp_main_user_profile_event), new JSONObject());
-//                break;
-//            case TRY_TO_POST_A_DISH:
-//                mMixpanel.track(mContext.getString(R.string.mp_main_prefix) + " " +
-//                        mContext.getString(R.string.mp_main_post_a_dish_event), new JSONObject());
-//                break;
-//            default:
-//                throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
-//                        "to Main screen, so it cannot be tracked");
-//        }
-//    }
+    /**
+     * Track the actions from the main screen
+     * @param eventId
+     *      The id of the event happened
+     * @param objects
+     *      The details to be tracked
+     */
+    private void trackMainScreenAction(EventId eventId, Object... objects) {
+        switch (eventId) {
+            case SEARCH_STARTED:
+                mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                        mContext.getString(R.string.mp_main_activity_search_started), new JSONObject());
+                break;
+            case SEARCH_BY_KEYWORD:
+                if (objects.length < 1) {
+                    throw new IllegalArgumentException("You must provide at least one argument for this event");
+                }
+
+                String keyword = null;
+                try {
+                    keyword = (String) objects[0];
+                } catch (ClassCastException classCastException) {
+                    throw new ClassCastException("The first argument must be an instance of String or an extension of it");
+                }
+
+                try {
+                    JSONObject attributes = new JSONObject();
+                    attributes.put(mContext.getString(R.string.mp_main_activity_search_by_keyword_keyword), keyword);
+                    mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                            mContext.getString(R.string.mp_main_activity_search_by_keyword_event), attributes);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error sending event to mixpanel", e);
+                }
+
+                break;
+            case SEARCH_FINISHED:
+                mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                        mContext.getString(R.string.mp_main_activity_search_finished), new JSONObject());
+                break;
+            default:
+                throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
+                        "to Main screen, so it cannot be tracked");
+        }
+    }
 
     @Override
     public void trackAppInitialization() {

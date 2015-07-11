@@ -14,6 +14,8 @@ public interface IEventsTrackingModule {
         LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE_PLUS, SKIP_LOGIN,
 
         // Main screen
+        //      SEARCH
+        SEARCH_STARTED, SEARCH_FINISHED, SEARCH_BY_KEYWORD;
 
         // Video details screen
 

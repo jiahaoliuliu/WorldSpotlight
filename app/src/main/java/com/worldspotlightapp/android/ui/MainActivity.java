@@ -33,6 +33,8 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Video;
@@ -468,6 +470,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ITEM_SEARCH_ID:
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
                 searchByKeyword();
                 return true;
             default:
@@ -481,6 +484,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.v(TAG, "Searching the videos with the keyword " + query);
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, query);
                 mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.searchByKeyword(MainActivity.this, query);
                 searchActionView.clearFocus();
@@ -498,6 +502,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "The search has been cancelled. Requesting the list of all the videos to the module");
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_FINISHED);
                 mNotificationModule.showLoadingDialog(mContext);
                 // Retrieve the list of all the videos
                 mVideosModule.requestAllVideos(MainActivity.this);
@@ -517,6 +522,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_FINISHED);
+                mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.requestAllVideos(MainActivity.this);
                 searchActionView.setQuery("", false);
                 searchActionView.onActionViewCollapsed();

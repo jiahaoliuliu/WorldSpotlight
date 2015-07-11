@@ -10,10 +10,17 @@
 
     <!-- Login Activity -->
     <string name="mp_login_activity_prefix">Login</string>
-    <!--    Select Dish -->
     <string name="mp_login_activity_facebook_login">Facebook login</string>
     <string name="mp_login_activity_google_plus_login">Google Plus login</string>
     <string name="mp_login_activity_skip_login">Skip login</string>
 
+    <!-- Main Activity -->
+    <string name="mp_main_activity_prefix">Main activity</string>
+
+    <!--    Search -->
+    <string name="mp_main_activity_search_started">Search started</string>
+    <string name="mp_main_activity_search_by_keyword_event">Search by keyword</string>
+    <string name="mp_main_activity_search_by_keyword_keyword">Keyword</string>
+    <string name="mp_main_activity_search_finished">Search finished</string>
 
 </resources>
