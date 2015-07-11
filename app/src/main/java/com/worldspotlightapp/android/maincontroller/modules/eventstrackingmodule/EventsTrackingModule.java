@@ -170,6 +170,28 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                     Log.e(TAG, "Error sending event to mixpanel", e);
                 }
                 break;
+            case VIDEO_PREVIEW_CLICK:
+                if (objects.length < 1) {
+                    throw new IllegalArgumentException("You must provide at least one argument for this event");
+                }
+
+                String videoId = null;
+                try {
+                    videoId = (String) objects[0];
+                } catch (ClassCastException classCastException) {
+                    throw new ClassCastException("The first argument must be an instance of String or an extension of it");
+                }
+
+                try {
+                    JSONObject attributes = new JSONObject();
+                    attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_click_video_id), videoId);
+                    mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                            mContext.getString(R.string.mp_main_activity_videos_preview_click_event), attributes);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error sending event to mixpanel", e);
+                }
+
+                break;
             default:
                 throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
                         "to Main screen, so it cannot be tracked");

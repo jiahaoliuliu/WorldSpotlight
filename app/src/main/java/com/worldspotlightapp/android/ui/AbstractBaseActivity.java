@@ -16,9 +16,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.worldspotlightapp.android.maincontroller.MainController;
-import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
@@ -31,7 +31,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.Abstrac
  * - Check for Google Play services
  */
 public abstract class AbstractBaseActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, OnEventTrackingModuleRequestedListener {
 
     private static final String TAG = "BaseActivity";
 
@@ -202,5 +202,10 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
+    }
+
+    @Override
+    public IEventsTrackingModule getEventsTrackingModule() {
+        return mEventTrackingModule;
     }
 }

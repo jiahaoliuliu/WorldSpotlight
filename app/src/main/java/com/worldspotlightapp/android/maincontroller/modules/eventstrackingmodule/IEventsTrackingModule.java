@@ -21,7 +21,7 @@ public interface IEventsTrackingModule {
         USER_LOCALIZED,
 
         //      Videos Preview
-        VIDEOS_PREVIEW;
+        VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK;
 
         // Video details screen
 
@@ -53,4 +53,8 @@ public interface IEventsTrackingModule {
      * Track the app has been finalized
      */
     void trackAppFinalization();
+
+    public static interface OnEventTrackingModuleRequestedListener{
+        IEventsTrackingModule getEventsTrackingModule();
+    }
 }

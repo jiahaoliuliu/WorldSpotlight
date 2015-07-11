@@ -31,5 +31,7 @@
     <string name="mp_main_activity_videos_preview_videos_id">Videos id</string>
     <string name="mp_main_activity_videos_preview_position_latitude">Latitude</string>
     <string name="mp_main_activity_videos_preview_position_longitude">Longitude</string>
+    <string name="mp_main_activity_videos_preview_click_event">Video Preview click</string>
+    <string name="mp_main_activity_videos_preview_click_video_id">Video id</string>
 
 </resources>
