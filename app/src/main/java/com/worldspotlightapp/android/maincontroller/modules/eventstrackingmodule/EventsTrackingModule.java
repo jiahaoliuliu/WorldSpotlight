@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -8,6 +9,7 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -38,8 +40,79 @@ public class EventsTrackingModule implements IEventsTrackingModule {
     }
 
     @Override
+    public void trackUserAction(ScreenId screenId, EventId eventId, Object... objects) {
+        switch (screenId) {
+            case LOGIN_SCREEN:
+                trackLoginScreenAction(eventId, objects);
+                break;
+            case MAIN_SCREEN:
+//                trackMainScreenAction(eventId, objects);
+                break;
+            case VIDEO_DETAILS_SCREEN:
+//                trackVideoScreenAction(eventId, objects);
+            default:
+                throw new IllegalArgumentException("The event " + eventId.toString() + " of the screen "
+                        + screenId.toString() + " cannot be tracked");
+        }
+    }
+
+    /**
+     * Track the actions from the login screen
+     * @param eventId
+     *      The id of the event happened
+     * @param objects
+     *      The details to be tracked
+     */
+    private void trackLoginScreenAction(EventId eventId, Object... objects) {
+        switch (eventId) {
+            case LOGIN_WITH_FACEBOOK:
+                mMixpanel.track(mContext.getString(R.string.mp_login_activity_prefix) + " " +
+                        mContext.getString(R.string.mp_login_activity_facebook_login), new JSONObject());
+                break;
+            case LOGIN_WITH_GOOGLE_PLUS:
+                mMixpanel.track(mContext.getString(R.string.mp_login_activity_prefix) + " " +
+                        mContext.getString(R.string.mp_login_activity_google_plus_login), new JSONObject());
+                break;
+            case SKIP_LOGIN:
+                mMixpanel.track(mContext.getString(R.string.mp_login_activity_prefix) + " " +
+                        mContext.getString(R.string.mp_login_activity_skip_login), new JSONObject());
+                break;
+            default:
+                throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
+                        "to Main screen, so it cannot be tracked");
+        }
+    }
+
+//    /**
+//     * Track the actions from the main screen
+//     * @param eventId
+//     *      The id of the event happened
+//     * @param objects
+//     *      The details to be tracked
+//     */
+//    private void trackMainScreenAction(EventId eventId, Object... objects) {
+//        switch (eventId) {
+//            case REFRESH:
+//                mMixpanel.track(mContext.getString(R.string.mp_main_prefix) + " " +
+//                        mContext.getString(R.string.mp_main_refresh_event), new JSONObject());
+//                break;
+//            case SEE_USER_PROFILE:
+//                mMixpanel.track(mContext.getString(R.string.mp_main_prefix) + " " +
+//                        mContext.getString(R.string.mp_main_user_profile_event), new JSONObject());
+//                break;
+//            case TRY_TO_POST_A_DISH:
+//                mMixpanel.track(mContext.getString(R.string.mp_main_prefix) + " " +
+//                        mContext.getString(R.string.mp_main_post_a_dish_event), new JSONObject());
+//                break;
+//            default:
+//                throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
+//                        "to Main screen, so it cannot be tracked");
+//        }
+//    }
+
+    @Override
     public void trackAppInitialization() {
-        mMixpanel.track(mContext.getString(R.string.mp_login), new JSONObject());
+        mMixpanel.track(mContext.getString(R.string.mp_app_initialized), new JSONObject());
 
         // Facebook logs
         // Log 'install' and 'app activate' App Events
@@ -48,7 +121,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
 
     @Override
     public void trackAppFinalization() {
-        mMixpanel.track(mContext.getString(R.string.mp_logout), new JSONObject());
+        mMixpanel.track(mContext.getString(R.string.mp_app_finished), new JSONObject());
         mMixpanel.flush();
 
         // Facebook logs
