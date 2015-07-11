@@ -145,8 +145,22 @@ public class MainActivity extends AbstractBaseActivityObserver {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
                 isAutomaticCameraUpdate = true;
+                if (cluster == null) {
+                    return true;
+                }
 
-                centerMaptoCluster(cluster);
+                Collection<Video> clusterVideos = cluster.getItems();
+                if (clusterVideos == null || clusterVideos.size() == 0) {
+                    return true;
+                }
+
+                List<Video> videosListToShow = new ArrayList<Video>();
+                for (Video video: clusterVideos) {
+                    videosListToShow.add(video);
+                }
+
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEOS_PREVIEW, videosListToShow, cluster.getPosition());
+                centerMapToVideos(videosListToShow, cluster.getPosition());
                 return true;
             }
         });
@@ -341,29 +355,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
         videosListToShow.add(video);
 
         centerMapToVideos(videosListToShow, video.getPosition());
-    }
-
-    /**
-     * Center the map to a specific cluster
-     * @param cluster
-     *      The cluster with the data to be centered
-     */
-    private void centerMaptoCluster(Cluster<Video> cluster) {
-        if (cluster == null) {
-            return;
-        }
-
-        Collection<Video> clusterVideos = cluster.getItems();
-        if (clusterVideos == null || clusterVideos.size() == 0) {
-            return;
-        }
-
-        List<Video> videosListToShow = new ArrayList<Video>();
-        for (Video video: clusterVideos) {
-            videosListToShow.add(video);
-        }
-
-        centerMapToVideos(videosListToShow, cluster.getPosition());
     }
 
     private void centerMapToVideos(List<Video> videosList, LatLng position) {

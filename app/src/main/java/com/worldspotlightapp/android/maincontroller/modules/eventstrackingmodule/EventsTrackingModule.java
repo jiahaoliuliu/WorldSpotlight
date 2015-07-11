@@ -4,14 +4,19 @@ import android.content.Context;
 import android.util.Log;
 
 import com.facebook.appevents.AppEventsLogger;
+import com.google.android.gms.maps.model.LatLng;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -127,6 +132,42 @@ public class EventsTrackingModule implements IEventsTrackingModule {
             case USER_LOCALIZED:
                 mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
                         mContext.getString(R.string.mp_main_activity_localize_user), new JSONObject());
+                break;
+            case VIDEOS_PREVIEW:
+                if (objects.length < 2) {
+                    throw new IllegalArgumentException("You must provide at least one argument for this event");
+                }
+
+                List<Video> videosIdList = new ArrayList<Video>();
+                try {
+                    videosIdList = (List) objects[0];
+                } catch (ClassCastException classCastException) {
+                    throw new ClassCastException("The first argument must be an instance of List<Video> or an extension of it");
+                }
+
+                LatLng position = new LatLng(0,0);
+                try {
+                    position = (LatLng) objects[1];
+                } catch (ClassCastException classCastException) {
+                    throw new ClassCastException("The first argument must be an instance of LatLng or an extension of it");
+                }
+
+                try {
+                    JSONObject attributes = new JSONObject();
+                    // Create the list of videos as String
+                    JSONArray videosIdListJsonArray = new JSONArray();
+                    for (Video video : videosIdList) {
+                        videosIdListJsonArray.put(video.getObjectId());
+                    }
+
+                    attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_videos_id), videosIdListJsonArray);
+                    attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_latitude), position.latitude);
+                    attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_latitude), position.longitude);
+                    mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                            mContext.getString(R.string.mp_main_activity_videos_preview_event), attributes);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error sending event to mixpanel", e);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +

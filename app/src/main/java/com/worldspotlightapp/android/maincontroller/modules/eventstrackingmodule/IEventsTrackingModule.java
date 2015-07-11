@@ -18,7 +18,10 @@ public interface IEventsTrackingModule {
         SEARCH_STARTED, SEARCH_FINISHED, SEARCH_BY_KEYWORD,
 
         //      Self localization
-        USER_LOCALIZED;
+        USER_LOCALIZED,
+
+        //      Videos Preview
+        VIDEOS_PREVIEW;
 
         // Video details screen
 

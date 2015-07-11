@@ -26,4 +26,10 @@
     <!--    Localization -->
     <string name="mp_main_activity_localize_user">User localized</string>
 
+    <!--    Video preview -->
+    <string name="mp_main_activity_videos_preview_event">Videos Preview</string>
+    <string name="mp_main_activity_videos_preview_videos_id">Videos id</string>
+    <string name="mp_main_activity_videos_preview_position_latitude">Latitude</string>
+    <string name="mp_main_activity_videos_preview_position_longitude">Longitude</string>
+
 </resources>
