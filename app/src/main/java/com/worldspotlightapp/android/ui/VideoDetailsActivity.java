@@ -199,6 +199,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
                 @Override
                 public void onFullscreen(boolean isFullScreen) {
+                    mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.FULL_SCREEN, mVideo.getObjectId());
+
                     mDescriptionCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
                     mIsFullScreen = isFullScreen;
 

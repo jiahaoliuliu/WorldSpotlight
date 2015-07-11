@@ -24,7 +24,7 @@ public interface IEventsTrackingModule {
         VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK,
 
         // Video details screen
-        SHARE;
+        FULL_SCREEN, SHARE;
 
     }
 

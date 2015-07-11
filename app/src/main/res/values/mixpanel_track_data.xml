@@ -41,4 +41,8 @@
     <string name="mp_video_details_activity_share_event">Share</string>
     <string name="mp_video_details_activity_share_video_id">Video id</string>
 
+    <!--    Full screen -->
+    <string name="mp_video_details_activity_full_screen_event">Full screen</string>
+    <string name="mp_video_details_activity_full_screen_video_id">Video id</string>
+
 </resources>

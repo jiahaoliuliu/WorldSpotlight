@@ -72,17 +72,18 @@ public class EventsTrackingModule implements IEventsTrackingModule {
      *      The details to be tracked
      */
     private void trackLoginScreenAction(EventId eventId, Object... objects) {
+        String prefix = mContext.getString(R.string.mp_login_activity_prefix);
         switch (eventId) {
             case LOGIN_WITH_FACEBOOK:
-                mMixpanel.track(mContext.getString(R.string.mp_login_activity_prefix) + " " +
+                mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_login_activity_facebook_login), new JSONObject());
                 break;
             case LOGIN_WITH_GOOGLE_PLUS:
-                mMixpanel.track(mContext.getString(R.string.mp_login_activity_prefix) + " " +
+                mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_login_activity_google_plus_login), new JSONObject());
                 break;
             case SKIP_LOGIN:
-                mMixpanel.track(mContext.getString(R.string.mp_login_activity_prefix) + " " +
+                mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_login_activity_skip_login), new JSONObject());
                 break;
             default:
@@ -99,6 +100,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
      *      The details to be tracked
      */
     private void trackMainScreenAction(EventId eventId, Object... objects) {
+        String prefix = mContext.getString(R.string.mp_main_activity_prefix);
         switch (eventId) {
             case SEARCH_STARTED:
                 mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
@@ -119,7 +121,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 try {
                     JSONObject attributes = new JSONObject();
                     attributes.put(mContext.getString(R.string.mp_main_activity_search_by_keyword_keyword), keyword);
-                    mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                    mMixpanel.track(prefix + " " +
                             mContext.getString(R.string.mp_main_activity_search_by_keyword_event), attributes);
                 } catch (JSONException e) {
                     Log.e(TAG, "Error sending event to mixpanel", e);
@@ -127,11 +129,11 @@ public class EventsTrackingModule implements IEventsTrackingModule {
 
                 break;
             case SEARCH_FINISHED:
-                mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_main_activity_search_finished), new JSONObject());
                 break;
             case USER_LOCALIZED:
-                mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_main_activity_localize_user), new JSONObject());
                 break;
             case VIDEOS_PREVIEW:
@@ -165,7 +167,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                     attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_latitude), position.latitude);
                     attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_longitude), position.longitude);
                     Log.d(TAG, "List of attributes to be send to MixPanel " + attributes.toString());
-                    mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                    mMixpanel.track(prefix + " " +
                             mContext.getString(R.string.mp_main_activity_videos_preview_event), attributes);
                 } catch (JSONException e) {
                     Log.e(TAG, "Error sending event to mixpanel", e);
@@ -186,7 +188,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 try {
                     JSONObject attributes = new JSONObject();
                     attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_click_video_id), videoId);
-                    mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
+                    mMixpanel.track(prefix + " " +
                             mContext.getString(R.string.mp_main_activity_videos_preview_click_event), attributes);
                 } catch (JSONException e) {
                     Log.e(TAG, "Error sending event to mixpanel", e);
@@ -207,23 +209,46 @@ public class EventsTrackingModule implements IEventsTrackingModule {
      *      The details to be tracked
      */
     private void trackVideoDetailsScreenAction(EventId eventId, Object... objects) {
+        String prefix = mContext.getString(R.string.mp_video_details_activity_prefix);
         switch (eventId) {
-            case SHARE:
+            case FULL_SCREEN:
                 if (objects.length < 1) {
                     throw new IllegalArgumentException("You must provide at least one argument for this event");
                 }
 
-                String videoId = null;
+                String videoIdFullScreen = null;
                 try {
-                    videoId = (String) objects[0];
+                    videoIdFullScreen = (String) objects[0];
                 } catch (ClassCastException classCastException) {
                     throw new ClassCastException("The first argument must be an instance of String or an extension of it");
                 }
 
                 try {
                     JSONObject attributes = new JSONObject();
-                    attributes.put(mContext.getString(R.string.mp_video_details_activity_share_video_id), videoId);
-                    mMixpanel.track(mContext.getString(R.string.mp_video_details_activity_prefix) + " " +
+                    attributes.put(mContext.getString(R.string.mp_video_details_activity_full_screen_video_id), videoIdFullScreen);
+                    mMixpanel.track(prefix+ " " +
+                            mContext.getString(R.string.mp_video_details_activity_full_screen_event), attributes);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error sending event to mixpanel", e);
+                }
+
+                break;
+            case SHARE:
+                if (objects.length < 1) {
+                    throw new IllegalArgumentException("You must provide at least one argument for this event");
+                }
+
+                String videoIdShare = null;
+                try {
+                    videoIdShare = (String) objects[0];
+                } catch (ClassCastException classCastException) {
+                    throw new ClassCastException("The first argument must be an instance of String or an extension of it");
+                }
+
+                try {
+                    JSONObject attributes = new JSONObject();
+                    attributes.put(mContext.getString(R.string.mp_video_details_activity_share_video_id), videoIdShare);
+                    mMixpanel.track(prefix + " " +
                             mContext.getString(R.string.mp_video_details_activity_share_event), attributes);
                 } catch (JSONException e) {
                     Log.e(TAG, "Error sending event to mixpanel", e);
