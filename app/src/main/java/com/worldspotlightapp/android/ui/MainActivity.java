@@ -265,7 +265,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
             Log.v(TAG, "The list of videos is empty. Requesting it to the videos module");
             mNotificationModule.showLoadingDialog(mContext);
             mVideosModule.requestAllVideos(this);
-            return;
         }
 
         // Check if the app has started because url link
@@ -300,18 +299,26 @@ public class MainActivity extends AbstractBaseActivityObserver {
      * @param videoId
      */
     private void centerVideo(String videoId) {
+        Log.v(TAG, "Trying to center the map to the video " + videoId);
         Video videoToBeCentered = null;
         for (Video video: mVideosList) {
             if (video.getObjectId().equals(videoId)) {
                 videoToBeCentered = video;
+                Log.v(TAG, "Video Found " + video);
                 break;
             }
         }
 
-        // Try to get the video from the database
+        // If the video cannot be found, try to look for it in the
+        // database
+        if (videoToBeCentered == null) {
+            Log.v(TAG, "Video not found in the memory. Looking for it in the database");
+            videoToBeCentered = mVideosModule.getVideoInfo(videoId);
+        }
 
         // If the video was found
         if (videoToBeCentered == null) {
+            Log.w(TAG, "Video to be centered not found");
             return;
         }
 

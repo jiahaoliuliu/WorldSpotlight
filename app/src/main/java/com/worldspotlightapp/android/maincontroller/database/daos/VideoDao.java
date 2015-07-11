@@ -70,7 +70,7 @@ public class VideoDao {
      *         If the cursor is null, then return null
      */
     public Video getDataFromCursor(Cursor cursor, boolean isLastData) {
-        if (cursor == null) {
+        if (cursor == null || cursor.getCount() == 0) {
             return null;
         }
 
