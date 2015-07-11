@@ -79,12 +79,16 @@ public class MainActivity extends AbstractBaseActivityObserver {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         // Data initialization
         mFragmentManager = getSupportFragmentManager();
         mResponsesStack = new Stack<Object>();
         mVideosList = new ArrayList<Video>();
+
+        // Delete all the possible observers
+        mVideosModule.deleteObserver(this);
 
         registerForLocalizationService();
 
@@ -512,4 +516,17 @@ public class MainActivity extends AbstractBaseActivityObserver {
         });
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        return o instanceof MainActivity;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }

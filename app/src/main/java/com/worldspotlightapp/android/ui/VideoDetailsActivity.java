@@ -69,8 +69,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         }
         mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
 
+        // Initialize items
         mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mContext);
+        mVideosModule.deleteObserver(this);
 
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -298,4 +300,16 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        return o instanceof VideoDetailsActivity;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }
