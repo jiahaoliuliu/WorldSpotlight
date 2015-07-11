@@ -162,7 +162,8 @@ public class EventsTrackingModule implements IEventsTrackingModule {
 
                     attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_videos_id), videosIdListJsonArray);
                     attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_latitude), position.latitude);
-                    attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_latitude), position.longitude);
+                    attributes.put(mContext.getString(R.string.mp_main_activity_videos_preview_position_longitude), position.longitude);
+                    Log.d(TAG, "List of attributes to be send to MixPanel " + attributes.toString());
                     mMixpanel.track(mContext.getString(R.string.mp_main_activity_prefix) + " " +
                             mContext.getString(R.string.mp_main_activity_videos_preview_event), attributes);
                 } catch (JSONException e) {
