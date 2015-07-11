@@ -21,9 +21,10 @@ public interface IEventsTrackingModule {
         USER_LOCALIZED,
 
         //      Videos Preview
-        VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK;
+        VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK,
 
         // Video details screen
+        SHARE;
 
     }
 

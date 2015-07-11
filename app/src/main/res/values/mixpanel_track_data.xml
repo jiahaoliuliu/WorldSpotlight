@@ -34,4 +34,11 @@
     <string name="mp_main_activity_videos_preview_click_event">Video Preview click</string>
     <string name="mp_main_activity_videos_preview_click_video_id">Video id</string>
 
+    <!-- Video details Activity -->
+    <string name="mp_video_details_activity_prefix">Video details</string>
+
+    <!--    Share -->
+    <string name="mp_video_details_activity_share_event">Share</string>
+    <string name="mp_video_details_activity_share_video_id">Video id</string>
+
 </resources>
