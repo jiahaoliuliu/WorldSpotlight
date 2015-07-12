@@ -54,7 +54,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         // Check if the user has logged in
         if (mUserDataModule.hasUserData()) {
             Log.v(TAG, "The user has already logged in");
-            goToMainActivity();
+            finish();
         }
 
         // Initialize Google API Clients
@@ -92,20 +92,11 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
                     break;
                 case R.id.skip_login_image_view:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.SKIP_LOGIN);
-                    goToMainActivity();
+                    finish();
                     break;
             }
         }
     };
-
-    /**
-     * Starts the main activity and finish the actual one
-     */
-    private void goToMainActivity() {
-        Intent startMainActivityIntent = new Intent(mContext, MainActivity.class);
-        startActivity(startMainActivityIntent);
-        finish();
-    }
 
     @Override
     protected void processDataIfExists() {
@@ -113,7 +104,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         if (mUserDataModule.hasUserData()) {
             Log.v(TAG, "The user has already logged in");
             mNotificationModule.dismissLoadingDialog();
-            goToMainActivity();
+            finish();
         }
     }
 

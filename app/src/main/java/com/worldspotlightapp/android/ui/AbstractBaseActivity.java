@@ -37,6 +37,9 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 
     private static final String TAG = "AbstractBaseActivity";
 
+    //    Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 99999;
+
     protected Context mContext;
     protected ActionBar mActionBar;
     protected MainController mMainController;
@@ -50,8 +53,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     // Special variables for GpsLocalizationModule
     private boolean isRegisteredForLocalizationService;
     private boolean mResolvingError;
-    //    Request code to use when launching the resolution activity
-    private static final int REQUEST_RESOLVE_ERROR = 99999;
     //    Unique tag for the error dialog fragment
     private static final String DIALOG_ERROR = "dialog_error";
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
@@ -172,13 +173,14 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_RESOLVE_ERROR) {
-            mResolvingError = false;
-            if (resultCode == RESULT_OK) {
-                // Make sure the app is not already connected or attempting to connect
-                mGpsLocalizationModule.connectWithLocalizationService();
-            }
-            return;
+        switch (requestCode) {
+            case REQUEST_RESOLVE_ERROR:
+                mResolvingError = false;
+                if (resultCode == RESULT_OK) {
+                    // Make sure the app is not already connected or attempting to connect
+                    mGpsLocalizationModule.connectWithLocalizationService();
+                }
+                return;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -250,6 +252,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Log.v(TAG, "Positive button clicked. Showing login screen to the user");
+                            Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+                            startActivity(startLoginActivityIntent);
                         }
                     },
                     getString(R.string.notification_module_dialog_no),
@@ -263,4 +267,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         }
         return hasUserLoggedIn;
     }
+
+
 }

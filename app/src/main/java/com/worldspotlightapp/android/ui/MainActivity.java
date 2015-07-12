@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,6 +82,12 @@ public class MainActivity extends AbstractBaseActivityObserver {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Launch login activity if the user has not logged in
+        if (!mUserDataModule.hasUserData()) {
+            Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+            startActivity(startLoginActivityIntent);
+        }
 
         setContentView(R.layout.activity_main);
 
