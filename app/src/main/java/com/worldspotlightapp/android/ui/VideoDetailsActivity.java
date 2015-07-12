@@ -182,7 +182,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private void updateAuthorInfo() {
         Log.v(TAG, "Updating author info");
         if (mAuthor == null){
-            mAuthorCardView.setVisibility(View.GONE);
             return;
         }
 
