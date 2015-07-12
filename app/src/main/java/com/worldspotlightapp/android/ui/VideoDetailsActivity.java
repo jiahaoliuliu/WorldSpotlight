@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,9 +43,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private Author mAuthor;
 
     // Views
-    private CardView mAuthorCardView;
+    private CardView mAuthorAndLikeCardView;
     private ImageView mAuthorThumbnailImageView;
     private TextView mAuthorNameTextView;
+    private ImageView mLikeImageView;
 
     private CardView mDescriptionCardView;
     private TextView mDescriptionTextView;
@@ -79,14 +81,42 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the views
-        mAuthorCardView = (CardView) findViewById(R.id.author_card_view);
+        mAuthorAndLikeCardView = (CardView) findViewById(R.id.author_and_like_card_view);
         mAuthorThumbnailImageView = (ImageView) findViewById(R.id.author_thumbnail_image_view);
         mAuthorNameTextView = (TextView) findViewById(R.id.author_name_text_view);
+
+        mLikeImageView = (ImageView) findViewById(R.id.like_image_view);
+        mLikeImageView.setOnClickListener(onClickListener);
 
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
         initializeYouTubePlayerFragment();
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.like_image_view:
+                    likeThisVideo();
+                    break;
+            }
+        }
+    };
+
+    /**
+     * Method used to like or unlike this video.
+     * Only logged user can like a video. So, if a user has not logged in, he cannot
+     * like a video.
+     */
+    private void likeThisVideo() {
+        if (!mUserDataModule.hasUserData()) {
+            // Show alert to ask the user if he want to login or not
+            return;
+        }
+
+        // TODO: Like the vi
     }
 
     @Override
@@ -185,7 +215,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             return;
         }
 
-        mAuthorCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
+        mAuthorAndLikeCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
 
         mPicasso.load(mAuthor.getThumbnailUrl()).into(mAuthorThumbnailImageView);
         mAuthorNameTextView.setText(mAuthor.getName());

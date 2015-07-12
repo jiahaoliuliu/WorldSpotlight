@@ -34,4 +34,5 @@
     <dimen name="video_details_group_margin_vertical">3dp</dimen>
     <dimen name="video_details_author_image_size">50dp</dimen>
     <dimen name="video_details_elements_margin_horizontal">10dp</dimen>
+    <dimen name="video_details_like_image_size">50dp</dimen>
 </resources>
