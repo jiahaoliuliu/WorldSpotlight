@@ -77,4 +77,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.google.android.gms:play-services-plus:7.5.+'
 
+    //Ripple Effect
+    compile "com.github.snuffix.android.material.rippleeffect:library:1.0"
+
 }
