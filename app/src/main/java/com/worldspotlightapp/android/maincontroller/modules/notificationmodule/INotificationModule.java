@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.maincontroller.modules.notificationmodule;
 
 import android.content.Context;
+import android.content.DialogInterface;
 
 public interface INotificationModule {
 
@@ -45,7 +46,14 @@ public interface INotificationModule {
     /**
      * Show an alert dialog
      */
-    public void showAlertDialog();
+    public void showAlertDialog(
+            Context context,
+            String title,
+            String message,
+            String positiveButtonText,
+            DialogInterface.OnClickListener positiveButtonOnClickListener,
+            String negativeButtonText,
+            DialogInterface.OnClickListener negativeButtonOnClickListener);
 
     /**
      * Show a normal toast

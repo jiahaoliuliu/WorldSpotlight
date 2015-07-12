@@ -11,10 +11,12 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
@@ -33,7 +35,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.Abstrac
 public abstract class AbstractBaseActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, OnEventTrackingModuleRequestedListener {
 
-    private static final String TAG = "BaseActivity";
+    private static final String TAG = "AbstractBaseActivity";
 
     protected Context mContext;
     protected ActionBar mActionBar;
@@ -208,5 +210,57 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     @Override
     public IEventsTrackingModule getEventsTrackingModule() {
         return mEventTrackingModule;
+    }
+
+    /**
+     * Method used to check if the user has logged in or not.
+     * if not, it will show the alert dialog ask the user to log in
+     *
+     * @return
+     *      True if the user has logged in
+     *      False if the user has not logged in
+     */
+    protected boolean showAlertIfUserHasNotLoggedIn() {
+        return showAlertIfUserHasNotLoggedIn(
+                getResources().getString(R.string.abstract_base_activity_user_must_logged_in));
+    }
+
+    /**
+     * Method used to check if the user has logged in or not.
+     * if not, it will show the alert dialog ask the user to log in
+     *
+     * @param message
+     *      The customized message to be shown to the user
+     *
+     * @return
+     *      True if the user has logged in
+     *      False if the user has not logged in
+     */
+    protected boolean showAlertIfUserHasNotLoggedIn(String message) {
+        boolean hasUserLoggedIn = mUserDataModule.hasUserData();
+
+        // Show alert dialog if the user has not logged in
+        if (!hasUserLoggedIn) {
+            mNotificationModule.showAlertDialog(
+                    mContext,
+                    getString(R.string.notification_module_dialog_user_not_logged_in_title),
+                    message,
+                    getString(R.string.notification_module_dialog_yes),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG, "Positive button clicked. Showing login screen to the user");
+                        }
+                    },
+                    getString(R.string.notification_module_dialog_no),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG, "Nagative button clicked. Dismissing this alert");
+                        }
+                    }
+                );
+        }
+        return hasUserLoggedIn;
     }
 }

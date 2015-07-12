@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,11 +110,12 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
      * like a video.
      */
     private void likeThisVideo() {
-        if (!mUserDataModule.hasUserData()) {
-            // Show alert to ask the user if he want to login or not
+        if (!showAlertIfUserHasNotLoggedIn(
+                getString(R.string.video_details_activity_user_must_logged_in_to_like))) {
             return;
         }
 
+        // The user has logged in
         // TODO: Like the vi
     }
 
