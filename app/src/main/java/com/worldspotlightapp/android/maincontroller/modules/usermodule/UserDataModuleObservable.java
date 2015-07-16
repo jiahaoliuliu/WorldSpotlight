@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 
+import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
 
@@ -7,11 +8,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
@@ -156,7 +159,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                             notifyObservers(userDataModuleResponse);
                         }
                     }
-                // If there is any error on login, try to sign up
+                    // If there is any error on login, try to sign up
                 } else {
                     mUser = new User(name, email, email, password, profilePhotoUrl, true, profileUrl);
                     mUser.signUpInBackground(new SignUpCallback() {
@@ -244,4 +247,15 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
             }
         }
     }
+
+    @Override
+    public void likeAVideo(boolean likeIt, final String videoId) {
+        if (!hasUserData() || mUser == null) {
+            Log.e(TAG, "Trying to like a video while the user has not logged in");
+            return;
+        }
+
+        // TODO: Implement this
+    }
+
 }

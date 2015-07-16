@@ -30,9 +30,6 @@ public class User extends ParseUser {
 
     public static final String PARSE_TABLE_COLUMN_PROFILE_URL = "profileUrl";
 
-    public static final String PARSE_TABLE_COLUMN_LIKED_VIDEOS = "likedVideos";
-    private List<String> mLikedVieosList;
-
     /**
      * The empty constructor required by Parse
      */
@@ -58,6 +55,8 @@ public class User extends ParseUser {
         setPhotoUrl(parseUser.getString(PARSE_TABLE_COLUMN_PHOTO_URL));
         setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));
         setProfileUrl(parseUser.getString(PARSE_TABLE_COLUMN_PROFILE_URL));
+
+        // Other data
     }
 
     // Name
@@ -132,67 +131,6 @@ public class User extends ParseUser {
         if (profileUrl != null) {
             put(PARSE_TABLE_COLUMN_PROFILE_URL, profileUrl);
         }
-    }
-
-    /**
-     * Check if the user liked this video or not.
-     *
-     * @param videoObjectId
-     *      The id of the video object to be checked
-     * @return
-     *      True if the user liked this video
-     *      False otherwise
-     */
-    public boolean doesUserLikeThisVideo(String videoObjectId) {
-        if (mLikedVieosList == null) {
-            mLikedVieosList = getLikedVideosList();
-        }
-
-        return mLikedVieosList.contains(videoObjectId);
-    }
-
-    /**
-     * Get the list of the videos object id that the user liked
-     *
-     * @return
-     *      The list of the videos object id that the user liked
-     */
-    public List<String> getLikedVideosList() {
-        if (mLikedVieosList == null) {
-            mLikedVieosList = new ArrayList<String>();
-            JSONArray likedVideoJsonArray = getJSONArray(PARSE_TABLE_COLUMN_LIKED_VIDEOS);
-            for (int i = 0; i < likedVideoJsonArray.length(); i++) {
-                try {
-                    mLikedVieosList.add((String)likedVideoJsonArray.get(i));
-                } catch (JSONException e) {
-                    Log.e(TAG, "Error adding element " + i + " from the liked vieos");
-                }
-            }
-        }
-
-        return mLikedVieosList;
-    }
-
-    public boolean likeAVideo(String videoId) {
-        if (!mLikedVieosList.contains(videoId)) {
-            mLikedVieosList.add(videoId);
-
-            // TODO: Save the data
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean unlikeAvideo(String videoId) {
-        if (mLikedVieosList.contains(videoId)) {
-            mLikedVieosList.remove(videoId);
-
-            // TODO: Save the data
-            return true;
-        }
-
-        return false;
     }
 
     @Override
