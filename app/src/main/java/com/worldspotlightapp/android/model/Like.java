@@ -11,7 +11,7 @@ import com.parse.ParseObject;
  * Created by jiahaoliuliu on 7/16/15.
  */
 @ParseClassName("Likes")
-public class Likes extends ParseObject {
+public class Like extends ParseObject {
 
     // User Id
     public static final String USER_ID = "userId";
@@ -19,9 +19,9 @@ public class Likes extends ParseObject {
     // Video Id
     public static final String VIDEO_ID = "videoId";
 
-    public Likes(){};
+    public Like(){};
 
-    public Likes(String userId, String videoId) {
+    public Like(String userId, String videoId) {
         super();
         put(USER_ID, userId);
         put(VIDEO_ID, videoId);

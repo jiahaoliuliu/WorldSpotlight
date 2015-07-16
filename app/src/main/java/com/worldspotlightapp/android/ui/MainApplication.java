@@ -11,7 +11,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
-import com.worldspotlightapp.android.model.Likes;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.User;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
@@ -35,7 +35,7 @@ public class MainApplication extends Application {
         // Initialize Parse
         ParseObject.registerSubclass(Video.class);
         ParseObject.registerSubclass(User.class);
-        ParseObject.registerSubclass(Likes.class);
+        ParseObject.registerSubclass(Like.class);
         if (IS_PRODUCTION) {
             Parse.initialize(this, Secret.PARSE_APPLICATION_ID_PRODUCTION, Secret.PARSE_CLIENT_KEY_PRODUCTION);
         } else {

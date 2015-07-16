@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.maincontroller.modules.usermodule.response
 
 import com.worldspotlightapp.android.maincontroller.BaseModuleResponse;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.User;
 
 /**
@@ -9,14 +10,14 @@ import com.worldspotlightapp.android.model.User;
  */
 public class UserDataModuleLikeResponse extends BaseModuleResponse {
 
-    private User mUser;
+    private Like mLike;
 
-    public UserDataModuleLikeResponse(ParseResponse parseResponse, User user) {
+    public UserDataModuleLikeResponse(ParseResponse parseResponse, Like like) {
         super(parseResponse);
-        this.mUser = user;
+        this.mLike = like;
     }
 
-    public User getUser() {
-        return mUser;
+    public Like getLike() {
+        return mLike;
     }
 }

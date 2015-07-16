@@ -116,7 +116,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         }
 
         // The user has logged in
-        mUserDataModule.likeAVideo(true, mVideo.getObjectId());
+        mUserDataModule.likeAVideo(this, true, mVideo.getObjectId());
     }
 
     @Override

@@ -44,5 +44,5 @@
     <string name="error_message_username_already_taken">There is already some user with that email address. Could you pick another one?</string>
     <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
     <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
-
+    <string name="error_message_user_not_logged_in">The user must logged in for this. Could you try to log in?</string>
 </resources>

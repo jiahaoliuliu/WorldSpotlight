@@ -19,6 +19,8 @@ public class User extends ParseUser {
 
     private static final String TAG = "ParseUser";
 
+    public static final String PARSE_TABLE_COLUMN_OBJECT_ID = "objectId";
+
     /**
      * The name of the user
      */

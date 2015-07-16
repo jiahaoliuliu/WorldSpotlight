@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 
+import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
 
@@ -9,15 +10,19 @@ import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.User;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
@@ -30,6 +35,8 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     private final Preferences mPreferences;
 
     private User mUser;
+
+    private List<Like> mLikedVideosList;
 
     /**
      * The unique identifier of the device/user
@@ -45,6 +52,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
             mUser = new User(parseUser);
+            updateUserDataIfNeeded();
         }
     }
 
@@ -61,6 +69,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     public boolean hasUserData() {
         if (mUser == null && ParseUser.getCurrentUser() != null) {
             mUser = new User(ParseUser.getCurrentUser());
+            updateUserDataIfNeeded();
         }
 
         return mUser != null;
@@ -76,6 +85,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 if (!parseResponse.isError()) {
                     if (parseUser != null) {
                         mUser = new User(parseUser);
+                        updateUserDataIfNeeded();
                         UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                         if (mUser.isNew()) {
                             // User signed up and logged in through Facebook
@@ -91,6 +101,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                         // if the current user exists
                         if (ParseUser.getCurrentUser() != null) {
                             mUser = new User(ParseUser.getCurrentUser());
+                            updateUserDataIfNeeded();
                             UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                             setChanged();
                             notifyObservers(userDataModuleUserResponse);
@@ -128,6 +139,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 if (!parseResponse.isError()) {
                     if (parseUser != null) {
                         mUser = new User(parseUser);
+                        updateUserDataIfNeeded();
                         UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                         if (mUser.isNew()) {
                             // User signed up and logged in through Facebook
@@ -143,6 +155,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                         // if the current user exists
                         if (ParseUser.getCurrentUser() != null) {
                             mUser = new User(parseUser.getCurrentUser());
+                            updateUserDataIfNeeded();
                             UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                             setChanged();
                             notifyObservers(userDataModuleUserResponse);
@@ -166,6 +179,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                             ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                             // If sign up was ok
                             if (!parseResponse.isError()) {
+                                updateUserDataIfNeeded();
                                 UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                                 setChanged();
                                 notifyObservers(userDataModuleUserResponse);
@@ -248,12 +262,52 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
     @Override
     public void likeAVideo(Observer observer, boolean likeIt, final String videoId) {
+        addObserver(observer);
         if (!hasUserData() || mUser == null) {
             Log.e(TAG, "Trying to like a video while the user has not logged in");
+            ParseResponse parseResponse =
+                    new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_USER_NOT_LOGGED_IN).build();
+            setChanged();
+            UserDataModuleLikeResponse userDataModuleLikeResponse =
+                    new UserDataModuleLikeResponse(parseResponse, null);
+            setChanged();
+            notifyObservers(userDataModuleLikeResponse);
             return;
         }
 
         // TODO: Implement this
+    }
+
+    /**
+     * Update all the data related with the user, such as liked videos or so.
+     */
+    private void updateUserDataIfNeeded() {
+        Log.v(TAG, "Updating user data if needed");
+        if (!hasUserData() || mUser == null) {
+            Log.e(TAG, "Trying to update user data when the user has not logged in");
+            return;
+        }
+
+        // Update the list of liked video only if needed
+        if (mLikedVideosList != null) {
+            return;
+        }
+
+        ParseQuery<Like> parseQueryForLikes = ParseQuery.getQuery(Like.class);
+        parseQueryForLikes.whereEqualTo(User.PARSE_TABLE_COLUMN_OBJECT_ID, mUser.getObjectId());
+        parseQueryForLikes.findInBackground(new FindCallback<Like>() {
+            @Override
+            public void done(List<Like> list, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "The list of likes has been correctly retrieved from the backed");
+                    mLikedVideosList = list;
+                } else {
+                    Log.e(TAG, "Error retrieving the list of likes from backend");
+                    return;
+                }
+            }
+        });
     }
 
 }
