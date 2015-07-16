@@ -16,7 +16,7 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
 
 import java.util.Observable;
 
@@ -112,7 +112,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Data received from " + observable + ", Object:" + o);
         if (observable instanceof UserDataModuleObservable) {
-            if (o instanceof UserDataModuleResponse) {
+            if (o instanceof UserDataModuleUserResponse) {
 
                 // There is not need to store the data
 

@@ -7,11 +7,11 @@ import com.worldspotlightapp.android.model.User;
 /**
  * Created by jiahaoliuliu on 2/20/15.
  */
-public class UserDataModuleResponse extends BaseModuleResponse {
+public class UserDataModuleUserResponse extends BaseModuleResponse {
 
     private User mUser;
 
-    public UserDataModuleResponse(ParseResponse parseResponse, User user) {
+    public UserDataModuleUserResponse(ParseResponse parseResponse, User user) {
         super(parseResponse);
         this.mUser = user;
     }
