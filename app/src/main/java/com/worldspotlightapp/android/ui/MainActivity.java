@@ -23,7 +23,6 @@ import android.support.v7.widget.SearchView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,10 +49,8 @@ import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
-import java.util.Set;
 import java.util.Stack;
 
 public class MainActivity extends AbstractBaseActivityObserver {
@@ -81,6 +78,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private TextView mUserNameImageView;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mDrawer;
+    private MenuItem mDrawerItemLogin;
+    private MenuItem mDrawerItemFavourites;
+    private MenuItem mDrawerItemLogout;
+
     // By default drawer is not open
     private boolean mIsDrawerOpen = false;
 
@@ -134,6 +135,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mUserNameImageView = (TextView) findViewById(R.id.user_name_text_view);
 
         mDrawer = (NavigationView) findViewById(R.id.drawer);
+        mDrawerItemLogin = mDrawer.getMenu().findItem(R.id.drawer_item_login);
+        mDrawerItemFavourites = mDrawer.getMenu().findItem(R.id.drawer_item_favourites);
+        mDrawerItemLogout = mDrawer.getMenu().findItem(R.id.drawer_item_logout);
 
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
@@ -241,37 +245,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
-    }
-
-    /**
-     * Update the user profile data in the drawer if possible
-     */
-    private void updateUserProfileIfPossibleAndNeeded() {
-        // If the user data does not exist, exit
-        if (!mUserDataModule.hasUserData()) {
-            return;
-        }
-
-        UserData userData = mUserDataModule.getUserData();
-
-        // If the user data has not been changed, not do anything
-        if (userData.equals(mUserData)) {
-            return;
-        }
-
-        mUserData = userData;
-
-        // Updating the views. For now it is only possible for google plus users
-        if (!userData.isGooglePlusUser()) {
-            return;
-        }
-
-        // Profile photo
-        mPicasso.load(userData.getPhotoUrl()).into(mUserProfileImageView);
-
-        // User name
-        mUserNameImageView.setText(mUserData.getName());
-        mUserNameImageView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -398,6 +371,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
 
         updateUserProfileIfPossibleAndNeeded();
+        updateDrawerItems();
     }
 
     /**
@@ -417,6 +391,50 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return dataSplitted[dataSplitted.length - 1];
         }
         return null;
+    }
+
+    /**
+     * Update the user profile data in the drawer if possible
+     */
+    private void updateUserProfileIfPossibleAndNeeded() {
+        // If the user data does not exist, exit
+        if (!mUserDataModule.hasUserData()) {
+            return;
+        }
+
+        UserData userData = mUserDataModule.getUserData();
+
+        // If the user data has not been changed, not do anything
+        if (userData.equals(mUserData)) {
+            return;
+        }
+
+        mUserData = userData;
+
+        // Updating the views. For now it is only possible for google plus users
+        if (!userData.isGooglePlusUser()) {
+            return;
+        }
+
+        // Profile photo
+        mPicasso.load(userData.getPhotoUrl()).into(mUserProfileImageView);
+
+        // User name
+        mUserNameImageView.setText(mUserData.getName());
+        mUserNameImageView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Update the items in drawer.
+     */
+    private void updateDrawerItems() {
+        if (mUserDataModule.hasUserData()) {
+            mDrawerItemLogin.setVisible(false);
+            mDrawerItemLogout.setVisible(true);
+        } else {
+            mDrawerItemLogin.setVisible(true);
+            mDrawerItemLogout.setVisible(false);
+        }
     }
 
     /**
