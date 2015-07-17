@@ -291,7 +291,7 @@ public class ParseResponse extends ParseException {
                 resultMessage = context.getResources().getString(R.string.error_message_login_with_google);
                 break;
             case ERROR_USER_NOT_LOGGED_IN:
-                resultMessage = context.getResources().getString(R.string.error_message_login_with_google);
+                resultMessage = context.getResources().getString(R.string.error_message_user_not_logged_in);
                 break;
             default:
                 Log.w(TAG, "Request status not recognized " + getCode());

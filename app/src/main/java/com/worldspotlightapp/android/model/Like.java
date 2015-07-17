@@ -36,6 +36,37 @@ public class Like extends ParseObject {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        if (!(o instanceof Like)) {
+            return false;
+        }
+
+        Like that = (Like) o;
+
+        // Check the user id
+        if (getUserId() != null ?
+                !getUserId().equals(that.getUserId()) : that.getUserId() != null) {
+            return false;
+        }
+
+        // Check the video id
+        if (getVideoId() != null ?
+                !getVideoId().equals(that.getVideoId()) : that.getVideoId() != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "Likes{" +
                 "UserId='" + getUserId() + '\'' +

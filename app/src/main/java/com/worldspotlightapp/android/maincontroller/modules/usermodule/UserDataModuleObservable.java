@@ -10,12 +10,14 @@ import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
@@ -141,7 +143,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                         mUser = new User(parseUser);
                         updateUserDataIfNeeded();
                         UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
-                        if (mUser.isNew()) {
+                        if (ParseUser.getCurrentUser().isNew()) {
                             // User signed up and logged in through Facebook
                             setChanged();
                             notifyObservers(userDataModuleUserResponse);
@@ -275,7 +277,56 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
             return;
         }
 
-        // TODO: Implement this
+        final Like newLike = new Like(mUser.getObjectId(), videoId);
+
+        // If the user likes a video
+        if (likeIt) {
+            // Only update if the user does not liked the video before
+            if (!mLikedVideosList.contains(newLike)) {
+                mLikedVideosList.add(newLike);
+                // Save the like
+                newLike.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                        if (!parseResponse.isError()) {
+                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, newLike);
+                            setChanged();
+                            notifyObservers(userDataModuleLikeResponse);
+                        // There was some error
+                        } else {
+                            Log.e(TAG, "Error saving the like for the user ", e);
+                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, null);
+                            setChanged();
+                            notifyObservers(userDataModuleLikeResponse);
+                        }
+                    }
+                });
+            }
+        // If the user does not like a video
+        } else {
+            // Only update if the user does liked the video before
+            if (mLikedVideosList.contains(newLike)) {
+                mLikedVideosList.remove(newLike);
+                newLike.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                        if (!parseResponse.isError()) {
+                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, newLike);
+                            setChanged();
+                            notifyObservers(userDataModuleLikeResponse);
+                            // There was some error
+                        } else {
+                            Log.e(TAG, "Error deleting the like for the user ", e);
+                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, null);
+                            setChanged();
+                            notifyObservers(userDataModuleLikeResponse);
+                        }
+                    }
+                });
+            }
+        }
     }
 
     /**
@@ -286,6 +337,18 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         if (!hasUserData() || mUser == null) {
             Log.e(TAG, "Trying to update user data when the user has not logged in");
             return;
+        }
+
+        // Update object id
+        if (mUser.getObjectId() == null) {
+            Log.v(TAG, "The user does not have the object id. Get it from the current user");
+            ParseUser parseUser = ParseUser.getCurrentUser();
+            if (parseUser != null) {
+                Log.v(TAG, "Current user exists and it is " + parseUser);
+                mUser.setObjectId(parseUser.getObjectId());
+            } else {
+                Log.e(TAG, "Current user does not exists!");
+            }
         }
 
         // Update the list of liked video only if needed
@@ -309,5 +372,4 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
             }
         });
     }
-
 }

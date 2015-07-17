@@ -53,6 +53,7 @@ public class User extends ParseUser {
 
     public User(ParseUser parseUser) {
         super();
+        setObjectId(parseUser.getObjectId());
         setName(parseUser.getString(PARSE_TABLE_COLUMN_NAME));
         setPhotoUrl(parseUser.getString(PARSE_TABLE_COLUMN_PHOTO_URL));
         setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));

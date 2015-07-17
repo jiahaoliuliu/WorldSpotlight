@@ -13,6 +13,7 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
@@ -45,6 +46,9 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     private Button mFacebookLoginButton;
     private Button mGooglePlusSignInButton;
     private Button mSkipButton;
+
+    // The response from parse
+    private ParseResponse mParseReseponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +109,14 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
             Log.v(TAG, "The user has already logged in");
             mNotificationModule.dismissLoadingDialog();
             finish();
+        } else if (mParseReseponse != null) {
+            Log.v(TAG, "Error on login/signu " + mParseReseponse);
+            mNotificationModule.showToast(mParseReseponse.getHumanRedableResponseMessage(mContext), true);
+
+            // Remove parse response
+            mParseReseponse = null;
+
+            mNotificationModule.dismissLoadingDialog();
         }
     }
 
@@ -114,7 +126,9 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         if (observable instanceof UserDataModuleObservable) {
             if (o instanceof UserDataModuleUserResponse) {
 
-                // There is not need to store the data
+                // Get parse response, which could be error
+                UserDataModuleUserResponse userDataModuleUserResponse = (UserDataModuleUserResponse)o;
+                mParseReseponse = userDataModuleUserResponse.getParseResponse();
 
                 if (isInForeground()) {
                     processDataIfExists();
