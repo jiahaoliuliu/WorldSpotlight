@@ -2,13 +2,17 @@ package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.support.v7.widget.SearchView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -67,6 +72,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private GoogleMap mMap;
     // Marker on the map
     private Marker mMyPositionMarker;
+    //      Drawer
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView mDrawer;
 
     private FloatingActionButton mMyLocationFloatingActionButton;
 
@@ -102,6 +111,30 @@ public class MainActivity extends AbstractBaseActivityObserver {
         registerForLocalizationService();
 
         // Link the views
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (NavigationView) findViewById(R.id.drawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close
+        );
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                switch (menuItem.getItemId()) {
+                    case R.id.drawer_item_favourites:
+                        Log.v(TAG, "Favourites clicked");
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         mMyLocationFloatingActionButton = (FloatingActionButton) findViewById(R.id.my_location_floating_action_button);
         mMyLocationFloatingActionButton.setOnClickListener(onClickListener);
 
@@ -476,6 +509,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 searchByKeyword();
                 return true;
             default:
+                // Pass the event to ActionBarDrawerToggle, if it returns
+                // true, then it has handled the app icon touch event
+                if (mDrawerToggle.onOptionsItemSelected(item)) {
+                    return true;
+                }
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -547,4 +585,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
     public int hashCode() {
         return 0;
     }
+
+    // Drawer
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
 }

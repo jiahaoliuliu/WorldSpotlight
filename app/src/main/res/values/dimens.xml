@@ -20,6 +20,9 @@
     <dimen name="main_activity_view_pager_indicator_height">5dp</dimen>
     <dimen name="main_activity_view_pager_height">100dp</dimen>
 
+    <!--    Drawer -->
+    <dimen name="drawer_header_height">200dp</dimen>
+
     <!--     Video Preview -->
     <dimen name="main_activity_video_preview_margin">10dp</dimen>
     <dimen name="main_activity_video_preview_title_size">15sp</dimen>
