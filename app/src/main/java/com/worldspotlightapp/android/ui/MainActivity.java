@@ -122,6 +122,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Delete all the possible observers
         mVideosModule.deleteObserver(this);
+        mUserDataModule.deleteObserver(this);
 
         registerForLocalizationService();
 
@@ -182,8 +183,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Center the map to the user
         centerMapToUser();
-
-        updateUserProfileIfPossibleAndNeeded();
     }
 
     private void setupMapIfNeeded() {
@@ -396,8 +395,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
         String videoId = getTriggeredVideoId();
         if (videoId != null) {
             showVideoPreview(videoId);
-            return;
         }
+
+        updateUserProfileIfPossibleAndNeeded();
     }
 
     /**
