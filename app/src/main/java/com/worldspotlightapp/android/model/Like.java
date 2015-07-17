@@ -14,25 +14,25 @@ import com.parse.ParseObject;
 public class Like extends ParseObject {
 
     // User Id
-    public static final String USER_ID = "userId";
+    public static final String PARSE_TABLE_COLUMN_USER_ID = "userId";
 
     // Video Id
-    public static final String VIDEO_ID = "videoId";
+    public static final String PARSE_TABLE_COLUMN_VIDEO_ID = "videoId";
 
     public Like(){};
 
     public Like(String userId, String videoId) {
         super();
-        put(USER_ID, userId);
-        put(VIDEO_ID, videoId);
+        put(PARSE_TABLE_COLUMN_USER_ID, userId);
+        put(PARSE_TABLE_COLUMN_VIDEO_ID, videoId);
     }
 
     public String getUserId() {
-        return getString(USER_ID);
+        return getString(PARSE_TABLE_COLUMN_USER_ID);
     }
 
     public String getVideoId() {
-        return getString(VIDEO_ID);
+        return getString(PARSE_TABLE_COLUMN_VIDEO_ID);
     }
 
     @Override

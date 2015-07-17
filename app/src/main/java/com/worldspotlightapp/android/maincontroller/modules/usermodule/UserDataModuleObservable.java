@@ -52,7 +52,6 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         super();
         this.mPreferences = preferences;
         generateUUID();
-        mLikedVideosList = new ArrayList<Like>();
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
             mUser = new User(parseUser);
@@ -281,6 +280,11 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
         final Like newLike = new Like(mUser.getObjectId(), videoId);
 
+        // Try to avoid the null problem
+        if (mLikedVideosList == null) {
+            mLikedVideosList = new ArrayList<Like>();
+        }
+
         // If the user likes a video
         if (likeIt) {
             // Only update if the user does not liked the video before
@@ -363,17 +367,16 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         }
 
         ParseQuery<Like> parseQueryForLikes = ParseQuery.getQuery(Like.class);
-        parseQueryForLikes.whereEqualTo(User.PARSE_TABLE_COLUMN_OBJECT_ID, mUser.getObjectId());
+        parseQueryForLikes.whereEqualTo(Like.PARSE_TABLE_COLUMN_USER_ID, mUser.getObjectId());
         parseQueryForLikes.findInBackground(new FindCallback<Like>() {
             @Override
             public void done(List<Like> list, ParseException e) {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
-                    Log.v(TAG, "The list of likes has been correctly retrieved from the backed");
+                    Log.v(TAG, "The list of likes has been correctly retrieved from the backed " + list);
                     mLikedVideosList = list;
                 } else {
                     Log.e(TAG, "Error retrieving the list of likes from backend");
-                    return;
                 }
             }
         });
