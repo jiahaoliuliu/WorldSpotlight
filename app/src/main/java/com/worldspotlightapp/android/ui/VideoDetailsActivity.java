@@ -124,6 +124,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         boolean likeThisVideo = mLikeImageView.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.ic_like_star).getConstantState();
         Log.v(TAG, "The user like this video? " + likeThisVideo);
         mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
+        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
     }
 
     @Override
