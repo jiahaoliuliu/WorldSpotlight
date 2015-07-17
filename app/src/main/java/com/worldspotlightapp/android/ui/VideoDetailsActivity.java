@@ -21,6 +21,7 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.model.Author;
@@ -119,7 +120,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         }
 
         // The user has logged in
-        mUserDataModule.likeAVideo(this, true, mVideo.getObjectId());
+        boolean likeThisVideo = mLikeImageView.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.ic_like_star).getConstantState();
+        Log.v(TAG, "The user like this video? " + likeThisVideo);
+        mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
     }
 
     @Override
@@ -184,7 +187,21 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            } else if (response instanceof UserDataModuleUnlikeResponse) {
+                Log.v(TAG, "User data module unlike response received");
+                UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = (UserDataModuleUnlikeResponse) response;
+                ParseResponse parseResponse = userDataModuleUnlikeResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    Like like = userDataModuleUnlikeResponse.getLike();
+                    String myVideoId = mVideo == null? null : mVideo.getObjectId();
+                    if (myVideoId != null && myVideoId.equals(like.getVideoId())) {
+                        mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star));
+                    }
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
+
         }
 
         mNotificationModule.dismissLoadingDialog();

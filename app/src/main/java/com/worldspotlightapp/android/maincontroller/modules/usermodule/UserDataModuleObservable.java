@@ -24,6 +24,7 @@ import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.User;
@@ -323,15 +324,15 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                     public void done(ParseException e) {
                         ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                         if (!parseResponse.isError()) {
-                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, newLike);
+                            UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = new UserDataModuleUnlikeResponse(parseResponse, newLike);
                             setChanged();
-                            notifyObservers(userDataModuleLikeResponse);
+                            notifyObservers(userDataModuleUnlikeResponse);
                             // There was some error
                         } else {
                             Log.e(TAG, "Error deleting the like for the user ", e);
-                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, null);
+                            UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = new UserDataModuleUnlikeResponse(parseResponse, newLike);
                             setChanged();
-                            notifyObservers(userDataModuleLikeResponse);
+                            notifyObservers(userDataModuleUnlikeResponse);
                         }
                     }
                 });
