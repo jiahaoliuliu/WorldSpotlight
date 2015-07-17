@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 import android.app.Activity;
 
 import com.worldspotlightapp.android.maincontroller.AbstractBaseModuleObservable;
+import com.worldspotlightapp.android.model.UserData;
 
 import java.util.Observer;
 import java.util.UUID;
@@ -29,6 +30,8 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      *     False otherwise
      */
     public abstract boolean hasUserData();
+
+    public abstract UserData getUserData();
 
     /**
      * Login using facebook account. This is done using the Parse utility

@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.support.v7.widget.SearchView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
@@ -43,6 +45,7 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
+import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
@@ -74,6 +77,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private Marker mMyPositionMarker;
     //      Drawer
     private DrawerLayout mDrawerLayout;
+    private ImageView mUserProfileImageView;
+    private TextView mUserNameImageView;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mDrawer;
     // By default drawer is not open
@@ -92,6 +97,12 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Action bar items
     private Menu mMenu;
     private MenuItem mMenuItemSearch;
+
+    // UserData
+    private UserData mUserData;
+
+    private Picasso mPicasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,8 +125,13 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         registerForLocalizationService();
 
+        mPicasso = Picasso.with(mContext);
+
         // Link the views
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mUserProfileImageView = (ImageView) findViewById(R.id.user_profile_image_view);
+        mUserNameImageView = (TextView) findViewById(R.id.user_name_text_view);
+
         mDrawer = (NavigationView) findViewById(R.id.drawer);
 
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -160,11 +176,14 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
+
+        // Update data
         setupMapIfNeeded();
 
         // Center the map to the user
         centerMapToUser();
 
+        updateUserProfileIfPossibleAndNeeded();
     }
 
     private void setupMapIfNeeded() {
@@ -223,6 +242,37 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 return true;
             }
         });
+    }
+
+    /**
+     * Update the user profile data in the drawer if possible
+     */
+    private void updateUserProfileIfPossibleAndNeeded() {
+        // If the user data does not exist, exit
+        if (!mUserDataModule.hasUserData()) {
+            return;
+        }
+
+        UserData userData = mUserDataModule.getUserData();
+
+        // If the user data has not been changed, not do anything
+        if (userData.equals(mUserData)) {
+            return;
+        }
+
+        mUserData = userData;
+
+        // Updating the views. For now it is only possible for google plus users
+        if (!userData.isGooglePlusUser()) {
+            return;
+        }
+
+        // Profile photo
+        mPicasso.load(userData.getPhotoUrl()).into(mUserProfileImageView);
+
+        // User name
+        mUserNameImageView.setText(mUserData.getName());
+        mUserNameImageView.setVisibility(View.VISIBLE);
     }
 
     @Override
