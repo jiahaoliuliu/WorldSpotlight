@@ -1,5 +1,7 @@
 package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
 
@@ -7,16 +9,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.User;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
@@ -29,6 +39,8 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     private final Preferences mPreferences;
 
     private User mUser;
+
+    private List<Like> mLikedVideosList;
 
     /**
      * The unique identifier of the device/user
@@ -44,6 +56,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
             mUser = new User(parseUser);
+            updateUserDataIfNeeded();
         }
     }
 
@@ -60,6 +73,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     public boolean hasUserData() {
         if (mUser == null && ParseUser.getCurrentUser() != null) {
             mUser = new User(ParseUser.getCurrentUser());
+            updateUserDataIfNeeded();
         }
 
         return mUser != null;
@@ -75,40 +89,42 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 if (!parseResponse.isError()) {
                     if (parseUser != null) {
                         mUser = new User(parseUser);
-                        UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                        updateUserDataIfNeeded();
+                        UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                         if (mUser.isNew()) {
                             // User signed up and logged in through Facebook
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                         } else {
                             // User logged in through Facebook
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                         }
                         // User has signed in but the parse user is false. This is an inconsistent state.
                     } else {
                         // if the current user exists
                         if (ParseUser.getCurrentUser() != null) {
                             mUser = new User(ParseUser.getCurrentUser());
-                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                            updateUserDataIfNeeded();
+                            UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                             // The user has logged with Facebook but the current user does not exists.
                             // Show the error to the user
                         } else {
                             // Update the Parse response
                             ParseResponse loginErrorParseResponse =
                                     new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_FACEBOOK).build();
-                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(loginErrorParseResponse, null);
+                            UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(loginErrorParseResponse, null);
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                         }
                     }
                     // Some error happend. Show them to the user
                 } else {
-                    UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, null);
+                    UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, null);
                     setChanged();
-                    notifyObservers(userDataModuleResponse);
+                    notifyObservers(userDataModuleUserResponse);
                 }
             }
         });
@@ -127,36 +143,38 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 if (!parseResponse.isError()) {
                     if (parseUser != null) {
                         mUser = new User(parseUser);
-                        UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
-                        if (mUser.isNew()) {
+                        updateUserDataIfNeeded();
+                        UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
+                        if (ParseUser.getCurrentUser().isNew()) {
                             // User signed up and logged in through Facebook
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                         } else {
                             // User logged in through Facebook
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                         }
                         // User has signed in but the parse user is false. This is an inconsistent state.
                     } else {
                         // if the current user exists
                         if (ParseUser.getCurrentUser() != null) {
                             mUser = new User(parseUser.getCurrentUser());
-                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                            updateUserDataIfNeeded();
+                            UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                             // The user has logged with Facebook but the current user does not exists.
                             // Show the error to the user
                         } else {
                             // Update the Parse response
                             ParseResponse loginErrorParseResponse =
                                     new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_GOOGLE).build();
-                            UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(loginErrorParseResponse, null);
+                            UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(loginErrorParseResponse, null);
                             setChanged();
-                            notifyObservers(userDataModuleResponse);
+                            notifyObservers(userDataModuleUserResponse);
                         }
                     }
-                // If there is any error on login, try to sign up
+                    // If there is any error on login, try to sign up
                 } else {
                     mUser = new User(name, email, email, password, profilePhotoUrl, true, profileUrl);
                     mUser.signUpInBackground(new SignUpCallback() {
@@ -165,18 +183,19 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                             ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                             // If sign up was ok
                             if (!parseResponse.isError()) {
-                                UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(parseResponse, mUser);
+                                updateUserDataIfNeeded();
+                                UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUser);
                                 setChanged();
-                                notifyObservers(userDataModuleResponse);
+                                notifyObservers(userDataModuleUserResponse);
                                 // If there is any problem on Sign up
                             } else {
                                 // Reset the value of User
                                 mUser = null;
                                 ParseResponse signupErrorParseResponse =
                                         new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_GOOGLE).build();
-                                UserDataModuleResponse userDataModuleResponse = new UserDataModuleResponse(signupErrorParseResponse, null);
+                                UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(signupErrorParseResponse, null);
                                 setChanged();
-                                notifyObservers(userDataModuleResponse);
+                                notifyObservers(userDataModuleUserResponse);
                             }
                         }
                     });
@@ -243,5 +262,140 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 }
             }
         }
+    }
+
+    @Override
+    public void likeAVideo(Observer observer, boolean likeIt, final String videoId) {
+        addObserver(observer);
+        if (!hasUserData() || mUser == null) {
+            Log.e(TAG, "Trying to like a video while the user has not logged in");
+            ParseResponse parseResponse =
+                    new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_USER_NOT_LOGGED_IN).build();
+            setChanged();
+            UserDataModuleLikeResponse userDataModuleLikeResponse =
+                    new UserDataModuleLikeResponse(parseResponse, null);
+            setChanged();
+            notifyObservers(userDataModuleLikeResponse);
+            return;
+        }
+
+        final Like newLike = new Like(mUser.getObjectId(), videoId);
+
+        // Try to avoid the null problem
+        if (mLikedVideosList == null) {
+            mLikedVideosList = new ArrayList<Like>();
+        }
+
+        // If the user likes a video
+        if (likeIt) {
+            // Only update if the user does not liked the video before
+            if (!mLikedVideosList.contains(newLike)) {
+                mLikedVideosList.add(newLike);
+                // Save the like
+                newLike.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                        if (!parseResponse.isError()) {
+                            Log.v(TAG, "Like saved correcty. It has the object id " + newLike.getObjectId());
+                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, newLike);
+                            setChanged();
+                            notifyObservers(userDataModuleLikeResponse);
+                        // There was some error
+                        } else {
+                            Log.e(TAG, "Error saving the like for the user ", e);
+                            UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, null);
+                            setChanged();
+                            notifyObservers(userDataModuleLikeResponse);
+                        }
+                    }
+                });
+            }
+        // If the user does not like a video
+        } else {
+            // Only update if the user does liked the video before
+            if (mLikedVideosList.contains(newLike)) {
+                // the recent created like cannot be used because it does not contains the objectId. To be deleted,
+                // the
+                Like likeToBeRemoved = mLikedVideosList.get(mLikedVideosList.indexOf(newLike));
+                mLikedVideosList.remove(likeToBeRemoved);
+                likeToBeRemoved.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                        if (!parseResponse.isError()) {
+                            UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = new UserDataModuleUnlikeResponse(parseResponse, newLike);
+                            setChanged();
+                            notifyObservers(userDataModuleUnlikeResponse);
+                            // There was some error
+                        } else {
+                            Log.e(TAG, "Error deleting the like for the user ", e);
+                            UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = new UserDataModuleUnlikeResponse(parseResponse, newLike);
+                            setChanged();
+                            notifyObservers(userDataModuleUnlikeResponse);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public boolean doesUserLikeThisVideo(String videoId) {
+        if (mLikedVideosList == null) {
+            return false;
+        }
+
+        // If the user does not exists, not do anything
+        if (!hasUserData() || mUser == null) {
+            return false;
+        }
+
+        final Like newLike = new Like(mUser.getObjectId(), videoId);
+
+        return mLikedVideosList.contains(newLike);
+    }
+
+    /**
+     * Update all the data related with the user, such as liked videos or so.
+     */
+    private void updateUserDataIfNeeded() {
+        Log.v(TAG, "Updating user data if needed");
+        if (!hasUserData() || mUser == null) {
+            Log.e(TAG, "Trying to update user data when the user has not logged in");
+            return;
+        }
+
+        // Update object id
+        if (mUser.getObjectId() == null) {
+            Log.v(TAG, "The user does not have the object id. Get it from the current user");
+            ParseUser parseUser = ParseUser.getCurrentUser();
+            if (parseUser != null) {
+                Log.v(TAG, "Current user exists and it is " + parseUser);
+                mUser.setObjectId(parseUser.getObjectId());
+            } else {
+                Log.e(TAG, "Current user does not exists!");
+            }
+        }
+
+        // Update the list of liked video only if needed
+        if (mLikedVideosList != null) {
+            return;
+        }
+
+        ParseQuery<Like> parseQueryForLikes = ParseQuery.getQuery(Like.class);
+        parseQueryForLikes.whereEqualTo(Like.PARSE_TABLE_COLUMN_USER_ID, mUser.getObjectId());
+        parseQueryForLikes.findInBackground(new FindCallback<Like>() {
+            @Override
+            public void done(List<Like> list, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "The list of likes has been correctly retrieved from the backed " + list);
+                    mLikedVideosList = list;
+                } else {
+                    Log.e(TAG, "Error retrieving the list of likes from backend");
+                }
+            }
+        });
     }
 }

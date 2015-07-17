@@ -17,7 +17,7 @@ import java.util.Observer;
  */
 public abstract class AbstractBaseActivityObserver extends AbstractBaseActivity implements Observer {
 
-    private static final String TAG = "AbstractBaseActivity";
+    private static final String TAG = "AbstractBaseActivityObs";
 
     private boolean mIsInForeground;
 

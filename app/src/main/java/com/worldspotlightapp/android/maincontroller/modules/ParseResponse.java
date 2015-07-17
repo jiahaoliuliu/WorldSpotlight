@@ -37,6 +37,12 @@ public class ParseResponse extends ParseException {
      */
     public static final int ERROR_LOGIN_WITH_GOOGLE = 10003;
 
+    /**
+     * Generic error when an operation require the user to logged
+     * in but he is not
+     */
+    public static final int ERROR_USER_NOT_LOGGED_IN = 10004;
+
     // Status code
     // This should be the same as ParseException.
     // Since the variable code from the class ParseException is private
@@ -283,6 +289,9 @@ public class ParseResponse extends ParseException {
                 break;
             case ERROR_LOGIN_WITH_GOOGLE:
                 resultMessage = context.getResources().getString(R.string.error_message_login_with_google);
+                break;
+            case ERROR_USER_NOT_LOGGED_IN:
+                resultMessage = context.getResources().getString(R.string.error_message_user_not_logged_in);
                 break;
             default:
                 Log.w(TAG, "Request status not recognized " + getCode());

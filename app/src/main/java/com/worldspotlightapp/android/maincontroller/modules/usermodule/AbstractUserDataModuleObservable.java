@@ -56,4 +56,27 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      */
     public abstract void signupForGooglePlusUsers(Observer observer, String name, String email, String profilePhotoUrl, String profileUrl);
 
+    /**
+     * Change the like status of the user related a certain video.
+     *
+     * @param observer
+     *      The observer to notify when the like has been updated correctly
+     * @param likeIt
+     *      True if the user like the video
+     *      False if the user does not like the video
+     * @param videoId
+     *      The id of the video object. Note this is the object id in Parse, not the id of the video in YouTube
+     */
+    public abstract void likeAVideo(Observer observer, boolean likeIt, String videoId);
+
+    /**
+     * Check if the user likes a certain video
+     * @param videoId
+     *      The id of the video
+     *
+     * @return
+     *      True if the user likes the video
+     *      False if not
+     */
+    public abstract boolean doesUserLikeThisVideo(String videoId);
 }

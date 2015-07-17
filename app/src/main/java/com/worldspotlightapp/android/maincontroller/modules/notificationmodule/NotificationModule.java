@@ -2,14 +2,14 @@ package com.worldspotlightapp.android.maincontroller.modules.notificationmodule;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.worldspotlightapp.android.R;
 
 
 public class NotificationModule implements INotificationModule {
-
-    public static final boolean LOG_CONNECTIONS = true;
 
     private Context mContext;
 
@@ -56,15 +56,25 @@ public class NotificationModule implements INotificationModule {
         }
     }
 
+    @Override
+    public void showAlertDialog(
+            Context context, String title, String message,
+            String positiveButtonText, DialogInterface.OnClickListener positiveButtonOnClickListener,
+            String negativeButtonText, DialogInterface.OnClickListener negativeButtonOnClickListener) {
+
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButtonText, positiveButtonOnClickListener)
+                .setNegativeButton(negativeButtonText, negativeButtonOnClickListener)
+                .create()
+                .show();
+    }
+
     private boolean isLoadingDialogShowing() {
         return (loadingDialog != null && loadingDialog.isShowing());
     }
 
-    @Override
-    public void showAlertDialog() {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public void showToast(String text, boolean longDuration) {

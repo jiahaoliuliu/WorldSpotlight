@@ -19,9 +19,13 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -42,9 +46,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private Author mAuthor;
 
     // Views
-    private CardView mAuthorCardView;
+    private CardView mAuthorAndLikeCardView;
     private ImageView mAuthorThumbnailImageView;
     private TextView mAuthorNameTextView;
+    private ImageView mLikeImageView;
 
     private CardView mDescriptionCardView;
     private TextView mDescriptionTextView;
@@ -74,19 +79,52 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mContext);
         mVideosModule.deleteObserver(this);
+        mUserDataModule.deleteObserver(this);
 
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the views
-        mAuthorCardView = (CardView) findViewById(R.id.author_card_view);
+        mAuthorAndLikeCardView = (CardView) findViewById(R.id.author_and_like_card_view);
         mAuthorThumbnailImageView = (ImageView) findViewById(R.id.author_thumbnail_image_view);
         mAuthorNameTextView = (TextView) findViewById(R.id.author_name_text_view);
+
+        mLikeImageView = (ImageView) findViewById(R.id.like_image_view);
+        mLikeImageView.setOnClickListener(onClickListener);
 
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
         initializeYouTubePlayerFragment();
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.like_image_view:
+                    likeThisVideo();
+                    break;
+            }
+        }
+    };
+
+    /**
+     * Method used to like or unlike this video.
+     * Only logged user can like a video. So, if a user has not logged in, he cannot
+     * like a video.
+     */
+    private void likeThisVideo() {
+        if (!showAlertIfUserHasNotLoggedIn(
+                getString(R.string.video_details_activity_user_must_logged_in_to_like))) {
+            return;
+        }
+
+        // The user has logged in
+        boolean likeThisVideo = mLikeImageView.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.ic_like_star).getConstantState();
+        Log.v(TAG, "The user like this video? " + likeThisVideo);
+        mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
+        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
     }
 
     @Override
@@ -138,7 +176,34 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                     // Some error happened
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            } else if (response instanceof UserDataModuleLikeResponse) {
+                Log.v(TAG, "User data module like response received");
+                UserDataModuleLikeResponse userDataModuleLikeResponse = (UserDataModuleLikeResponse) response;
+                ParseResponse parseResponse = userDataModuleLikeResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    Like like = userDataModuleLikeResponse.getLike();
+                    String myVideoId = mVideo == null? null : mVideo.getObjectId();
+                    if (myVideoId != null && myVideoId.equals(like.getVideoId())) {
+                        mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star_filled));
+                    }
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            } else if (response instanceof UserDataModuleUnlikeResponse) {
+                Log.v(TAG, "User data module unlike response received");
+                UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = (UserDataModuleUnlikeResponse) response;
+                ParseResponse parseResponse = userDataModuleUnlikeResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    Like like = userDataModuleUnlikeResponse.getLike();
+                    String myVideoId = mVideo == null? null : mVideo.getObjectId();
+                    if (myVideoId != null && myVideoId.equals(like.getVideoId())) {
+                        mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star));
+                    }
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
+
         }
 
         mNotificationModule.dismissLoadingDialog();
@@ -150,7 +215,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Update received from " + observable);
-        if (observable instanceof VideosModuleObserver) {
+        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable) {
 
             // Add the data to the list of responses
             mResponsesStack.push(o);
@@ -168,9 +233,24 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
      * Show details about the video
      */
     private void updateVideoDetails() {
-        Log.v(TAG, mVideo.toString());
+        if (mVideo == null) {
+            Log.e(TAG, "It is not possible to update the video details when the video info does not exists");
+            return;
+        }
 
+        Log.v(TAG, "Updating video details of " + mVideo.toString());
+
+        // Title
         mActionBar.setTitle(mVideo.getTitle());
+
+        // Likes
+        if(mUserDataModule.doesUserLikeThisVideo(mVideo.getObjectId())) {
+            mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star_filled));
+        } else {
+            mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star));
+        }
+
+        // Description
         mDescriptionTextView.setText(mVideo.getDescription());
 
         // If the youtube player has been already initialized
@@ -182,11 +262,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private void updateAuthorInfo() {
         Log.v(TAG, "Updating author info");
         if (mAuthor == null){
-            mAuthorCardView.setVisibility(View.GONE);
             return;
         }
 
-        mAuthorCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
+        mAuthorAndLikeCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
 
         mPicasso.load(mAuthor.getThumbnailUrl()).into(mAuthorThumbnailImageView);
         mAuthorNameTextView.setText(mAuthor.getName());

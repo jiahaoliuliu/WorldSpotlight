@@ -1,13 +1,23 @@
 package com.worldspotlightapp.android.model;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseUser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jiahaoliuliu on 7/4/15.
  */
 @ParseClassName("_User")
 public class User extends ParseUser {
+
+    private static final String TAG = "ParseUser";
 
     /**
      * The name of the user
@@ -41,10 +51,13 @@ public class User extends ParseUser {
 
     public User(ParseUser parseUser) {
         super();
+        setObjectId(parseUser.getObjectId());
         setName(parseUser.getString(PARSE_TABLE_COLUMN_NAME));
         setPhotoUrl(parseUser.getString(PARSE_TABLE_COLUMN_PHOTO_URL));
         setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));
         setProfileUrl(parseUser.getString(PARSE_TABLE_COLUMN_PROFILE_URL));
+
+        // Other data
     }
 
     // Name

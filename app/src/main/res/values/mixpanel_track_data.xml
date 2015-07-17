@@ -37,6 +37,11 @@
     <!-- Video details Activity -->
     <string name="mp_video_details_activity_prefix">Video details</string>
 
+    <!--    Like a video -->
+    <string name="mp_video_details_activity_like_video_event">Like</string>
+    <string name="mp_video_details_activity_like_video_id">Video id</string>
+    <string name="mp_video_details_activity_like_it">Like it</string>
+
     <!--    Share -->
     <string name="mp_video_details_activity_share_event">Share</string>
     <string name="mp_video_details_activity_share_video_id">Video id</string>

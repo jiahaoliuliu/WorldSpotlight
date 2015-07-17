@@ -13,10 +13,11 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.parse.ParseFacebookUtils;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
 
 import java.util.Observable;
 
@@ -46,6 +47,9 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     private Button mGooglePlusSignInButton;
     private Button mSkipButton;
 
+    // The response from parse
+    private ParseResponse mParseReseponse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         // Check if the user has logged in
         if (mUserDataModule.hasUserData()) {
             Log.v(TAG, "The user has already logged in");
-            goToMainActivity();
+            finish();
         }
 
         // Initialize Google API Clients
@@ -92,20 +96,11 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
                     break;
                 case R.id.skip_login_image_view:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.SKIP_LOGIN);
-                    goToMainActivity();
+                    finish();
                     break;
             }
         }
     };
-
-    /**
-     * Starts the main activity and finish the actual one
-     */
-    private void goToMainActivity() {
-        Intent startMainActivityIntent = new Intent(mContext, MainActivity.class);
-        startActivity(startMainActivityIntent);
-        finish();
-    }
 
     @Override
     protected void processDataIfExists() {
@@ -113,7 +108,15 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
         if (mUserDataModule.hasUserData()) {
             Log.v(TAG, "The user has already logged in");
             mNotificationModule.dismissLoadingDialog();
-            goToMainActivity();
+            finish();
+        } else if (mParseReseponse != null) {
+            Log.v(TAG, "Error on login/signu " + mParseReseponse);
+            mNotificationModule.showToast(mParseReseponse.getHumanRedableResponseMessage(mContext), true);
+
+            // Remove parse response
+            mParseReseponse = null;
+
+            mNotificationModule.dismissLoadingDialog();
         }
     }
 
@@ -121,9 +124,11 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Data received from " + observable + ", Object:" + o);
         if (observable instanceof UserDataModuleObservable) {
-            if (o instanceof UserDataModuleResponse) {
+            if (o instanceof UserDataModuleUserResponse) {
 
-                // There is not need to store the data
+                // Get parse response, which could be error
+                UserDataModuleUserResponse userDataModuleUserResponse = (UserDataModuleUserResponse)o;
+                mParseReseponse = userDataModuleUserResponse.getParseResponse();
 
                 if (isInForeground()) {
                     processDataIfExists();

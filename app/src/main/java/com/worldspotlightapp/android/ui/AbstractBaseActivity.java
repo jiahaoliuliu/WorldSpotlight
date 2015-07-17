@@ -11,10 +11,12 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
@@ -33,7 +35,10 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.Abstrac
 public abstract class AbstractBaseActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, OnEventTrackingModuleRequestedListener {
 
-    private static final String TAG = "BaseActivity";
+    private static final String TAG = "AbstractBaseActivity";
+
+    //    Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 99999;
 
     protected Context mContext;
     protected ActionBar mActionBar;
@@ -48,8 +53,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     // Special variables for GpsLocalizationModule
     private boolean isRegisteredForLocalizationService;
     private boolean mResolvingError;
-    //    Request code to use when launching the resolution activity
-    private static final int REQUEST_RESOLVE_ERROR = 99999;
     //    Unique tag for the error dialog fragment
     private static final String DIALOG_ERROR = "dialog_error";
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
@@ -170,13 +173,14 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_RESOLVE_ERROR) {
-            mResolvingError = false;
-            if (resultCode == RESULT_OK) {
-                // Make sure the app is not already connected or attempting to connect
-                mGpsLocalizationModule.connectWithLocalizationService();
-            }
-            return;
+        switch (requestCode) {
+            case REQUEST_RESOLVE_ERROR:
+                mResolvingError = false;
+                if (resultCode == RESULT_OK) {
+                    // Make sure the app is not already connected or attempting to connect
+                    mGpsLocalizationModule.connectWithLocalizationService();
+                }
+                return;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -209,4 +213,60 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     public IEventsTrackingModule getEventsTrackingModule() {
         return mEventTrackingModule;
     }
+
+    /**
+     * Method used to check if the user has logged in or not.
+     * if not, it will show the alert dialog ask the user to log in
+     *
+     * @return
+     *      True if the user has logged in
+     *      False if the user has not logged in
+     */
+    protected boolean showAlertIfUserHasNotLoggedIn() {
+        return showAlertIfUserHasNotLoggedIn(
+                getResources().getString(R.string.abstract_base_activity_user_must_logged_in));
+    }
+
+    /**
+     * Method used to check if the user has logged in or not.
+     * if not, it will show the alert dialog ask the user to log in
+     *
+     * @param message
+     *      The customized message to be shown to the user
+     *
+     * @return
+     *      True if the user has logged in
+     *      False if the user has not logged in
+     */
+    protected boolean showAlertIfUserHasNotLoggedIn(String message) {
+        boolean hasUserLoggedIn = mUserDataModule.hasUserData();
+
+        // Show alert dialog if the user has not logged in
+        if (!hasUserLoggedIn) {
+            mNotificationModule.showAlertDialog(
+                    mContext,
+                    getString(R.string.notification_module_dialog_user_not_logged_in_title),
+                    message,
+                    getString(R.string.notification_module_dialog_yes),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG, "Positive button clicked. Showing login screen to the user");
+                            Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+                            startActivity(startLoginActivityIntent);
+                        }
+                    },
+                    getString(R.string.notification_module_dialog_no),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.v(TAG, "Nagative button clicked. Dismissing this alert");
+                        }
+                    }
+                );
+        }
+        return hasUserLoggedIn;
+    }
+
+
 }
