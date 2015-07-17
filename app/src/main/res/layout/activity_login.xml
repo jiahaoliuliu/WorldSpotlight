@@ -1,4 +1,4 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,45 +13,54 @@
     android:gravity="center"
     >
 
-    <!-- Logo -->
-    <ImageView
-        android:layout_width="@dimen/login_activity_logo"
-        android:layout_height="@dimen/login_activity_logo"
-        android:src="@drawable/login_logo"
-        android:layout_marginBottom="@dimen/login_activity_group_margin_vertical"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Logo -->
+        <ImageView
+            android:layout_width="@dimen/login_activity_logo"
+            android:layout_height="@dimen/login_activity_logo"
+            android:src="@drawable/login_logo"
+            android:layout_marginBottom="@dimen/login_activity_group_margin_vertical"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- Facebook Log in button -->
+
+        <com.github.snuffix.android.material.RippleButton
+            android:id="@+id/facebook_login_button"
+            android:layout_marginTop="@dimen/login_activity_group_margin_vertical"
+            android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
+            style="@style/FacebookLoginButton"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <!-- Google Plus Log in button -->
+        <com.github.snuffix.android.material.RippleButton
+            android:id="@+id/google_plus_login_buttn"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/login_activity_element_margin_vertical"
+            android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
+            style="@style/GooglePlusLoginButton"
         />
 
-    <!-- Facebook Log in button -->
-    <Button
-        android:id="@+id/facebook_login_button"
-        style="@style/FacebookLoginButton"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_activity_group_margin_vertical"
-        android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
-        />
+        <!-- Separation line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            android:background="@android:color/white"
+            android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
+            android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
+            />
 
-    <!-- Google Plus Log in button -->
-    <Button
-        android:id="@+id/google_plus_login_buttn"
-        style="@style/GooglePlusLoginButton"
-        android:layout_marginTop="@dimen/login_activity_element_margin_vertical"
-        android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
+        <!-- Skip image -->
+        <com.github.snuffix.android.material.RippleButton
+            android:id="@+id/skip_login_image_view"
+            android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
+            android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
+            android:layout_gravity="center_horizontal"
+            style="@style/SkipButton"
         />
-
-    <!-- Separation line -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1sp"
-        android:background="@android:color/white"
-        android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
-        android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
-        />
-
-    <!-- Skip image -->
-    <Button
-        android:id="@+id/skip_login_image_view"
-        style="@style/SkipButton"
-        android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
-        android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
-        />
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
