@@ -340,6 +340,22 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         }
     }
 
+    @Override
+    public boolean doesUserLikeThisVideo(String videoId) {
+        if (mLikedVideosList == null) {
+            return false;
+        }
+
+        // If the user does not exists, not do anything
+        if (!hasUserData() || mUser == null) {
+            return false;
+        }
+
+        final Like newLike = new Like(mUser.getObjectId(), videoId);
+
+        return mLikedVideosList.contains(newLike);
+    }
+
     /**
      * Update all the data related with the user, such as liked videos or so.
      */

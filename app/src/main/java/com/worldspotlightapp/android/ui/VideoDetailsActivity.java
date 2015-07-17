@@ -79,6 +79,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mContext);
         mVideosModule.deleteObserver(this);
+        mUserDataModule.deleteObserver(this);
 
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -231,9 +232,24 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
      * Show details about the video
      */
     private void updateVideoDetails() {
-        Log.v(TAG, mVideo.toString());
+        if (mVideo == null) {
+            Log.e(TAG, "It is not possible to update the video details when the video info does not exists");
+            return;
+        }
 
+        Log.v(TAG, "Updating video details of " + mVideo.toString());
+
+        // Title
         mActionBar.setTitle(mVideo.getTitle());
+
+        // Likes
+        if(mUserDataModule.doesUserLikeThisVideo(mVideo.getObjectId())) {
+            mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star_filled));
+        } else {
+            mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star));
+        }
+
+        // Description
         mDescriptionTextView.setText(mVideo.getDescription());
 
         // If the youtube player has been already initialized

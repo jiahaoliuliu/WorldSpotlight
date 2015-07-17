@@ -69,4 +69,14 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      */
     public abstract void likeAVideo(Observer observer, boolean likeIt, String videoId);
 
+    /**
+     * Check if the user likes a certain video
+     * @param videoId
+     *      The id of the video
+     *
+     * @return
+     *      True if the user likes the video
+     *      False if not
+     */
+    public abstract boolean doesUserLikeThisVideo(String videoId);
 }
