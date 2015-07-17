@@ -69,7 +69,8 @@ public class Like extends ParseObject {
     @Override
     public String toString() {
         return "Likes{" +
-                "UserId='" + getUserId() + '\'' +
+                "ObjectId='" + getObjectId() + '\'' +
+                ", UserId='" + getUserId() + '\'' +
                 ", VideoId='" + getVideoId() + '\'' +
                 "}";
     }

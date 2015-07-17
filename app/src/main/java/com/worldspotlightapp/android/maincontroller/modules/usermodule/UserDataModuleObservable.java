@@ -292,6 +292,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                     public void done(ParseException e) {
                         ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                         if (!parseResponse.isError()) {
+                            Log.v(TAG, "Like saved correcty. It has the object id " + newLike.getObjectId());
                             UserDataModuleLikeResponse userDataModuleLikeResponse = new UserDataModuleLikeResponse(parseResponse, newLike);
                             setChanged();
                             notifyObservers(userDataModuleLikeResponse);
@@ -309,8 +310,11 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         } else {
             // Only update if the user does liked the video before
             if (mLikedVideosList.contains(newLike)) {
-                mLikedVideosList.remove(newLike);
-                newLike.deleteInBackground(new DeleteCallback() {
+                // the recent created like cannot be used because it does not contains the objectId. To be deleted,
+                // the
+                Like likeToBeRemoved = mLikedVideosList.get(mLikedVideosList.indexOf(newLike));
+                mLikedVideosList.remove(likeToBeRemoved);
+                likeToBeRemoved.deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(ParseException e) {
                         ParseResponse parseResponse = new ParseResponse.Builder(e).build();
