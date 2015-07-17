@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.maincontroller.modules.usermodule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
@@ -51,6 +52,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         super();
         this.mPreferences = preferences;
         generateUUID();
+        mLikedVideosList = new ArrayList<Like>();
         ParseUser parseUser = ParseUser.getCurrentUser();
         if (parseUser != null) {
             mUser = new User(parseUser);

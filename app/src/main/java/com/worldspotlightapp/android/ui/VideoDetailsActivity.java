@@ -19,9 +19,12 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -168,6 +171,19 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                     // Some error happened
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            } else if (response instanceof UserDataModuleLikeResponse) {
+                Log.v(TAG, "User data module like response received");
+                UserDataModuleLikeResponse userDataModuleLikeResponse = (UserDataModuleLikeResponse) response;
+                ParseResponse parseResponse = userDataModuleLikeResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    Like like = userDataModuleLikeResponse.getLike();
+                    String myVideoId = mVideo == null? null : mVideo.getObjectId();
+                    if (myVideoId != null && myVideoId.equals(like.getVideoId())) {
+                        mLikeImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_star_filled));
+                    }
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
         }
 
@@ -180,7 +196,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Update received from " + observable);
-        if (observable instanceof VideosModuleObserver) {
+        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable) {
 
             // Add the data to the list of responses
             mResponsesStack.push(o);
