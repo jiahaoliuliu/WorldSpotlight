@@ -76,6 +76,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mDrawer;
+    // By default drawer is not open
+    private boolean mIsDrawerOpen = false;
 
     private FloatingActionButton mMyLocationFloatingActionButton;
 
@@ -87,7 +89,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Variable used to record if the camera update is automatic or manual
     private boolean isAutomaticCameraUpdate;
 
-    private MenuItem menuItemSearch;
+    // Action bar items
+    private Menu mMenu;
+    private MenuItem mMenuItemSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,8 +119,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mDrawer = (NavigationView) findViewById(R.id.drawer);
 
         mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close
-        );
+                this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                Log.v(TAG, "Drawer opened");
+                mIsDrawerOpen = true;
+                updateActionBarItems();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                Log.v(TAG, "Drawer closed");
+                mIsDrawerOpen = false;
+                updateActionBarItems();
+            }
+        };
+
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -492,13 +512,34 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Update user profile
-        menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
-                .NONE, R.string.action_bar_search)
-                .setIcon(R.drawable.ic_action_search)
-                .setActionView(R.layout.search_layout);
-        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        mMenu = menu;
+        updateActionBarItems();
         return true;
+    }
+
+    /**
+     * Updates the items in the action bar. This depends if the drawer
+     * is open or not
+     */
+    private void updateActionBarItems() {
+        // If the menu is not ready, not do anything
+        if (mMenu == null) {
+            return;
+        }
+
+        if (mIsDrawerOpen) {
+            // Remove the search option
+            if (mMenuItemSearch != null) {
+                mMenu.removeItem(mMenuItemSearch.getItemId());
+            }
+        } else {
+            // Update user profile
+            mMenuItemSearch = mMenu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
+                    .NONE, R.string.action_bar_search)
+                    .setIcon(R.drawable.ic_action_search)
+                    .setActionView(R.layout.search_layout);
+            mMenuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        }
     }
 
     @Override
@@ -519,7 +560,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     private void searchByKeyword() {
-        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
         searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -550,11 +591,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 et.setText("");
                 searchActionView.setQuery("", false);
                 searchActionView.onActionViewCollapsed();
-                menuItemSearch.collapseActionView();
+                mMenuItemSearch.collapseActionView();
             }
         });
 
-        MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+        MenuItemCompat.setOnActionExpandListener(mMenuItemSearch, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return true;
