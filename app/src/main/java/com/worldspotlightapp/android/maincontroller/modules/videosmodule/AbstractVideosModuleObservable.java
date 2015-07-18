@@ -1,8 +1,10 @@
 package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 
 import com.worldspotlightapp.android.maincontroller.AbstractBaseModuleObservable;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
 
@@ -22,6 +24,16 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The Observer to notify when the videos is ready
      */
     public abstract void requestAllVideos(Observer observer);
+
+    /**
+     * Given a list of likes, retrieve all the information about the videos in the list
+     * @param observer
+     *      The observer to notify when the data is ready
+     * @param likesList
+     *      The list of likes
+     */
+    public abstract void requestLikedVideosInfo(Observer observer, List<Like> likesList);
+
 
     /**
      * Retrieve the information about a video from the database.

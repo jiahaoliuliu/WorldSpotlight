@@ -84,6 +84,13 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
     public abstract boolean doesUserLikeThisVideo(String videoId);
 
     /**
+     * Retreive the list of the video that the user likes
+     * @param observer
+     *      The observer to inform when the list of the videos is ready
+     */
+    public abstract void retrieveFavouriteVideosList(Observer observer);
+
+    /**
      * Log out. After this the method {@link #hasUserData()} will return false.
      */
     public abstract void logout();

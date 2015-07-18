@@ -24,6 +24,7 @@ import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
 import com.worldspotlightapp.android.model.Like;
@@ -272,7 +273,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     @Override
     public void likeAVideo(Observer observer, boolean likeIt, final String videoId) {
         addObserver(observer);
-        if (!hasUserData() || mUserData == null) {
+        if (!hasUserData()) {
             Log.e(TAG, "Trying to like a video while the user has not logged in");
             ParseResponse parseResponse =
                     new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_USER_NOT_LOGGED_IN).build();
@@ -352,7 +353,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         }
 
         // If the user does not exists, not do anything
-        if (!hasUserData() || mUserData == null) {
+        if (!hasUserData()) {
             return false;
         }
 
@@ -362,10 +363,33 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     }
 
     @Override
+    public void retrieveFavouriteVideosList(Observer observer) {
+        // Register the observer
+        addObserver(observer);
+
+        // This case is very extreme. It shouldn't happen very often
+        if (mLikedVideosList == null) {
+            Log.e(TAG, "Error retrieving the list of liked videos. The list has not been retrieved from" +
+                    "the backend yet. Not do anything");
+        }
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        UserDataModuleLikesListResponse userDataModuleLikesListResponse =
+                new UserDataModuleLikesListResponse(parseResponse,
+                        mLikedVideosList == null?
+                                new ArrayList<Like>() :
+                                mLikedVideosList);
+        setChanged();
+        notifyObservers(userDataModuleLikesListResponse);
+    }
+
+    @Override
     public void logout() {
         if (hasUserData()) {
             ParseUser.logOut();
+
+            // Reset other data
             mUserData = null;
+            mLikedVideosList = null;
         }
     }
 
@@ -374,7 +398,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
      */
     private void updateUserDataIfNeeded() {
         Log.v(TAG, "Updating user data if needed");
-        if (!hasUserData() || mUserData == null) {
+        if (!hasUserData()) {
             Log.e(TAG, "Trying to update user data when the user has not logged in");
             return;
         }

@@ -166,8 +166,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
                         showFavouritesVideosToUser();
-//                        // Close the drawer
-//                        mDrawerLayout.closeDrawers();
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
@@ -726,6 +724,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private void showFavouritesVideosToUser() {
         // Check if the user has logged in
         if (!showAlertIfUserHasNotLoggedIn()) {
+            // The user has not logged in. Not do anything
             return;
         }
 
@@ -733,5 +732,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         Log.v(TAG, "Showing favourite list of videos to the user");
         Intent startFavouriteVideosListActivityIntent = new Intent(mContext, FavouriteVideosListActivity.class);
         startActivity(startFavouriteVideosListActivityIntent);
+
+        // Close the drawer
+        mDrawerLayout.closeDrawers();
     }
 }
