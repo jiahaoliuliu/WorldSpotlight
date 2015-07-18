@@ -1,7 +1,11 @@
 package com.worldspotlightapp.android.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
@@ -19,12 +23,18 @@ public class FavouriteVideosListActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "FavouriteVideosList";
 
+    private List<Video> mFavouriteVideosList;
+
+    // Views
+    private RecyclerView mFavouritesRecyclerView;
+    private RecyclerView.Adapter mFavouritesAdapter;
+    private RecyclerView.LayoutManager mFavouritesLayoutManager;
+    private LinearLayout mEmptyListLinearLayout;
+
     /**
      * The set of response retrieved from the modules
      */
     private Stack<Object> mResponsesStack;
-
-    private List<Video> mFavouriteVideosList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,18 @@ public class FavouriteVideosListActivity extends AbstractBaseActivityObserver {
 
         // Initialize data
         mResponsesStack = new Stack<Object>();
+
+        // Link the views
+        mFavouritesRecyclerView = (RecyclerView) findViewById(R.id.favourites_recycler_view);
+        mEmptyListLinearLayout = (LinearLayout) findViewById(R.id.empty_list_linear_layout);
+
+        // This this setting to improve the performance if you know that changes
+        // in content do not change the layout sie of the RecyclerView
+        mFavouritesRecyclerView.setHasFixedSize(true);
+
+        // Use a linearLayoutManager
+        mFavouritesLayoutManager = new LinearLayoutManager(this);
+        mFavouritesRecyclerView.setLayoutManager(mFavouritesLayoutManager);
 
         // Ask for the list
         mNotificationModule.showLoadingDialog(mContext);
@@ -110,12 +132,18 @@ public class FavouriteVideosListActivity extends AbstractBaseActivityObserver {
     private void updateContent() {
         if (mFavouriteVideosList == null || mFavouriteVideosList.isEmpty()) {
             Log.v(TAG, "The list of favourite videos is either null nor empty. Showing empty screen");
-            // TODO: Show empty list view
+            mFavouritesRecyclerView.setVisibility(View.GONE);
+            mEmptyListLinearLayout.setVisibility(View.VISIBLE);
             return;
         }
 
         // The list of favourite videos is not empty
         Log.v(TAG, "Showing the list of favourite videos " + mFavouriteVideosList);
-        // TODO: Implement this
+        mFavouritesAdapter = new FavouriteVideosListAdapter(mContext, mFavouriteVideosList);
+        mFavouritesRecyclerView.setAdapter(mFavouritesAdapter);
+
+        // Set the views
+        mFavouritesRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyListLinearLayout.setVisibility(View.GONE);
     }
 }

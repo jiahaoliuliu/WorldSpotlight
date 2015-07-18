@@ -45,6 +45,11 @@ public class Video extends ParseObject implements ClusterItem {
     private String mThumbnailUrl;
 
     /**
+     * Special thumbnail for the video list. It must have good quality
+     */
+    private String mVideoListThumbnailUrl;
+
+    /**
      * The empty constructor
      */
     public Video(){}
@@ -90,6 +95,37 @@ public class Video extends ParseObject implements ClusterItem {
             return null;
         }
         return "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg";
+    }
+
+    /**
+     * Get the url of the video for the video list. The quality should be good
+     * @return
+     *      A url of a good quality of the video for the video list
+     */
+    public String getVideoListThumbnailUrl() {
+        String videoId = getVideoId();
+        if (mVideoListThumbnailUrl == null && videoId != null) {
+            mVideoListThumbnailUrl = generateVideoListThumbnailUrl(videoId);
+        }
+
+        return mVideoListThumbnailUrl;
+    }
+
+    /**
+     * Generate a good quality the thumbnail url based on the video id.
+     * This is an example of thumbnail url
+     *     https://i.ytimg.com/vi/ECIUilEq5DM/hqdefault.jpg
+     * @param videoId
+     *     The id of the video to used to generate the thumbnail url
+     * @return
+     *     Null if videoId is null
+     *     Url of the valid url if videoId is not null
+     */
+    private String generateVideoListThumbnailUrl(String videoId) {
+        if (videoId == null) {
+            return null;
+        }
+        return "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg";
     }
 
     public ParseGeoPoint getLocation() {

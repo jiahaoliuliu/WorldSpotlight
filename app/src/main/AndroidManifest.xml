@@ -132,7 +132,7 @@
 
         <activity
             android:name=".ui.FavouriteVideosListActivity"
-            android:label="@string/title_activity_favourite_video_list" >
+            android:label="@string/favourite_videos_list_activity_name" >
         </activity>
     </application>
 

@@ -39,4 +39,8 @@
     <dimen name="video_details_author_image_size">50dp</dimen>
     <dimen name="video_details_elements_margin_horizontal">10dp</dimen>
     <dimen name="video_details_like_image_size">50dp</dimen>
+
+    <!-- Favourite videos list -->
+    <dimen name="favourite_video_list_item_left_margin">20dp</dimen>
+    <dimen name="favourite_video_list_item_bottom_margin">20dp</dimen>
 </resources>
