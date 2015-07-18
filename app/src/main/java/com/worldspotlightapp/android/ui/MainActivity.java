@@ -75,7 +75,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     //      Drawer
     private DrawerLayout mDrawerLayout;
     private ImageView mUserProfileImageView;
-    private TextView mUserNameImageView;
+    private TextView mUserNameTextView;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mDrawer;
     private MenuItem mDrawerItemLogin;
@@ -99,9 +99,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private Menu mMenu;
     private MenuItem mMenuItemSearch;
 
-    // UserData
-    private UserData mUserData;
-
     private Picasso mPicasso;
 
     @Override
@@ -110,8 +107,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Launch login activity if the user has not logged in
         if (!mUserDataModule.hasUserData()) {
-            Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
-            startActivity(startLoginActivityIntent);
+            launchLoginActivity();
         }
 
         setContentView(R.layout.activity_main);
@@ -132,7 +128,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // Link the views
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mUserProfileImageView = (ImageView) findViewById(R.id.user_profile_image_view);
-        mUserNameImageView = (TextView) findViewById(R.id.user_name_text_view);
+        mUserNameTextView = (TextView) findViewById(R.id.user_name_text_view);
 
         mDrawer = (NavigationView) findViewById(R.id.drawer);
         mDrawerItemLogin = mDrawer.getMenu().findItem(R.id.drawer_item_login);
@@ -165,9 +161,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 switch (menuItem.getItemId()) {
                     case R.id.drawer_item_login:
                         Log.v(TAG, "Login clicked");
-                        // Start login screen
-                        Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
-                        startActivity(startLoginActivityIntent);
+                        launchLoginActivity();
                         return true;
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
@@ -176,7 +170,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
-
+                        mUserDataModule.logout();
+                        launchLoginActivity();
                         // Close the drawer
                         mDrawerLayout.closeDrawers();
                         return true;
@@ -412,29 +407,26 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private void updateUserProfileIfPossibleAndNeeded() {
         // If the user data does not exist, exit
         if (!mUserDataModule.hasUserData()) {
+            mUserProfileImageView.setImageDrawable(getResources().getDrawable(R.drawable.login_logo));
+            mUserNameTextView.setVisibility(View.GONE);
             return;
         }
 
         UserData userData = mUserDataModule.getUserData();
-
-        // If the user data has not been changed, not do anything
-        if (userData.equals(mUserData)) {
-            return;
-        }
-
-        mUserData = userData;
 
         // Updating the views. For now it is only possible for google plus users
         if (!userData.isGooglePlusUser()) {
             return;
         }
 
+        // The image is loaded each time the MainActivity is resumed. Since Picasso uses
+        // local cache, this shouldn't be any problem
         // Profile photo
         mPicasso.load(userData.getPhotoUrl()).into(mUserProfileImageView);
 
         // User name
-        mUserNameImageView.setText(mUserData.getName());
-        mUserNameImageView.setVisibility(View.VISIBLE);
+        mUserNameTextView.setText(userData.getName());
+        mUserNameTextView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -722,4 +714,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * Start the login activity
+     */
+    private void launchLoginActivity() {
+        Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+        startActivity(startLoginActivityIntent);
+    }
 }

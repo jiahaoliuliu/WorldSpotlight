@@ -82,4 +82,9 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      *      False if not
      */
     public abstract boolean doesUserLikeThisVideo(String videoId);
+
+    /**
+     * Log out. After this the method {@link #hasUserData()} will return false.
+     */
+    public abstract void logout();
 }

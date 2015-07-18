@@ -361,6 +361,14 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         return mLikedVideosList.contains(newLike);
     }
 
+    @Override
+    public void logout() {
+        if (hasUserData()) {
+            ParseUser.logOut();
+            mUserData = null;
+        }
+    }
+
     /**
      * Update all the data related with the user, such as liked videos or so.
      */
