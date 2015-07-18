@@ -31,4 +31,9 @@
     <dimen name="main_activity_video_preview_image_height">210dp</dimen>
     <dimen name="main_activity_video_preview_image_width">300dp</dimen>
 
+    <!-- videos list -->
+    <dimen name="video_list_item_left_margin">40dp</dimen>
+    <dimen name="video_list_item_bottom_margin">40dp</dimen>
+    <dimen name="video_list_item_height">500dp</dimen>
+
 </resources>
