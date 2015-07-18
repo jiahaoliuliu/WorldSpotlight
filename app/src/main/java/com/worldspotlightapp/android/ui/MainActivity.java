@@ -165,8 +165,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
                         return true;
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
-                        // Close the drawer
-                        mDrawerLayout.closeDrawers();
+                        showFavouritesVideosToUser();
+//                        // Close the drawer
+//                        mDrawerLayout.closeDrawers();
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
@@ -720,5 +721,17 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private void launchLoginActivity() {
         Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
         startActivity(startLoginActivityIntent);
+    }
+
+    private void showFavouritesVideosToUser() {
+        // Check if the user has logged in
+        if (!showAlertIfUserHasNotLoggedIn()) {
+            return;
+        }
+
+        // The user has logged in, showing the list of favourite videos
+        Log.v(TAG, "Showing favourite list of videos to the user");
+        Intent startFavouriteVideosListActivityIntent = new Intent(mContext, FavouriteVideosListActivity.class);
+        startActivity(startFavouriteVideosListActivityIntent);
     }
 }

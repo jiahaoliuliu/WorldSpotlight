@@ -27,9 +27,8 @@
     <string name="share_subject">Check out this great video! %1$s</string>
     <string name="video_details_activity_user_must_logged_in_to_like">You must logged in to like this video. Would you like to log in now?</string>
 
-    <!-- Search Filter activity -->
-    <string name="keyword_edit_text_hint">Enter the city or the keyword</string>
-    <string name="error_keyword_empty">You must entered a keyword to start search</string>
+    <!-- Favourite videos list activity -->
+    <string name="title_activity_favourite_video_list">My favourites</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
@@ -51,4 +50,5 @@
     <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
     <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
     <string name="error_message_user_not_logged_in">The user must logged in for this. Could you try to log in?</string>
+
 </resources>
