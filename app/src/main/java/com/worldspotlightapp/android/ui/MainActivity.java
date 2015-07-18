@@ -162,10 +162,23 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
+                    case R.id.drawer_item_login:
+                        Log.v(TAG, "Login clicked");
+                        // Start login screen
+                        Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+                        startActivity(startLoginActivityIntent);
+                        return true;
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    case R.id.drawer_item_logout:
+                        Log.v(TAG, "Logout clicked");
+
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
                         return true;
                     default:
                         return false;
