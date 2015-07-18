@@ -139,7 +139,7 @@ public class FavouriteVideosListActivity extends AbstractBaseActivityObserver {
 
         // The list of favourite videos is not empty
         Log.v(TAG, "Showing the list of favourite videos " + mFavouriteVideosList);
-        mFavouritesAdapter = new FavouriteVideosListAdapter(mContext, mFavouriteVideosList);
+        mFavouritesAdapter = new VideosListAdapter(mContext, mFavouriteVideosList);
         mFavouritesRecyclerView.setAdapter(mFavouritesAdapter);
 
         // Set the views

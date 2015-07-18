@@ -43,4 +43,5 @@
     <!-- Favourite videos list -->
     <dimen name="favourite_video_list_item_left_margin">20dp</dimen>
     <dimen name="favourite_video_list_item_bottom_margin">20dp</dimen>
+    <dimen name="favourite_video_list_item_height">200dp</dimen>
 </resources>
