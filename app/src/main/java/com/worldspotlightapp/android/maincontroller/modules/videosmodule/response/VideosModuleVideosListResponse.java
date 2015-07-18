@@ -23,17 +23,6 @@ public class VideosModuleVideosListResponse extends BaseModuleResponse {
     private boolean mAreExtraVideos;
 
     /**
-     * Simple constructor. The boolean areExtraVideos will be set as false
-     * @param parseResponse
-     *      The response data. It should be checked before get the data
-     * @param videosList
-     *      The list of the videos to be sent. It could be null if the response has some error
-     */
-    public VideosModuleVideosListResponse(ParseResponse parseResponse, List<Video> videosList) {
-        this(parseResponse, videosList, false);
-    }
-
-    /**
      * Compplete constructor.
      * @param parseResponse
      *      The response data. It should be checked before get the data

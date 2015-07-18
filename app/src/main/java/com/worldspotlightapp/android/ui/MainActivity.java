@@ -42,7 +42,10 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
@@ -83,7 +86,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private MenuItem mDrawerItemLogout;
 
     // By default drawer is not open
-    private boolean mIsDrawerOpen = false;
+    private boolean mIsDrawerOpen;
 
     private FloatingActionButton mMyLocationFloatingActionButton;
 
@@ -94,6 +97,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     // Variable used to record if the camera update is automatic or manual
     private boolean isAutomaticCameraUpdate;
+
+    private boolean mIsShowingFavouriteListVideos;
 
     // Action bar items
     private Menu mMenu;
@@ -166,6 +171,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
                         showFavouritesVideosToUser();
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
@@ -257,32 +264,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Data received from " + observable + ", Object:" + o);
-        if (observable instanceof VideosModuleObserver) {
-            if (o instanceof VideosModuleVideosListResponse) {
+        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable) {
+            // Add the data to the list of responses
+            mResponsesStack.push(o);
 
-                // TODO: Remove this
-                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
-                ParseResponse parseResponse =videosModuleVideosListResponse.getParseResponse();
-                Log.d(TAG, "Parse response received " + parseResponse);
-                if (!parseResponse.isError()) {
-                    List<Video> videoListReceived = videosModuleVideosListResponse.getVideosList();
-                    int numberVideos = videoListReceived == null? 0 : videoListReceived.size();
-                    Log.v(TAG, "The list of videos has " + numberVideos + " videos. Are extra videos? " + videosModuleVideosListResponse.areExtraVideos());
-                }
-
-                // Add the data to the list of responses
-                mResponsesStack.push(o);
-
-                if (isInForeground()) {
-                    Log.v(TAG, "This activity is in foreground. Processing data if exists");
-                    processDataIfExists();
-                } else {
-                    Log.v(TAG, "This activity is not in foregorund. Not do anything");
-                }
-
-                // The MainActivity will listen constantly to the changes on the list of videos
-                //observable.deleteObserver(this);
+            if (isInForeground()) {
+                Log.v(TAG, "This activity is in foreground. Processing data if exists");
+                processDataIfExists();
+            } else {
+                Log.v(TAG, "This activity is not in foregorund. Not do anything");
             }
+
+            // The MainActivity will listen constantly to the changes on the list of videos
+            //observable.deleteObserver(this);
         }
     }
 
@@ -309,14 +303,44 @@ public class MainActivity extends AbstractBaseActivityObserver {
         while (!mResponsesStack.isEmpty()) {
             Object response = mResponsesStack.pop();
             // Checking the type of data
-            if (response instanceof VideosModuleVideosListResponse) {
+            // Since VideosModuleLikedVideosListResponse is child of VideosModuleVideosListResponse, this check should be
+            // done before checking the instance of VideosModuleVideosListResponse. This is because instanceof in Java
+            // will return also true for subclasses. This is:
+            // - A is Parent
+            // - B is Child of A
+            // - b is instance of B
+            // Then b instanceOf A == true
+            //      b instanceOf B == true
+            if (response instanceof VideosModuleLikedVideosListResponse) {
+                VideosModuleLikedVideosListResponse videosModuleLikedVideosListResponse = (VideosModuleLikedVideosListResponse)response;
+                ParseResponse parseResponse = videosModuleLikedVideosListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    List<Video> favouriteVideosList = videosModuleLikedVideosListResponse.getVideosList();
+                    int numberVideoRetrieved = favouriteVideosList == null ? 0 : favouriteVideosList.size();
+                    Log.v(TAG, "Retrieved " + numberVideoRetrieved + " favourite videos");
+                    mVideosList = new ArrayList<>(favouriteVideosList);
+                    mClusterManager.clearItems();
+                    mClusterManager.addItems(mVideosList);
+                    mClusterManager.cluster();
+
+                    // Prepare action bar
+                    mIsShowingFavouriteListVideos = true;
+                    mDrawerToggle.setDrawerIndicatorEnabled(false);
+                    mActionBar.setDisplayHomeAsUpEnabled(true);
+                    mActionBar.setTitle(getString(R.string.main_activity_show_fav_videos_list_title));
+                    updateActionBarItems();
+                } else {
+                    // Some error happend
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            } else if (response instanceof VideosModuleVideosListResponse) {
                 VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse) response;
                 // If the list of videos received are extra videos to be added to the list of existence videos
                 ParseResponse parseResponse = videosModuleVideosListResponse.getParseResponse();
                 if (videosModuleVideosListResponse.areExtraVideos()) {
                     if (!parseResponse.isError()) {
                         List<Video> extraVideos = videosModuleVideosListResponse.getVideosList();
-                        int numberVideoRetrieved = extraVideos == null? 0 : extraVideos.size();
+                        int numberVideoRetrieved = extraVideos == null ? 0 : extraVideos.size();
                         Log.v(TAG, "The list of extra videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList.addAll(extraVideos);
                         mClusterManager.addItems(extraVideos);
@@ -324,11 +348,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     } else {
                         Log.v(TAG, "Error updating the list of videos");
                     }
-                // if the list of videos received should replace the existence list of videos
+                    // if the list of videos received should replace the existence list of videos
                 } else {
                     if (!parseResponse.isError()) {
                         List<Video> videoList = videosModuleVideosListResponse.getVideosList();
-                        int numberVideoRetrieved = videoList == null? 0 : videoList.size();
+                        int numberVideoRetrieved = videoList == null ? 0 : videoList.size();
                         Log.v(TAG, "The list of videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList = new ArrayList<>(videosModuleVideosListResponse.getVideosList());
                         mClusterManager.clearItems();
@@ -339,15 +363,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
                         mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                     }
                 }
+            } else if (response instanceof UserDataModuleLikesListResponse) {
+                UserDataModuleLikesListResponse userDataModuleLikesListResponse = (UserDataModuleLikesListResponse) response;
+                // If the list of videos received are extra videos to be added to the list of existence videos
+                ParseResponse parseResponse = userDataModuleLikesListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mVideosModule.requestLikedVideosInfo(this, userDataModuleLikesListResponse.getLikesList());
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
+
+            Log.v(TAG, "Dismissing the loading dialog");
+            mNotificationModule.dismissLoadingDialog();
+
+            // 3. Remove the responses
+            // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
+            // there is not need to clean them
         }
-
-        Log.v(TAG, "Dismissing the loading dialog");
-        mNotificationModule.dismissLoadingDialog();
-
-        // 3. Remove the responses
-        // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
-        // there is not need to clean them
     }
 
     @Override
@@ -599,7 +632,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return;
         }
 
-        if (mIsDrawerOpen) {
+        if (mIsDrawerOpen || mIsShowingFavouriteListVideos) {
             // Remove the search option
             if (mMenuItemSearch != null) {
                 mMenu.removeItem(mMenuItemSearch.getItemId());
@@ -616,17 +649,33 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
+            case android.R.id.home:
+                // if it was showing the favourite list videos, disable it and show the list
+                // fo all the videos
+                if (mIsShowingFavouriteListVideos) {
+                    Log.v(TAG, "Favourite list video enabled. Disabling it");
+                    mIsShowingFavouriteListVideos = false;
+                    updateActionBarItems();
+                    mActionBar.setTitle(getString(R.string.app_name));
+                    mNotificationModule.showLoadingDialog(mContext);
+                    mVideosModule.requestAllVideos(MainActivity.this);
+
+                    // Enable the drawer icons
+                    mDrawerToggle.setDrawerIndicatorEnabled(true);
+                    return true;
+                }
             case MENU_ITEM_SEARCH_ID:
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
                 searchByKeyword();
                 return true;
             default:
-                // Pass the event to ActionBarDrawerToggle, if it returns
-                // true, then it has handled the app icon touch event
-                if (mDrawerToggle.onOptionsItemSelected(item)) {
-                    return true;
-                }
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -728,12 +777,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return;
         }
 
-        // The user has logged in, showing the list of favourite videos
-        Log.v(TAG, "Showing favourite list of videos to the user");
-        Intent startFavouriteVideosListActivityIntent = new Intent(mContext, FavouriteVideosListActivity.class);
-        startActivity(startFavouriteVideosListActivityIntent);
-
-        // Close the drawer
-        mDrawerLayout.closeDrawers();
+        mUserDataModule.retrieveFavouriteVideosList(this);
     }
 }

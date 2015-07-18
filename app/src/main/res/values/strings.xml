@@ -12,6 +12,9 @@
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
+
+    <string name="main_activity_show_fav_videos_list_title">Favourites</string>
+
     <!--    Drawer -->
     <string name="drawer_login">Login</string>
     <string name="drawer_likes">Favourites</string>
