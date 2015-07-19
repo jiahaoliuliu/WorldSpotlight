@@ -65,7 +65,7 @@
 
             <!-- Log In button -->
             <com.github.snuffix.android.material.RippleButton
-                android:id="@+id/log_in_button"
+                android:id="@+id/login_button"
                 android:layout_gravity="center_horizontal"
                 style="@style/SignUpOrLoginButton"
                 android:text="@string/sign_up_login_activity_log_in"
@@ -76,7 +76,7 @@
 
         <!-- Skip image -->
         <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/skip_login_button"
+            android:id="@+id/skip_button"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
             style="@style/WorldSpotLightButton"

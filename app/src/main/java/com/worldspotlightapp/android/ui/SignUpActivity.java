@@ -19,7 +19,7 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "SignUpActivity";
 
-    private static final int MINIMUM_PASSWORD_LENGTH = 6;
+    public static final int MINIMUM_PASSWORD_LENGTH = 6;
 
     // Views
     private EditText mUserNameEditText;
@@ -60,7 +60,6 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
 
     /**
      * Try to sign up with the data introduced by the user
-     *
      */
     private void signUp() {
         if (!areAllFieldsOk()) {

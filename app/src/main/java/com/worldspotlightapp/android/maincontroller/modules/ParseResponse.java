@@ -33,15 +33,20 @@ public class ParseResponse extends ParseException {
     public static final int ERROR_LOGIN_WITH_FACEBOOK = 10002;
 
     /**
+     * Generic error login with with facebook
+     */
+    public static final int ERROR_LOGIN_WITH_PARSE = 10003;
+
+    /**
      * Generic error login with Google Plus
      */
-    public static final int ERROR_LOGIN_WITH_GOOGLE = 10003;
+    public static final int ERROR_LOGIN_WITH_GOOGLE = 10004;
 
     /**
      * Generic error when an operation require the user to logged
      * in but he is not
      */
-    public static final int ERROR_USER_NOT_LOGGED_IN = 10004;
+    public static final int ERROR_USER_NOT_LOGGED_IN = 10005;
 
     // Status code
     // This should be the same as ParseException.
@@ -289,6 +294,9 @@ public class ParseResponse extends ParseException {
                 break;
             case ERROR_LOGIN_WITH_GOOGLE:
                 resultMessage = context.getResources().getString(R.string.error_message_login_with_google);
+                break;
+            case ERROR_LOGIN_WITH_PARSE:
+                resultMessage = context.getResources().getString(R.string.error_message_login_with_parse);
                 break;
             case ERROR_USER_NOT_LOGGED_IN:
                 resultMessage = context.getResources().getString(R.string.error_message_user_not_logged_in);
