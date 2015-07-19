@@ -48,7 +48,7 @@
         android:label="@string/app_name"
         android:theme="@style/Indigo" >
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.SignUpLoginActivity"
             android:label="@string/app_name"
             android:theme="@style/IndigoWithoutActionBar" >
         </activity>
@@ -130,6 +130,14 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <activity
+            android:name=".ui.SignUpActivity"
+            android:label="@string/sign_up_activity_title" >
+        </activity>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="@string/login_activity_title" >
+        </activity>
     </application>
 
 </manifest>

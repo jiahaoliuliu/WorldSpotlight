@@ -4,15 +4,31 @@
     <!-- Abstract base Activity -->
     <string name="abstract_base_activity_user_must_logged_in">You must logged in for this action. Would you like to log in now?</string>
 
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Sign in with Facebook</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Sign in with Google</string>
+    <string name="sign_up_login_activity_sign_up">Sign Up</string>
+    <string name="sign_up_login_activity_log_in">Log In</string>
+    <string name="sign_up_login_activity_skip">Skip</string>
+
+    <!-- Sign Up Activity -->
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Sign Up with your mail</string>
+    <string name="sign_up_activity_email_hint">Enter your email</string>
+    <string name="sign_up_activity_password_hint">Enter your password</string>
+    <string name="sign_up_activity_verify_password_hint">Verify your password</string>
+    <string name="sign_up_activity_sign_up">Sign Up</string>
+
+    <string name="sign_up_activity_error_message_password_not_match">Your passwords do not match</string>
+
     <!-- Login Activity -->
-    <string name="login_activity_sign_in_with_facebook">Sign in with Facebook</string>
-    <string name="login_activity_sign_in_with_google_plus">Sign in with Google</string>
-    <string name="login_activity_skip">Skip</string>
+    <string name="login_activity_title">Login with your mail</string>
+    <string name="login_activity_login">Log In</string>
 
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
-
     <string name="main_activity_show_fav_videos_list_title">Favourites</string>
 
     <!--    Drawer -->
@@ -22,6 +38,10 @@
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
 
+    <!--    Favourite videos list activity -->
+    <string name="favourite_videos_list_activity_name">My favourites</string>
+    <string name="favourite_videos_list_activity_empty_text">No favourites?\n\n Click on the star in a video details to save the video as favourite</string>
+
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
@@ -29,10 +49,6 @@
     <string name="share_title">Share it with &#8230;</string>
     <string name="share_subject">Check out this great video! %1$s</string>
     <string name="video_details_activity_user_must_logged_in_to_like">You must logged in to like this video. Would you like to log in now?</string>
-
-    <!-- Favourite videos list activity -->
-    <string name="favourite_videos_list_activity_name">My favourites</string>
-    <string name="favourite_videos_list_activity_empty_text">No favourites?\n\n Click on the star in a video details to save the video as favourite</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
@@ -54,5 +70,10 @@
     <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
     <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
     <string name="error_message_user_not_logged_in">The user must logged in for this. Could you try to log in?</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">This field canont be empty</string>
+    <string name="error_message_string_too_short">You must enter at least %1$s characters</string>
+    <string name="error_message_email_address_required">You must enter a valid email address</string>
 
 </resources>

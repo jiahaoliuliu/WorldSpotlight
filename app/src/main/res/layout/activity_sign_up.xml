@@ -47,14 +47,23 @@
             android:layout_below="@+id/user_name_edit_text"
             />
 
-        <!-- Login button -->
+        <!-- Verify Password -->
+        <EditText
+            android:id="@+id/verify_password_edit_text"
+            android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
+            android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
+            style="@style/SignUpOrLoginVerifyPasswordEditText"
+            android:layout_below="@+id/password_edit_text"
+            />
+
+        <!-- Sign up button -->
         <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/login_button"
+            android:id="@+id/sign_up_button"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
             style="@style/WorldSpotLightButton"
-            android:layout_below="@+id/password_edit_text"
-            android:text="@string/login_activity_login"
+            android:layout_below="@+id/verify_password_edit_text"
+            android:text="@string/sign_up_activity_sign_up"
             />
     </RelativeLayout>
 </ScrollView>

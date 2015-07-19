@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <solid android:color="@color/sign_up_login_activity_skip_background"/>
+    <corners
+        android:bottomLeftRadius="@dimen/sign_up_login_activity_element_radius"
+        android:bottomRightRadius="@dimen/sign_up_login_activity_element_radius"
+        android:topLeftRadius="@dimen/sign_up_login_activity_element_radius"
+        android:topRightRadius="@dimen/sign_up_login_activity_element_radius" />
+</shape>
