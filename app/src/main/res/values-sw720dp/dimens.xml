@@ -17,6 +17,9 @@
     <!-- Sign Up activity -->
     <dimen name="sign_up_activity_group_margin_vertical">80dp</dimen>
 
+    <!-- Login activity -->
+    <dimen name="login_activity_group_margin_vertical">80dp</dimen>
+
     <!-- Main activity -->
     <dimen name="main_activity_view_pager_indicator_height">10dp</dimen>
     <dimen name="main_activity_view_pager_height">250dp</dimen>
