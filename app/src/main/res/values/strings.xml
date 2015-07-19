@@ -11,6 +11,8 @@
     <string name="sign_up_login_activity_log_in">Log In</string>
     <string name="sign_up_login_activity_skip">Skip</string>
 
+    <!-- Sign Up Activity -->
+
     <!-- Sign up Activity -->
     <string name="sign_up_activity_title">Sign Up with your mail</string>
     <string name="sign_up_activity_email_hint">Enter your email</string>
@@ -25,7 +27,6 @@
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
-
     <string name="main_activity_show_fav_videos_list_title">Favourites</string>
 
     <!--    Drawer -->
@@ -67,5 +68,10 @@
     <string name="error_message_login_with_facebook">There was some error trying to login in with Facebook. Please try it again later</string>
     <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
     <string name="error_message_user_not_logged_in">The user must logged in for this. Could you try to log in?</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">This field canont be empty</string>
+    <string name="error_message_string_too_short">You must enter at least %1$s characters</string>
+    <string name="error_message_email_address_required">You must enter a valid email address</string>
 
 </resources>
