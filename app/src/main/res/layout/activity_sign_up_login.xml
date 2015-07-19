@@ -23,6 +23,7 @@
             android:layout_width="@dimen/main_logo"
             android:layout_height="@dimen/main_logo"
             android:src="@drawable/main_logo"
+            android:layout_marginTop="@dimen/sign_up_login_activity_group_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_group_margin_vertical"
             android:layout_gravity="center_horizontal" />
 
