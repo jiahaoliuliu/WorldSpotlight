@@ -29,10 +29,16 @@ import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -41,6 +47,16 @@ import java.util.concurrent.ExecutorService;
 public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private static final String TAG = "VideosModuleObserver";
+
+    /*
+     * This matches only once in whole input,
+     * so Scanner.next returns whole InputStream as a String.
+     * http://stackoverflow.com/a/5445161/2183804
+     */
+    private static final String REGEX_INPUT_BOUNDARY_BEGINNING = "\\A";
+
+    private static final String JSON_FILE_RESULTS_KEY = "results";
+
     private static final int MAX_PARSE_QUERY_RESULT = 2000;
     private static final int MAX_PARSE_QUERY_ALLOWED = 1000;
 
@@ -83,7 +99,17 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         // 1. Retrieve the list of the videos from the database
         mVideosList = mVideoDataLayer.getListAllVideos();
         Log.v(TAG, mVideosList.size() + " retrieved from local database");
-        // TODO: Rename ParseResponse to something else
+
+        // If the list of videos is empty, retrieve the list of elements from row file
+        // and save them into the database
+        if (mVideosList.isEmpty()) {
+            Log.v(TAG, "The list of the video in the database is empty. Retrive the one saved" +
+                    "in the local file");
+            mVideosList = retrieveVideosListFromRawFile();
+            // TODO: Open a new thread for this
+            mVideoDataLayer.insertListDataToDatabase(mVideosList);
+        }
+
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
         boolean areExtraVideos = false;
         VideosModuleVideosListResponse videosModuleVideosListResponse =
@@ -103,12 +129,14 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
                     // Save the query results
+                    // TODO: Open a new thread for this
                     mVideoDataLayer.insertListDataToDatabase(videosList);
                     // Add all the content to the general videos list so it will be available next time
                     mVideosList.addAll(videosList);
                     // Add the video list to the temporal video list so it could be returned to the observer
                     videosListFromParseServer.addAll(videosList);
                     if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
+                        // TODO: Return those videos to the observer and mark the other videos as extra
                         requestVideoToParse(mVideosList.size(), this);
                     } else {
                         VideosModuleVideosListResponse videosModuleVideosListResponse =
@@ -304,5 +332,28 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      */
     private interface RequestAuthorInfoCallback {
         void done(Author author);
+    }
+
+    private List<Video> retrieveVideosListFromRawFile() {
+        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
+        List<Video> videosList = new ArrayList<Video>();
+        String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray jsonArray = jsonObject.getJSONArray(JSON_FILE_RESULTS_KEY);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject videoJsonObject = jsonArray.getJSONObject(i);
+                try {
+                    Video video = new Video(videoJsonObject);
+                    videosList.add(video);
+                } catch (JSONException jsonException) {
+                    Log.e(TAG, "Error create a vide from json object " + jsonObject, jsonException);
+                }
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error reading video file", e);
+        }
+        Log.v(TAG, "The size of the video retrieved from json file is " + videosList.size());
+        return videosList;
     }
 }

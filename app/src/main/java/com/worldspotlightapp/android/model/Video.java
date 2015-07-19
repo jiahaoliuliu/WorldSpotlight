@@ -1,10 +1,15 @@
 package com.worldspotlightapp.android.model;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This is a class which contains the information of the table
@@ -14,6 +19,9 @@ import com.parse.ParseObject;
  */
 @ParseClassName("Video")
 public class Video extends ParseObject implements ClusterItem {
+
+    private static final String TAG = "Video";
+
     // Object Id
     public static final String INTENT_KEY_OBJECT_ID = "com.worldspotlightapp.android.model.video.objectid";
     public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
@@ -29,14 +37,16 @@ public class Video extends ParseObject implements ClusterItem {
     private static final String VIDEO_URL_PREFIX = "http://www.worldspotlightapp.com/video/";
     private String mVideoUrl;
 
-    public static final String PARSE_COLUMN_LOCATION = "location";
-    private LatLng mLocation;
+    public static final String INTENT_KEY_CITY = "com.worldspotlightapp.android.model.video.city";
+    public static final String PARSE_COLUMN_CITY = "city";
 
     public static final String INTENT_KEY_COUNTRY = "com.worldspotlightapp.android.model.video.country";
     public static final String PARSE_COLUMN_COUNTRY = "country";
 
-    public static final String INTENT_KEY_CITY = "com.worldspotlightapp.android.model.video.city";
-    public static final String PARSE_COLUMN_CITY = "city";
+    public static final String PARSE_COLUMN_LOCATION = "location";
+    private LatLng mLocation;
+    private static final String PARSE_COLUMN_LOCATION_LATITUDE= "latitude";
+    private static final String PARSE_COLUMN_LOCATION_LONGITUDE= "longitude";
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -52,21 +62,108 @@ public class Video extends ParseObject implements ClusterItem {
     /**
      * The empty constructor
      */
-    public Video(){}
+    public Video(){
+        super();
+    }
+
+    /**
+     * Constructor from json object. The json object are from Parse,
+     * so the name of the column of each one of the fields is a field
+     * in JSON Object
+     * @param jsonObject
+     *      The json object where to get all the fields
+     */
+    public Video(JSONObject jsonObject) throws JSONException {
+        super();
+
+        if (jsonObject == null) {
+            throw new JSONException("The json object cannot be null");
+        }
+
+        // Object Id. This cannot be null
+        String objectId = jsonObject.getString(PARSE_COLUMN_OBJECT_ID);
+        setObjectId(objectId);
+
+        // Title. This cannot be null
+        String title = jsonObject.getString(PARSE_COLUMN_TITLE);
+        setTitle(title);
+
+        // Description
+        String description = jsonObject.getString(PARSE_COLUMN_DESCRIPTION);
+        setDescription(description);
+
+        // Video Id
+        String videoId = jsonObject.getString(PARSE_COLUMN_VIDEO_ID);
+        setVideoId(videoId);
+
+        // City
+        String city = jsonObject.getString(PARSE_COLUMN_CITY);
+        setCity(city);
+
+        // Country
+        String country = jsonObject.getString(PARSE_COLUMN_COUNTRY);
+
+
+        // Location
+        JSONObject location = jsonObject.getJSONObject(PARSE_COLUMN_LOCATION);
+        double latitude = location.getDouble(PARSE_COLUMN_LOCATION_LATITUDE);
+        double longitude = location.getDouble(PARSE_COLUMN_LOCATION_LONGITUDE);
+        setPosition(latitude, longitude);
+    }
+
+    private void setTitle(String title) {
+        if (title == null) {
+            return;
+        }
+
+        put(PARSE_COLUMN_TITLE, title);
+    }
 
     public String getTitle() {
         return getString(PARSE_COLUMN_TITLE);
+    }
+
+    private void setDescription(String description) {
+        if (description == null) {
+            return;
+        }
+
+        put(PARSE_COLUMN_DESCRIPTION, description);
     }
 
     public String getDescription() {
         return getString(PARSE_COLUMN_DESCRIPTION);
     }
 
+    private void setVideoId(String videoId) {
+        if (videoId == null) {
+            return;
+        }
+
+        put(PARSE_COLUMN_VIDEO_ID, videoId);
+    }
+
     public String getVideoId() {
         return getString(PARSE_COLUMN_VIDEO_ID);
     }
 
+    private void setCity(String city) {
+        if (city == null) {
+            return;
+        }
+
+        put(PARSE_COLUMN_CITY, city);
+    }
+
     public String getCity(){ return getString(PARSE_COLUMN_CITY); }
+
+    private void setCountry(String country) {
+        if (country == null) {
+            return;
+        }
+
+        put(PARSE_COLUMN_COUNTRY, country);
+    }
 
     public String getCountry(){ return getString(PARSE_COLUMN_COUNTRY); }
 
@@ -128,8 +225,9 @@ public class Video extends ParseObject implements ClusterItem {
         return "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg";
     }
 
-    public ParseGeoPoint getLocation() {
-        return getParseGeoPoint(PARSE_COLUMN_LOCATION);
+    private void setPosition(double latitude, double longitude) {
+        ParseGeoPoint parseGeoPoint = new ParseGeoPoint(latitude, longitude);
+        put(PARSE_COLUMN_LOCATION, parseGeoPoint);
     }
 
     @Override
@@ -178,7 +276,7 @@ public class Video extends ParseObject implements ClusterItem {
                 "country='" + getCountry() + '\'' +
                 "videoId='" + getVideoId() + '\'' +
                 "thumbnailUrl='" + getThumbnailUrl() + '\'' +
-                "location='" + getLocation() + '\'' +
+                "location='" + getPosition() + '\'' +
                 '}';
     }
 }
