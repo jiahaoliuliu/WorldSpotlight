@@ -11,7 +11,7 @@ public interface IEventsTrackingModule {
 
     enum EventId {
         // Login screen
-        LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE_PLUS, SKIP_LOGIN,
+        LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE_PLUS, SIGN_UP_WITH_PARSE, LOGIN_WITH_PARSE, SKIP_LOGIN,
 
         // Main screen
         //      SEARCH
@@ -22,6 +22,9 @@ public interface IEventsTrackingModule {
 
         //      Videos Preview
         VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK,
+
+        //      Drawer
+        LOGIN, FAVOURITES, LOGOUT,
 
         // Video details screen
         LIKE_A_VIDEO, FULL_SCREEN, SHARE;

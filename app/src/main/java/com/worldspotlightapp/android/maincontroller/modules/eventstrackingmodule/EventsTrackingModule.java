@@ -82,6 +82,14 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_login_activity_google_plus_login), new JSONObject());
                 break;
+            case SIGN_UP_WITH_PARSE:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_login_activity_parse_sign_up), new JSONObject());
+                break;
+            case LOGIN_WITH_PARSE:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_login_activity_parse_login), new JSONObject());
+                break;
             case SKIP_LOGIN:
                 mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_login_activity_skip_login), new JSONObject());
@@ -194,6 +202,18 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                     Log.e(TAG, "Error sending event to mixpanel", e);
                 }
 
+                break;
+            case LOGIN:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_login), new JSONObject());
+                break;
+            case FAVOURITES:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_favourites), new JSONObject());
+                break;
+            case LOGOUT:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_logout), new JSONObject());
                 break;
             default:
                 throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
