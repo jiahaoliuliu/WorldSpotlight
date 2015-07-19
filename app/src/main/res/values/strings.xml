@@ -11,6 +11,17 @@
     <string name="sign_up_login_activity_log_in">Log In</string>
     <string name="sign_up_login_activity_skip">Skip</string>
 
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Sign Up with your mail</string>
+    <string name="sign_up_activity_email_hint">Enter your email</string>
+    <string name="sign_up_activity_password_hint">Enter your password</string>
+    <string name="sign_up_activity_verify_password_hint">Verify your password</string>
+    <string name="sign_up_activity_sign_up">Sign Up</string>
+    <string name="sign_up_activity_login">Log In</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">Login with your mail</string>
+
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
@@ -35,12 +46,6 @@
     <string name="share_title">Share it with &#8230;</string>
     <string name="share_subject">Check out this great video! %1$s</string>
     <string name="video_details_activity_user_must_logged_in_to_like">You must logged in to like this video. Would you like to log in now?</string>
-
-    <!-- Sign up Activity -->
-    <string name="sign_up_activity_title">Sign Up with your mail</string>
-
-    <!-- Login Activity -->
-    <string name="login_activity_title">Login with your mail</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>

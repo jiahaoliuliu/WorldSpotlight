@@ -57,7 +57,7 @@
             <com.github.snuffix.android.material.RippleButton
                 android:id="@+id/sign_up_button"
                 android:layout_gravity="center_horizontal"
-                style="@style/SignUpOrLoginWithParseButton"
+                style="@style/SignUpOrLoginButton"
                 android:text="@string/sign_up_login_activity_sign_up"
                 android:layout_weight="1"
                 android:layout_marginRight="@dimen/sign_up_login_activity_element_margin_horizontal"
@@ -67,7 +67,7 @@
             <com.github.snuffix.android.material.RippleButton
                 android:id="@+id/log_in_button"
                 android:layout_gravity="center_horizontal"
-                style="@style/SignUpOrLoginWithParseButton"
+                style="@style/SignUpOrLoginButton"
                 android:text="@string/sign_up_login_activity_log_in"
                 android:layout_weight="1"
                 android:layout_marginLeft="@dimen/sign_up_login_activity_element_margin_horizontal"
@@ -76,11 +76,11 @@
 
         <!-- Skip image -->
         <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/skip_login_image_view"
+            android:id="@+id/skip_login_button"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            android:layout_gravity="center_horizontal"
-            style="@style/SkipButton"
+            style="@style/WorldSpotLightButton"
+            android:text="@string/sign_up_login_activity_skip"
         />
     </LinearLayout>
 </ScrollView>

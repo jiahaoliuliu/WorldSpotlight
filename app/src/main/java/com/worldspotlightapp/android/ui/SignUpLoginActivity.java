@@ -84,7 +84,7 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
         mLoginButton = (Button)findViewById(R.id.log_in_button);
         mLoginButton.setOnClickListener(onClickListener);
 
-        mSkipButton = (Button)findViewById(R.id.skip_login_image_view);
+        mSkipButton = (Button)findViewById(R.id.skip_login_button);
         mSkipButton.setOnClickListener(onClickListener);
     }
 
@@ -112,7 +112,7 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
                     Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
                     startActivity(startLoginActivityIntent);
                     break;
-                case R.id.skip_login_image_view:
+                case R.id.skip_login_button:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.SKIP_LOGIN);
                     finish();
                     break;

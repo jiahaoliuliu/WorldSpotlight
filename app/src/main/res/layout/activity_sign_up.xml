@@ -3,83 +3,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.worldspotlightapp.android.ui.SignUpActivity"
     android:background="@drawable/sign_up_login_background"
-    android:orientation="vertical"
-    android:gravity="center"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/sign_up_activity_activity_top_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        >
 
         <!-- Logo -->
         <ImageView
+            android:id="@+id/logo_image_view"
             android:layout_width="@dimen/main_logo"
             android:layout_height="@dimen/main_logo"
             android:src="@drawable/main_logo"
             android:layout_marginBottom="@dimen/sign_up_login_activity_group_margin_vertical"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            />
 
-        <!-- Facebook Log in button -->
-        <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/facebook_login_button"
+        <!-- Email address as user name -->
+        <EditText
+            android:id="@+id/user_name_edit_text"
             android:layout_marginTop="@dimen/sign_up_login_activity_group_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            style="@style/FacebookLoginButton"
-            android:layout_gravity="center_horizontal"
+            style="@style/SignUpOrLoginEMailEditText"
+            android:layout_below="@+id/logo_image_view"
             />
 
-        <!-- Google Plus Log in button -->
+        <!-- Password -->
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
+            android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
+            style="@style/SignUpOrLoginPasswordEditText"
+            android:layout_below="@+id/user_name_edit_text"
+            />
+
+        <!-- Verify Password -->
+        <EditText
+            android:id="@+id/verify_password_edit_text"
+            android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
+            android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
+            style="@style/SignUpOrLoginVerifyPasswordEditText"
+            android:layout_below="@+id/password_edit_text"
+            />
+
+        <!-- Sign up button -->
         <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/google_plus_login_button"
-            android:layout_gravity="center_horizontal"
+            android:id="@+id/sign_up_button"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            style="@style/GooglePlusLoginButton"
+            style="@style/WorldSpotLightButton"
+            android:layout_below="@+id/verify_password_edit_text"
+            android:text="@string/sign_up_activity_sign_up"
             />
-
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
-            android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            >
-
-            <!-- Sign Up button -->
-            <com.github.snuffix.android.material.RippleButton
-                android:id="@+id/sign_up_button"
-                android:layout_gravity="center_horizontal"
-                style="@style/SignUpOrLoginWithParseButton"
-                android:text="@string/sign_up_login_activity_sign_up"
-                android:layout_weight="1"
-                android:layout_marginRight="@dimen/sign_up_login_activity_element_margin_horizontal"
-                />
-
-            <!-- Log In button -->
-            <com.github.snuffix.android.material.RippleButton
-                android:id="@+id/log_in_button"
-                android:layout_gravity="center_horizontal"
-                style="@style/SignUpOrLoginWithParseButton"
-                android:text="@string/sign_up_login_activity_log_in"
-                android:layout_weight="1"
-                android:layout_marginLeft="@dimen/sign_up_login_activity_element_margin_horizontal"
-                />
-        </LinearLayout>
-
-        <!-- Skip image -->
-        <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/skip_login_image_view"
-            android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
-            android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            android:layout_gravity="center_horizontal"
-            style="@style/SkipButton"
-            />
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>
