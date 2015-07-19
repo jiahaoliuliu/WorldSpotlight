@@ -19,10 +19,12 @@
     <string name="sign_up_activity_password_hint">Enter your password</string>
     <string name="sign_up_activity_verify_password_hint">Verify your password</string>
     <string name="sign_up_activity_sign_up">Sign Up</string>
-    <string name="sign_up_activity_login">Log In</string>
+
+    <string name="sign_up_activity_error_message_password_not_match">Your passwords do not match</string>
 
     <!-- Login Activity -->
     <string name="login_activity_title">Login with your mail</string>
+    <string name="login_activity_login">Log In</string>
 
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>

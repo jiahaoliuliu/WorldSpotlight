@@ -81,16 +81,36 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
         if (TextUtils.isEmpty(username)) {
             mUserNameEditText.setError(getString(R.string.error_message_field_empty));
             areAllFieldsOk = false;
-        //      It should have at least MINIMUM_PASSWORD_LENGTH characters
-        } else if (username.length() < MINIMUM_PASSWORD_LENGTH) {
-            mUserNameEditText.setError(getString(R.string.error_message_string_too_short, MINIMUM_PASSWORD_LENGTH));
-            areAllFieldsOk = false;
         //      It must be an email address
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
             mUserNameEditText.setError(getString(R.string.error_message_email_address_required));
             areAllFieldsOk = false;
         } else {
             mUserNameEditText.setError(null);
+        }
+
+        // Password
+        String password = mPasswordEditText.getText().toString();
+        //      It cannot be empty
+        if (TextUtils.isEmpty(password)) {
+            mPasswordEditText.setError(getString(R.string.error_message_field_empty));
+            areAllFieldsOk = false;
+        //      It must have at least MINIMUM_PASSWORD_LENGTH characters
+        } else if (password.length() < MINIMUM_PASSWORD_LENGTH) {
+            mPasswordEditText.setError(getString(R.string.error_message_string_too_short, MINIMUM_PASSWORD_LENGTH));
+            areAllFieldsOk = false;
+        }
+
+        // Verify Password
+        String verifyPassword = mVerifyPasswordEditText.getText().toString();
+        //      It cannot be empty
+        if (TextUtils.isEmpty(verifyPassword)) {
+            mVerifyPasswordEditText.setError(getString(R.string.error_message_field_empty));
+            areAllFieldsOk = false;
+            //      It must match with the content in password field
+        } else if (!verifyPassword.equals(password)) {
+            mVerifyPasswordEditText.setError(getString(R.string.sign_up_activity_error_message_password_not_match));
+            areAllFieldsOk = false;
         }
 
         return areAllFieldsOk;
