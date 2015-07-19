@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <solid android:color="@android:color/transparent"/>
+    <stroke android:width="5px" android:color="@android:color/white" />
+    <corners
+        android:bottomLeftRadius="@dimen/sign_up_login_activity_button_radius"
+        android:bottomRightRadius="@dimen/sign_up_login_activity_button_radius"
+        android:topLeftRadius="@dimen/sign_up_login_activity_button_radius"
+        android:topRightRadius="@dimen/sign_up_login_activity_button_radius" />
+</shape>

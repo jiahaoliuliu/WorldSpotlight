@@ -6,15 +6,15 @@
     <dimen name="card_view_card_elevation">4dp</dimen>
     <dimen name="card_view_inside_padding">16dp</dimen>
     <dimen name="card_view_title_size">25sp</dimen>
+    <dimen name="main_logo">120dp</dimen>
 
-    <!-- Login activity -->
-    <dimen name="login_activity_logo">120dp</dimen>
-    <dimen name="login_activity_button_max_width">200dp</dimen>
-    <dimen name="login_activity_button_height">50dp</dimen>
-    <dimen name="login_activity_button_radius">5dp</dimen>
-    <dimen name="login_activity_group_margin_vertical">60dp</dimen>
-    <dimen name="login_activity_element_margin_vertical">8dp</dimen>
-    <dimen name="login_activity_element_margin_horizontal">4dp</dimen>
+    <!-- Sign Up Login activity -->
+    <dimen name="sign_up_login_activity_button_max_width">200dp</dimen>
+    <dimen name="sign_up_login_activity_button_height">50dp</dimen>
+    <dimen name="sign_up_login_activity_button_radius">5dp</dimen>
+    <dimen name="sign_up_login_activity_group_margin_vertical">60dp</dimen>
+    <dimen name="sign_up_login_activity_element_margin_vertical">8dp</dimen>
+    <dimen name="sign_up_login_activity_element_margin_horizontal">4dp</dimen>
 
     <!-- Main activity -->
     <dimen name="main_activity_view_pager_indicator_height">5dp</dimen>

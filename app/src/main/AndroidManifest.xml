@@ -48,7 +48,7 @@
         android:label="@string/app_name"
         android:theme="@style/Indigo" >
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.SignUpLoginActivity"
             android:label="@string/app_name"
             android:theme="@style/IndigoWithoutActionBar" >
         </activity>

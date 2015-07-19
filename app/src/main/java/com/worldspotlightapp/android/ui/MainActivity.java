@@ -439,7 +439,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private void updateUserProfileIfPossibleAndNeeded() {
         // If the user data does not exist, exit
         if (!mUserDataModule.hasUserData()) {
-            mUserProfileImageView.setImageDrawable(getResources().getDrawable(R.drawable.login_logo));
+            mUserProfileImageView.setImageDrawable(getResources().getDrawable(R.drawable.main_logo));
             mUserNameTextView.setVisibility(View.GONE);
             return;
         }
@@ -766,7 +766,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
      * Start the login activity
      */
     private void launchLoginActivity() {
-        Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+        Intent startLoginActivityIntent = new Intent(mContext, SignUpLoginActivity.class);
         startActivity(startLoginActivityIntent);
     }
 

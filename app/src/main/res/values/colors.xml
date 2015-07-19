@@ -2,8 +2,8 @@
 <resources>
     <color name="generic_background">#CCCCCC</color>
 
-    <!-- Login activity -->
-    <color name="login_activity_facebook_background">#3b5998</color>
-    <color name="login_activity_google_plus_background">#d34836</color>
-    <color name="login_activity_skip_background">#E65100</color>
+    <!-- Sign Up Login activity -->
+    <color name="sign_up_login_activity_facebook_background">#3b5998</color>
+    <color name="sign_up_login_activity_google_plus_background">#d34836</color>
+    <color name="sign_up_login_activity_skip_background">#E65100</color>
 </resources>

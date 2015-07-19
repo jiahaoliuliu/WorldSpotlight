@@ -252,7 +252,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Log.v(TAG, "Positive button clicked. Showing login screen to the user");
-                            Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+                            Intent startLoginActivityIntent = new Intent(mContext, SignUpLoginActivity.class);
                             startActivity(startLoginActivityIntent);
                         }
                     },

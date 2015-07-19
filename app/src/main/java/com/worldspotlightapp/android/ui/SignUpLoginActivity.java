@@ -21,7 +21,7 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.
 
 import java.util.Observable;
 
-public class LoginActivity extends AbstractBaseActivityObserver implements
+public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "LoginActivity";
@@ -53,7 +53,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_up_login);
 
         // Check if the user has logged in
         if (mUserDataModule.hasUserData()) {
@@ -87,7 +87,7 @@ public class LoginActivity extends AbstractBaseActivityObserver implements
                 case R.id.facebook_login_button:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.LOGIN_WITH_FACEBOOK);
                     mNotificationModule.showLoadingDialog(mContext);
-                    mUserDataModule.loginWithFacebook(LoginActivity.this, LoginActivity.this);
+                    mUserDataModule.loginWithFacebook(SignUpLoginActivity.this, SignUpLoginActivity.this);
                     break;
                 case R.id.google_plus_login_buttn:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.LOGIN_WITH_GOOGLE_PLUS);

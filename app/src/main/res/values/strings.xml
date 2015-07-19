@@ -4,12 +4,12 @@
     <!-- Abstract base Activity -->
     <string name="abstract_base_activity_user_must_logged_in">You must logged in for this action. Would you like to log in now?</string>
 
-    <!-- Login Activity -->
-    <string name="login_activity_sign_in_with_facebook">Sign in with Facebook</string>
-    <string name="login_activity_sign_in_with_google_plus">Sign in with Google</string>
-    <string name="login_activity_sign_up">Sign Up</string>
-    <string name="login_activity_log_in">Log In</string>
-    <string name="login_activity_skip">Skip</string>
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Sign in with Facebook</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Sign in with Google</string>
+    <string name="sign_up_login_activity_sign_up">Sign Up</string>
+    <string name="sign_up_login_activity_log_in">Log In</string>
+    <string name="sign_up_login_activity_skip">Skip</string>
 
     <!-- Main Activity -->
     <string name="main_activity_you_are_here">You are here</string>
