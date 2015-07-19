@@ -11,7 +11,7 @@ public interface IEventsTrackingModule {
 
     enum EventId {
         // Login screen
-        LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE_PLUS, SKIP_LOGIN,
+        LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE_PLUS, SIGN_UP_WITH_PARSE, LOGIN_WITH_PARSE, SKIP_LOGIN,
 
         // Main screen
         //      SEARCH

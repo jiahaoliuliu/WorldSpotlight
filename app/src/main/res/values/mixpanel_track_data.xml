@@ -12,6 +12,8 @@
     <string name="mp_login_activity_prefix">Sign Up Login</string>
     <string name="mp_login_activity_facebook_login">Facebook login</string>
     <string name="mp_login_activity_google_plus_login">Google Plus login</string>
+    <string name="mp_login_activity_parse_sign_up">Parse signup</string>
+    <string name="mp_login_activity_parse_login">Parse login</string>
     <string name="mp_login_activity_skip_login">Skip login</string>
 
     <!-- Main Activity -->

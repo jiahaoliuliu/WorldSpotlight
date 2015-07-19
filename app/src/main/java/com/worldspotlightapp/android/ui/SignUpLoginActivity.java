@@ -104,11 +104,13 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
                     break;
                 case R.id.sign_up_button:
                     // Launch the Sign up activity
+                    mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.SIGN_UP_WITH_PARSE);
                     Intent startSignUpActivityIntent = new Intent(mContext, SignUpActivity.class);
                     startActivity(startSignUpActivityIntent);
                     break;
                 case R.id.login_button:
                     // Launch the login activity
+                    mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.LOGIN_WITH_PARSE);
                     Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
                     startActivity(startLoginActivityIntent);
                     break;
