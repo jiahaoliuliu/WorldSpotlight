@@ -195,6 +195,18 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 }
 
                 break;
+            case LOGIN:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_login), new JSONObject());
+                break;
+            case FAVOURITES:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_favourites), new JSONObject());
+                break;
+            case LOGOUT:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_logout), new JSONObject());
+                break;
             default:
                 throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
                         "to Main screen, so it cannot be tracked");

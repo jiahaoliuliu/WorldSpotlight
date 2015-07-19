@@ -166,16 +166,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 switch (menuItem.getItemId()) {
                     case R.id.drawer_item_login:
                         Log.v(TAG, "Login clicked");
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.LOGIN);
                         launchSignUpLoginActivity();
                         return true;
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FAVOURITES);
                         showFavouritesVideosToUser();
                         // Close the drawer
                         mDrawerLayout.closeDrawers();
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.LOGOUT);
                         mUserDataModule.logout();
                         launchSignUpLoginActivity();
                         // Close the drawer
