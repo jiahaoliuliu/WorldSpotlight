@@ -1,7 +1,7 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">20dp</dimen>
-    <dimen name="activity_vertical_margin">40dp</dimen>
+    <dimen name="activity_vertical_margin">20dp</dimen>
     <dimen name="card_view_card_corner_radius">4dp</dimen>
     <dimen name="card_view_card_elevation">4dp</dimen>
     <dimen name="card_view_inside_padding">16dp</dimen>
@@ -17,7 +17,10 @@
     <dimen name="sign_up_login_activity_element_margin_horizontal">4dp</dimen>
 
     <!-- Sign Up activity -->
-    <dimen name="sign_up_activity_activity_top_margin">20dp</dimen>
+    <dimen name="sign_up_activity_group_margin_vertical">40dp</dimen>
+
+    <!-- Login activity -->
+    <dimen name="login_activity_group_margin_vertical">40dp</dimen>
 
     <!-- Main activity -->
     <dimen name="main_activity_view_pager_indicator_height">5dp</dimen>

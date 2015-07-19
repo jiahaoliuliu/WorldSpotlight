@@ -7,12 +7,18 @@
     <dimen name="main_logo">240dp</dimen>
 
     <!-- Sign Up Login activity -->
-    <dimen name="sign_up_login_activity_group_margin_vertical">150dp</dimen>
+    <dimen name="sign_up_login_activity_group_margin_vertical">120dp</dimen>
     <dimen name="sign_up_login_activity_element_max_width">200dp</dimen>
     <dimen name="sign_up_login_activity_element_height">50dp</dimen>
     <dimen name="sign_up_login_activity_element_radius">5dp</dimen>
-    <dimen name="sign_up_login_activity_element_margin_vertical">30dp</dimen>
-    <dimen name="sign_up_login_activity_separator_margin_vertical">20dp</dimen>
+    <dimen name="sign_up_login_activity_element_margin_vertical">20dp</dimen>
+    <dimen name="sign_up_login_activity_element_margin_horizontal">8dp</dimen>
+
+    <!-- Sign Up activity -->
+    <dimen name="sign_up_activity_group_margin_vertical">80dp</dimen>
+
+    <!-- Login activity -->
+    <dimen name="login_activity_group_margin_vertical">80dp</dimen>
 
     <!-- Main activity -->
     <dimen name="main_activity_view_pager_indicator_height">10dp</dimen>
