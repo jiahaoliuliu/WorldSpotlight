@@ -112,7 +112,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Launch login activity if the user has not logged in
         if (!mUserDataModule.hasUserData()) {
-            launchLoginActivity();
+            launchSignUpLoginActivity();
         }
 
         setContentView(R.layout.activity_main);
@@ -166,7 +166,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 switch (menuItem.getItemId()) {
                     case R.id.drawer_item_login:
                         Log.v(TAG, "Login clicked");
-                        launchLoginActivity();
+                        launchSignUpLoginActivity();
                         return true;
                     case R.id.drawer_item_favourites:
                         Log.v(TAG, "Favourites clicked");
@@ -177,7 +177,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
                         mUserDataModule.logout();
-                        launchLoginActivity();
+                        launchSignUpLoginActivity();
                         // Close the drawer
                         mDrawerLayout.closeDrawers();
                         return true;
@@ -765,9 +765,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
     /**
      * Start the login activity
      */
-    private void launchLoginActivity() {
-        Intent startLoginActivityIntent = new Intent(mContext, SignUpLoginActivity.class);
-        startActivity(startLoginActivityIntent);
+    private void launchSignUpLoginActivity() {
+        Intent startSignUpLoginActivityIntent = new Intent(mContext, SignUpLoginActivity.class);
+        startActivity(startSignUpLoginActivityIntent);
     }
 
     private void showFavouritesVideosToUser() {
