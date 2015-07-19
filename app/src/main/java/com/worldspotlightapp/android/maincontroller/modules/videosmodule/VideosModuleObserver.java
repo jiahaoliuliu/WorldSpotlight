@@ -21,9 +21,11 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -125,6 +127,22 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             }
         };
         requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback);
+    }
+
+    @Override
+    public void requestLikedVideosInfo(Observer observer, List<Like> likesList) {
+        // Register the observer
+        addObserver(observer);
+
+        List<Video> likedVideos = new ArrayList<Video>();
+        for (Like like : likesList) {
+            likedVideos.add(getVideoInfo(like.getVideoId()));
+        }
+
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        VideosModuleLikedVideosListResponse videosModuleLikedVideosListResponse = new VideosModuleLikedVideosListResponse(parseResponse, likedVideos);
+        setChanged();
+        notifyObservers(videosModuleLikedVideosListResponse);
     }
 
     private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback) {

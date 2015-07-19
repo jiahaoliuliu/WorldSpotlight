@@ -18,6 +18,10 @@
     <dimen name="main_activity_view_pager_indicator_height">10dp</dimen>
     <dimen name="main_activity_view_pager_height">250dp</dimen>
 
+    <!--    Drawer -->
+    <dimen name="drawer_header_height">300dp</dimen>
+    <dimen name="drawer_header_image_size">180dp</dimen>
+
     <!--     Video Preview -->
     <dimen name="main_activity_video_preview_margin">20dp</dimen>
     <dimen name="main_activity_video_preview_title_size">30sp</dimen>
@@ -26,5 +30,10 @@
     <dimen name="main_activity_video_preview_vertical_margin">10dp</dimen>
     <dimen name="main_activity_video_preview_image_height">210dp</dimen>
     <dimen name="main_activity_video_preview_image_width">300dp</dimen>
+
+    <!-- videos list -->
+    <dimen name="video_list_item_left_margin">40dp</dimen>
+    <dimen name="video_list_item_bottom_margin">40dp</dimen>
+    <dimen name="video_list_item_height">500dp</dimen>
 
 </resources>

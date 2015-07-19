@@ -2,13 +2,17 @@ package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.support.v7.widget.SearchView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,21 +36,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
+import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
-import java.util.Set;
 import java.util.Stack;
 
 public class MainActivity extends AbstractBaseActivityObserver {
@@ -67,6 +75,18 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private GoogleMap mMap;
     // Marker on the map
     private Marker mMyPositionMarker;
+    //      Drawer
+    private DrawerLayout mDrawerLayout;
+    private ImageView mUserProfileImageView;
+    private TextView mUserNameTextView;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView mDrawer;
+    private MenuItem mDrawerItemLogin;
+    private MenuItem mDrawerItemFavourites;
+    private MenuItem mDrawerItemLogout;
+
+    // By default drawer is not open
+    private boolean mIsDrawerOpen;
 
     private FloatingActionButton mMyLocationFloatingActionButton;
 
@@ -78,15 +98,21 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Variable used to record if the camera update is automatic or manual
     private boolean isAutomaticCameraUpdate;
 
-    private MenuItem menuItemSearch;
+    private boolean mIsShowingFavouriteListVideos;
+
+    // Action bar items
+    private Menu mMenu;
+    private MenuItem mMenuItemSearch;
+
+    private Picasso mPicasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Launch login activity if the user has not logged in
         if (!mUserDataModule.hasUserData()) {
-            Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
-            startActivity(startLoginActivityIntent);
+            launchLoginActivity();
         }
 
         setContentView(R.layout.activity_main);
@@ -98,20 +124,83 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Delete all the possible observers
         mVideosModule.deleteObserver(this);
+        mUserDataModule.deleteObserver(this);
 
         registerForLocalizationService();
 
+        mPicasso = Picasso.with(mContext);
+
         // Link the views
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mUserProfileImageView = (ImageView) findViewById(R.id.user_profile_image_view);
+        mUserNameTextView = (TextView) findViewById(R.id.user_name_text_view);
+
+        mDrawer = (NavigationView) findViewById(R.id.drawer);
+        mDrawerItemLogin = mDrawer.getMenu().findItem(R.id.drawer_item_login);
+        mDrawerItemFavourites = mDrawer.getMenu().findItem(R.id.drawer_item_favourites);
+        mDrawerItemLogout = mDrawer.getMenu().findItem(R.id.drawer_item_logout);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                Log.v(TAG, "Drawer opened");
+                mIsDrawerOpen = true;
+                updateActionBarItems();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                Log.v(TAG, "Drawer closed");
+                mIsDrawerOpen = false;
+                updateActionBarItems();
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.drawer_item_login:
+                        Log.v(TAG, "Login clicked");
+                        launchLoginActivity();
+                        return true;
+                    case R.id.drawer_item_favourites:
+                        Log.v(TAG, "Favourites clicked");
+                        showFavouritesVideosToUser();
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    case R.id.drawer_item_logout:
+                        Log.v(TAG, "Logout clicked");
+                        mUserDataModule.logout();
+                        launchLoginActivity();
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         mMyLocationFloatingActionButton = (FloatingActionButton) findViewById(R.id.my_location_floating_action_button);
         mMyLocationFloatingActionButton.setOnClickListener(onClickListener);
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
+
+        // Update data
         setupMapIfNeeded();
 
         // Center the map to the user
         centerMapToUser();
-
     }
 
     private void setupMapIfNeeded() {
@@ -175,32 +264,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Data received from " + observable + ", Object:" + o);
-        if (observable instanceof VideosModuleObserver) {
-            if (o instanceof VideosModuleVideosListResponse) {
+        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable) {
+            // Add the data to the list of responses
+            mResponsesStack.push(o);
 
-                // TODO: Remove this
-                VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse)o;
-                ParseResponse parseResponse =videosModuleVideosListResponse.getParseResponse();
-                Log.d(TAG, "Parse response received " + parseResponse);
-                if (!parseResponse.isError()) {
-                    List<Video> videoListReceived = videosModuleVideosListResponse.getVideosList();
-                    int numberVideos = videoListReceived == null? 0 : videoListReceived.size();
-                    Log.v(TAG, "The list of videos has " + numberVideos + " videos. Are extra videos? " + videosModuleVideosListResponse.areExtraVideos());
-                }
-
-                // Add the data to the list of responses
-                mResponsesStack.push(o);
-
-                if (isInForeground()) {
-                    Log.v(TAG, "This activity is in foreground. Processing data if exists");
-                    processDataIfExists();
-                } else {
-                    Log.v(TAG, "This activity is not in foregorund. Not do anything");
-                }
-
-                // The MainActivity will listen constantly to the changes on the list of videos
-                //observable.deleteObserver(this);
+            if (isInForeground()) {
+                Log.v(TAG, "This activity is in foreground. Processing data if exists");
+                processDataIfExists();
+            } else {
+                Log.v(TAG, "This activity is not in foregorund. Not do anything");
             }
+
+            // The MainActivity will listen constantly to the changes on the list of videos
+            //observable.deleteObserver(this);
         }
     }
 
@@ -227,14 +303,44 @@ public class MainActivity extends AbstractBaseActivityObserver {
         while (!mResponsesStack.isEmpty()) {
             Object response = mResponsesStack.pop();
             // Checking the type of data
-            if (response instanceof VideosModuleVideosListResponse) {
+            // Since VideosModuleLikedVideosListResponse is child of VideosModuleVideosListResponse, this check should be
+            // done before checking the instance of VideosModuleVideosListResponse. This is because instanceof in Java
+            // will return also true for subclasses. This is:
+            // - A is Parent
+            // - B is Child of A
+            // - b is instance of B
+            // Then b instanceOf A == true
+            //      b instanceOf B == true
+            if (response instanceof VideosModuleLikedVideosListResponse) {
+                VideosModuleLikedVideosListResponse videosModuleLikedVideosListResponse = (VideosModuleLikedVideosListResponse)response;
+                ParseResponse parseResponse = videosModuleLikedVideosListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    List<Video> favouriteVideosList = videosModuleLikedVideosListResponse.getVideosList();
+                    int numberVideoRetrieved = favouriteVideosList == null ? 0 : favouriteVideosList.size();
+                    Log.v(TAG, "Retrieved " + numberVideoRetrieved + " favourite videos");
+                    mVideosList = new ArrayList<>(favouriteVideosList);
+                    mClusterManager.clearItems();
+                    mClusterManager.addItems(mVideosList);
+                    mClusterManager.cluster();
+
+                    // Prepare action bar
+                    mIsShowingFavouriteListVideos = true;
+                    mDrawerToggle.setDrawerIndicatorEnabled(false);
+                    mActionBar.setDisplayHomeAsUpEnabled(true);
+                    mActionBar.setTitle(getString(R.string.main_activity_show_fav_videos_list_title));
+                    updateActionBarItems();
+                } else {
+                    // Some error happend
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            } else if (response instanceof VideosModuleVideosListResponse) {
                 VideosModuleVideosListResponse videosModuleVideosListResponse = (VideosModuleVideosListResponse) response;
                 // If the list of videos received are extra videos to be added to the list of existence videos
                 ParseResponse parseResponse = videosModuleVideosListResponse.getParseResponse();
                 if (videosModuleVideosListResponse.areExtraVideos()) {
                     if (!parseResponse.isError()) {
                         List<Video> extraVideos = videosModuleVideosListResponse.getVideosList();
-                        int numberVideoRetrieved = extraVideos == null? 0 : extraVideos.size();
+                        int numberVideoRetrieved = extraVideos == null ? 0 : extraVideos.size();
                         Log.v(TAG, "The list of extra videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList.addAll(extraVideos);
                         mClusterManager.addItems(extraVideos);
@@ -242,11 +348,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     } else {
                         Log.v(TAG, "Error updating the list of videos");
                     }
-                // if the list of videos received should replace the existence list of videos
+                    // if the list of videos received should replace the existence list of videos
                 } else {
                     if (!parseResponse.isError()) {
                         List<Video> videoList = videosModuleVideosListResponse.getVideosList();
-                        int numberVideoRetrieved = videoList == null? 0 : videoList.size();
+                        int numberVideoRetrieved = videoList == null ? 0 : videoList.size();
                         Log.v(TAG, "The list of videos received contains " + numberVideoRetrieved + " videos");
                         mVideosList = new ArrayList<>(videosModuleVideosListResponse.getVideosList());
                         mClusterManager.clearItems();
@@ -257,15 +363,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
                         mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                     }
                 }
+            } else if (response instanceof UserDataModuleLikesListResponse) {
+                UserDataModuleLikesListResponse userDataModuleLikesListResponse = (UserDataModuleLikesListResponse) response;
+                // If the list of videos received are extra videos to be added to the list of existence videos
+                ParseResponse parseResponse = userDataModuleLikesListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mVideosModule.requestLikedVideosInfo(this, userDataModuleLikesListResponse.getLikesList());
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
+
+            Log.v(TAG, "Dismissing the loading dialog");
+            mNotificationModule.dismissLoadingDialog();
+
+            // 3. Remove the responses
+            // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
+            // there is not need to clean them
         }
-
-        Log.v(TAG, "Dismissing the loading dialog");
-        mNotificationModule.dismissLoadingDialog();
-
-        // 3. Remove the responses
-        // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
-        // there is not need to clean them
     }
 
     @Override
@@ -293,8 +408,10 @@ public class MainActivity extends AbstractBaseActivityObserver {
         String videoId = getTriggeredVideoId();
         if (videoId != null) {
             showVideoPreview(videoId);
-            return;
         }
+
+        updateUserProfileIfPossibleAndNeeded();
+        updateDrawerItems();
     }
 
     /**
@@ -314,6 +431,47 @@ public class MainActivity extends AbstractBaseActivityObserver {
             return dataSplitted[dataSplitted.length - 1];
         }
         return null;
+    }
+
+    /**
+     * Update the user profile data in the drawer if possible
+     */
+    private void updateUserProfileIfPossibleAndNeeded() {
+        // If the user data does not exist, exit
+        if (!mUserDataModule.hasUserData()) {
+            mUserProfileImageView.setImageDrawable(getResources().getDrawable(R.drawable.login_logo));
+            mUserNameTextView.setVisibility(View.GONE);
+            return;
+        }
+
+        UserData userData = mUserDataModule.getUserData();
+
+        // Updating the views. For now it is only possible for google plus users
+        if (!userData.isGooglePlusUser()) {
+            return;
+        }
+
+        // The image is loaded each time the MainActivity is resumed. Since Picasso uses
+        // local cache, this shouldn't be any problem
+        // Profile photo
+        mPicasso.load(userData.getPhotoUrl()).into(mUserProfileImageView);
+
+        // User name
+        mUserNameTextView.setText(userData.getName());
+        mUserNameTextView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Update the items in drawer.
+     */
+    private void updateDrawerItems() {
+        if (mUserDataModule.hasUserData()) {
+            mDrawerItemLogin.setVisible(false);
+            mDrawerItemLogout.setVisible(true);
+        } else {
+            mDrawerItemLogin.setVisible(true);
+            mDrawerItemLogout.setVisible(false);
+        }
     }
 
     /**
@@ -459,18 +617,60 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // Action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Update user profile
-        menuItemSearch = menu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
-                .NONE, R.string.action_bar_search)
-                .setIcon(R.drawable.ic_action_search)
-                .setActionView(R.layout.search_layout);
-        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        mMenu = menu;
+        updateActionBarItems();
         return true;
+    }
+
+    /**
+     * Updates the items in the action bar. This depends if the drawer
+     * is open or not
+     */
+    private void updateActionBarItems() {
+        // If the menu is not ready, not do anything
+        if (mMenu == null) {
+            return;
+        }
+
+        if (mIsDrawerOpen || mIsShowingFavouriteListVideos) {
+            // Remove the search option
+            if (mMenuItemSearch != null) {
+                mMenu.removeItem(mMenuItemSearch.getItemId());
+            }
+        } else {
+            // Update user profile
+            mMenuItemSearch = mMenu.add(Menu.NONE, MENU_ITEM_SEARCH_ID, Menu
+                    .NONE, R.string.action_bar_search)
+                    .setIcon(R.drawable.ic_action_search)
+                    .setActionView(R.layout.search_layout);
+            mMenuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         switch (item.getItemId()) {
+            case android.R.id.home:
+                // if it was showing the favourite list videos, disable it and show the list
+                // fo all the videos
+                if (mIsShowingFavouriteListVideos) {
+                    Log.v(TAG, "Favourite list video enabled. Disabling it");
+                    mIsShowingFavouriteListVideos = false;
+                    updateActionBarItems();
+                    mActionBar.setTitle(getString(R.string.app_name));
+                    mNotificationModule.showLoadingDialog(mContext);
+                    mVideosModule.requestAllVideos(MainActivity.this);
+
+                    // Enable the drawer icons
+                    mDrawerToggle.setDrawerIndicatorEnabled(true);
+                    return true;
+                }
             case MENU_ITEM_SEARCH_ID:
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
                 searchByKeyword();
@@ -481,7 +681,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     }
 
     private void searchByKeyword() {
-        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
+        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
         searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -512,11 +712,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 et.setText("");
                 searchActionView.setQuery("", false);
                 searchActionView.onActionViewCollapsed();
-                menuItemSearch.collapseActionView();
+                mMenuItemSearch.collapseActionView();
             }
         });
 
-        MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+        MenuItemCompat.setOnActionExpandListener(mMenuItemSearch, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return true;
@@ -546,5 +746,37 @@ public class MainActivity extends AbstractBaseActivityObserver {
     @Override
     public int hashCode() {
         return 0;
+    }
+
+    // Drawer
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Start the login activity
+     */
+    private void launchLoginActivity() {
+        Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+        startActivity(startLoginActivityIntent);
+    }
+
+    private void showFavouritesVideosToUser() {
+        // Check if the user has logged in
+        if (!showAlertIfUserHasNotLoggedIn()) {
+            // The user has not logged in. Not do anything
+            return;
+        }
+
+        mUserDataModule.retrieveFavouriteVideosList(this);
     }
 }

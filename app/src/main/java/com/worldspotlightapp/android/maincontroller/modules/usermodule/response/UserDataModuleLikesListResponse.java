@@ -4,19 +4,21 @@ import com.worldspotlightapp.android.maincontroller.BaseModuleResponse;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.model.Like;
 
+import java.util.List;
+
 /**
  * Created by jiahaoliuliu on 2/20/15.
  */
-public class UserDataModuleLikeResponse extends BaseModuleResponse {
+public class UserDataModuleLikesListResponse extends BaseModuleResponse {
 
-    private Like mLike;
+    private List<Like> mLikesList;
 
-    public UserDataModuleLikeResponse(ParseResponse parseResponse, Like like) {
+    public UserDataModuleLikesListResponse(ParseResponse parseResponse, List<Like> likesList) {
         super(parseResponse);
-        this.mLike = like;
+        this.mLikesList = likesList;
     }
 
-    public Like getLike() {
-        return mLike;
+    public List<Like> getLikesList() {
+        return mLikesList;
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
  * Created by jiahaoliuliu on 7/4/15.
  */
 @ParseClassName("_User")
-public class User extends ParseUser {
+public class UserData extends ParseUser {
 
     private static final String TAG = "ParseUser";
 
@@ -33,28 +33,30 @@ public class User extends ParseUser {
     /**
      * The empty constructor required by Parse
      */
-    public User(){
+    public UserData(){
         super();
     }
 
-    public User(String name, String username, String email, String password, String photoUrl,
-                boolean isGooglePlusUser, String profileUrl) {
+    public UserData(String name, String username, String email, String password, String photoUrl,
+                    boolean isGooglePlusUser, String profileUrl) {
         super();
+        // Is Google Plus user must be set before photoUrl because if the user come from Google Plus
+        // then the photo will be proceed specially
+        setIsGooglePlusUser(isGooglePlusUser);
         setName(name);
         setUsername(username);
         setEmail(email);
         setPassword(password);
         setPhotoUrl(photoUrl);
-        setIsGooglePlusUser(isGooglePlusUser);
         setProfileUrl(profileUrl);
     }
 
-    public User(ParseUser parseUser) {
+    public UserData(ParseUser parseUser) {
         super();
         setObjectId(parseUser.getObjectId());
+        setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));
         setName(parseUser.getString(PARSE_TABLE_COLUMN_NAME));
         setPhotoUrl(parseUser.getString(PARSE_TABLE_COLUMN_PHOTO_URL));
-        setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));
         setProfileUrl(parseUser.getString(PARSE_TABLE_COLUMN_PROFILE_URL));
 
         // Other data
@@ -92,6 +94,10 @@ public class User extends ParseUser {
      */
     private void setPhotoUrl(String photoUrl) {
         if (photoUrl != null) {
+            if (isGooglePlusUser()) {
+                photoUrl = photoUrl.split("\\?")[0] + "?sz=200";
+                Log.v(TAG, "Photo url after processing is " + photoUrl);
+            }
             put(PARSE_TABLE_COLUMN_PHOTO_URL, photoUrl);
         }
     }
