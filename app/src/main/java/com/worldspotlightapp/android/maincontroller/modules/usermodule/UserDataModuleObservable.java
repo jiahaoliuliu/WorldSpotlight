@@ -97,15 +97,9 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                         mUserData = new UserData(parseUser);
                         updateUserDataIfNeeded();
                         UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUserData);
-                        if (mUserData.isNew()) {
-                            // User signed up and logged in through Facebook
-                            setChanged();
-                            notifyObservers(userDataModuleUserResponse);
-                        } else {
-                            // User logged in through Facebook
-                            setChanged();
-                            notifyObservers(userDataModuleUserResponse);
-                        }
+                        // User logged in through Facebook
+                        setChanged();
+                        notifyObservers(userDataModuleUserResponse);
                         // User has signed in but the parse user is false. This is an inconsistent state.
                     } else {
                         // if the current user exists
@@ -129,6 +123,56 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                     // Some error happend. Show them to the user
                 } else {
                     UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, null);
+                    setChanged();
+                    notifyObservers(userDataModuleUserResponse);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void loginWithParse(Observer observer, String username, String password) {
+        // Register the observer
+        addObserver(observer);
+
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    if (parseUser != null) {
+                        mUserData = new UserData(parseUser);
+                        updateUserDataIfNeeded();
+                        UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUserData);
+                        // User logged in through Facebook
+                        setChanged();
+                        notifyObservers(userDataModuleUserResponse);
+                    // User has signed in but the parse user is false. This is an inconsistent state.
+                    } else {
+                        // if the current user exists
+                        if (ParseUser.getCurrentUser() != null) {
+                            mUserData = new UserData(ParseUser.getCurrentUser());
+                            updateUserDataIfNeeded();
+                            UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUserData);
+                            setChanged();
+                            notifyObservers(userDataModuleUserResponse);
+                            // The user has logged with Facebook but the current user does not exists.
+                            // Show the error to the user
+                        } else {
+                            // Update the Parse response
+                            ParseResponse loginErrorParseResponse =
+                                    new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_PARSE).build();
+                            UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(loginErrorParseResponse, null);
+                            setChanged();
+                            notifyObservers(userDataModuleUserResponse);
+                        }
+                    }
+                    // Some error happend. Show them to the user
+                } else {
+                    // Update the Parse response
+                    ParseResponse loginErrorParseResponse =
+                            new ParseResponse.Builder(e).statusCode(ParseResponse.ERROR_LOGIN_WITH_PARSE).build();
+                    UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(loginErrorParseResponse, null);
                     setChanged();
                     notifyObservers(userDataModuleUserResponse);
                 }

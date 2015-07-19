@@ -43,6 +43,17 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
     public abstract void loginWithFacebook(Observer observer, Activity activity);
 
     /**
+     * Login with Parse user data.
+     * @param observer
+     *      The observer to notify when the process is done
+     * @param username
+     *      The name of the user, which is the email address
+     * @param password
+     *      The password of the user to login
+     */
+    public abstract void loginWithParse(Observer observer, String username, String password);
+
+    /**
      * Special sign up for the people that has logged with Google Plus account.
      * This will create a new user in Parse with those specific data
      *
@@ -66,7 +77,7 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      * @param username
      *      The username, which is also the email address
      * @param password
-     *      The password to login.
+     *      The password to signup.
      */
     public abstract void signUpWithParse(Observer observer, String username, String password);
 
