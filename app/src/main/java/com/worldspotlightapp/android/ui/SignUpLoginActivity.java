@@ -45,6 +45,8 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
     // Views
     private Button mFacebookLoginButton;
     private Button mGooglePlusSignInButton;
+    private Button mSignUpButton;
+    private Button mLoginButton;
     private Button mSkipButton;
 
     // The response from parse
@@ -73,8 +75,14 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
         mFacebookLoginButton = (Button)findViewById(R.id.facebook_login_button);
         mFacebookLoginButton.setOnClickListener(onClickListener);
 
-        mGooglePlusSignInButton = (Button)findViewById(R.id.google_plus_login_buttn);
+        mGooglePlusSignInButton = (Button)findViewById(R.id.google_plus_login_button);
         mGooglePlusSignInButton.setOnClickListener(onClickListener);
+
+        mSignUpButton = (Button)findViewById(R.id.sign_up_button);
+        mSignUpButton.setOnClickListener(onClickListener);
+
+        mLoginButton = (Button)findViewById(R.id.log_in_button);
+        mLoginButton.setOnClickListener(onClickListener);
 
         mSkipButton = (Button)findViewById(R.id.skip_login_image_view);
         mSkipButton.setOnClickListener(onClickListener);
@@ -89,10 +97,20 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
                     mNotificationModule.showLoadingDialog(mContext);
                     mUserDataModule.loginWithFacebook(SignUpLoginActivity.this, SignUpLoginActivity.this);
                     break;
-                case R.id.google_plus_login_buttn:
+                case R.id.google_plus_login_button:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.LOGIN_WITH_GOOGLE_PLUS);
                     mNotificationModule.showLoadingDialog(mContext);
                     mGoogleApiClient.connect();
+                    break;
+                case R.id.sign_up_button:
+                    // Launch the Sign up activity
+                    Intent startSignUpActivityIntent = new Intent(mContext, SignUpActivity.class);
+                    startActivity(startSignUpActivityIntent);
+                    break;
+                case R.id.log_in_button:
+                    // Launch the login activity
+                    Intent startLoginActivityIntent = new Intent(mContext, LoginActivity.class);
+                    startActivity(startLoginActivityIntent);
                     break;
                 case R.id.skip_login_image_view:
                     mEventTrackingModule.trackUserAction(ScreenId.LOGIN_SCREEN, EventId.SKIP_LOGIN);

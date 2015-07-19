@@ -38,7 +38,7 @@
 
         <!-- Google Plus Log in button -->
         <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/google_plus_login_buttn"
+            android:id="@+id/google_plus_login_button"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
