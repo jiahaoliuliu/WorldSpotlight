@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
 
 import java.util.Observable;
 
@@ -23,6 +26,9 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
     private EditText mPasswordEditText;
     private EditText mVerifyPasswordEditText;
     private Button mSignUpButton;
+
+    // The response from parse
+    private ParseResponse mParseReseponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,14 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
         if (!areAllFieldsOk()) {
             return;
         }
+
+        // All the fields are ok, continue with sign up
+        String username = mUserNameEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
+
+        // Sign up
+        mNotificationModule.showLoadingDialog(mContext);
+        mUserDataModule.signUpWithParse(this, username, password);
     }
 
     /**
@@ -99,6 +113,8 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
         } else if (password.length() < MINIMUM_PASSWORD_LENGTH) {
             mPasswordEditText.setError(getString(R.string.error_message_string_too_short, MINIMUM_PASSWORD_LENGTH));
             areAllFieldsOk = false;
+        } else {
+            mPasswordEditText.setError(null);
         }
 
         // Verify Password
@@ -111,6 +127,8 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
         } else if (!verifyPassword.equals(password)) {
             mVerifyPasswordEditText.setError(getString(R.string.sign_up_activity_error_message_password_not_match));
             areAllFieldsOk = false;
+        } else {
+            mVerifyPasswordEditText.setError(null);
         }
 
         return areAllFieldsOk;
@@ -118,12 +136,39 @@ public class SignUpActivity extends AbstractBaseActivityObserver {
 
     @Override
     protected void processDataIfExists() {
-        // TODO: implement this
+        // Check if the user has logged in
+        if (mUserDataModule.hasUserData()) {
+            Log.v(TAG, "The user has already logged in");
+            mNotificationModule.dismissLoadingDialog();
+            finish();
+        } else if (mParseReseponse != null) {
+            Log.v(TAG, "Error on login/signu " + mParseReseponse);
+            mNotificationModule.showToast(mParseReseponse.getHumanRedableResponseMessage(mContext), true);
+
+            // Remove parse response
+            mParseReseponse = null;
+
+            mNotificationModule.dismissLoadingDialog();
+        }
     }
 
     @Override
-    public void update(Observable observable, Object data) {
-        // TODO: Implement this
+    public void update(Observable observable, Object o) {
+        Log.v(TAG, "Data received from " + observable + ", Object:" + o);
+        if (observable instanceof UserDataModuleObservable) {
+            if (o instanceof UserDataModuleUserResponse) {
+
+                // Get parse response, which could be error
+                UserDataModuleUserResponse userDataModuleUserResponse = (UserDataModuleUserResponse)o;
+                mParseReseponse = userDataModuleUserResponse.getParseResponse();
+
+                if (isInForeground()) {
+                    processDataIfExists();
+                }
+
+                observable.deleteObserver(this);
+            }
+        }
     }
 
     @Override

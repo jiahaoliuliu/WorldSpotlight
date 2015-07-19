@@ -37,6 +37,17 @@ public class UserData extends ParseUser {
         super();
     }
 
+    public UserData(String username, String email, String password) {
+        super();
+        // Is Google Plus user must be set before photoUrl because if the user come from Google Plus
+        // then the photo will be proceed specially
+        setIsGooglePlusUser(false);
+        setUsername(username);
+        setEmail(email);
+        setPassword(password);
+    }
+
+
     public UserData(String name, String username, String email, String password, String photoUrl,
                     boolean isGooglePlusUser, String profileUrl) {
         super();
@@ -54,7 +65,12 @@ public class UserData extends ParseUser {
     public UserData(ParseUser parseUser) {
         super();
         setObjectId(parseUser.getObjectId());
-        setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));
+        if (parseUser.has(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER)) {
+            setIsGooglePlusUser(parseUser.getBoolean(PARSE_TABLE_COLUMN_IS_GOOGLE_PLUS_USER));
+        } else {
+            // By default set the user as no Google Plus user
+            setIsGooglePlusUser(false);
+        }
         setName(parseUser.getString(PARSE_TABLE_COLUMN_NAME));
         setPhotoUrl(parseUser.getString(PARSE_TABLE_COLUMN_PHOTO_URL));
         setProfileUrl(parseUser.getString(PARSE_TABLE_COLUMN_PROFILE_URL));

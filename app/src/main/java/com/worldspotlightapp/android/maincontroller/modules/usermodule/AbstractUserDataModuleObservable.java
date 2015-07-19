@@ -60,6 +60,17 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
     public abstract void signupForGooglePlusUsers(Observer observer, String name, String email, String profilePhotoUrl, String profileUrl);
 
     /**
+     * Sign up with Parse
+     * @param observer
+     *      The observer to be notified
+     * @param username
+     *      The username, which is also the email address
+     * @param password
+     *      The password to login.
+     */
+    public abstract void signUpWithParse(Observer observer, String username, String password);
+
+    /**
      * Change the like status of the user related a certain video.
      *
      * @param observer

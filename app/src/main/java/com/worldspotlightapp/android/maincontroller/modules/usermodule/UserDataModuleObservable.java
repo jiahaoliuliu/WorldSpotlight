@@ -210,6 +210,34 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
         });
     }
 
+    @Override
+    public void signUpWithParse(Observer observer, String username, String password) {
+        // Register the observer
+        addObserver(observer);
+
+        // Sign up
+        mUserData = new UserData(username, username, password);
+        mUserData.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    updateUserDataIfNeeded();
+                    UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, mUserData);
+                    setChanged();
+                    notifyObservers(userDataModuleUserResponse);
+                    // If there is any problem on Sign up
+                } else {
+                    // Reset the value of User
+                    mUserData = null;
+                    UserDataModuleUserResponse userDataModuleUserResponse = new UserDataModuleUserResponse(parseResponse, null);
+                    setChanged();
+                    notifyObservers(userDataModuleUserResponse);
+                }
+            }
+        });
+    }
+
     /**
      * Based on the code in StackOverFlow:
      * http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id Returns a
