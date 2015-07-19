@@ -29,10 +29,10 @@
     <!-- Sign Up Login screen -->
     <style name="SignUpLoginButton">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:maxWidth">@dimen/sign_up_login_activity_button_max_width</item>
-        <item name="android:layout_height">@dimen/sign_up_login_activity_button_height</item>
-        <item name="android:maxHeight">@dimen/sign_up_login_activity_button_height</item>
-        <item name="android:radius">@dimen/sign_up_login_activity_button_radius</item>
+        <item name="android:maxWidth">@dimen/sign_up_login_activity_element_max_width</item>
+        <item name="android:layout_height">@dimen/sign_up_login_activity_element_height</item>
+        <item name="android:maxHeight">@dimen/sign_up_login_activity_element_height</item>
+        <item name="android:radius">@dimen/sign_up_login_activity_element_radius</item>
     </style>
 
     <!--    Login button with a drawable on the left -->
