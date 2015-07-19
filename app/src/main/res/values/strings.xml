@@ -7,6 +7,8 @@
     <!-- Login Activity -->
     <string name="login_activity_sign_in_with_facebook">Sign in with Facebook</string>
     <string name="login_activity_sign_in_with_google_plus">Sign in with Google</string>
+    <string name="login_activity_sign_up">Sign Up</string>
+    <string name="login_activity_log_in">Log In</string>
     <string name="login_activity_skip">Skip</string>
 
     <!-- Main Activity -->

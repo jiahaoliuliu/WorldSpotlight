@@ -41,23 +41,43 @@
             android:id="@+id/google_plus_login_buttn"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/login_activity_element_margin_vertical"
-            android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
+            android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
             style="@style/GooglePlusLoginButton"
         />
 
-        <!-- Separation line -->
-        <View
+        <LinearLayout
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="1sp"
-            android:background="@android:color/white"
-            android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
-            android:layout_marginBottom="@dimen/login_activity_separator_margin_vertical"
-            />
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/login_activity_element_margin_vertical"
+            android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
+            >
+
+            <!-- Sign Up button -->
+            <com.github.snuffix.android.material.RippleButton
+                android:id="@+id/sign_up_button"
+                android:layout_gravity="center_horizontal"
+                style="@style/SignUpOrLoginWithParseButton"
+                android:text="@string/login_activity_sign_up"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/login_activity_element_margin_horizontal"
+                />
+
+            <!-- Log In button -->
+            <com.github.snuffix.android.material.RippleButton
+                android:id="@+id/log_in_button"
+                android:layout_gravity="center_horizontal"
+                style="@style/SignUpOrLoginWithParseButton"
+                android:text="@string/login_activity_log_in"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/login_activity_element_margin_horizontal"
+                />
+        </LinearLayout>
 
         <!-- Skip image -->
         <com.github.snuffix.android.material.RippleButton
             android:id="@+id/skip_login_image_view"
-            android:layout_marginTop="@dimen/login_activity_separator_margin_vertical"
+            android:layout_marginTop="@dimen/login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/login_activity_element_margin_vertical"
             android:layout_gravity="center_horizontal"
             style="@style/SkipButton"

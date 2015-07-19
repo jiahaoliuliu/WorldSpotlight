@@ -58,6 +58,13 @@
         <item name="android:drawableLeft">@drawable/login_google_plus_logo</item>
     </style>
 
+    <!--    Skip button -->
+    <style name="SignUpOrLoginWithParseButton" parent="LoginButton">
+        <item name="android:background">@drawable/login_activity_sign_up_and_log_in_background</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!--    Skip button -->
     <style name="SkipButton" parent="LoginButton">
         <item name="android:background">@drawable/login_activity_skip_background</item>
         <item name="android:textColor">@android:color/white</item>
