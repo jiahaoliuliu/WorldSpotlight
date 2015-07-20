@@ -57,8 +57,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private static final String JSON_FILE_RESULTS_KEY = "results";
 
-    private static final int MAX_PARSE_QUERY_RESULT = 2000;
-    private static final int MAX_PARSE_QUERY_ALLOWED = 1000;
+    private static final int MAX_PARSE_QUERY_RESULT = 500;
 
     // The list of all the videos
     private List<Video> mVideosList;
@@ -96,6 +95,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             return;
         }
 
+        // The list of videos that should be added into the database
+        final List<Video> videosListToBeAddedToTheDatabase = new ArrayList<Video>();
+
         // 1. Retrieve the list of the videos from the database
         mVideosList = mVideoDataLayer.getListAllVideos();
         Log.v(TAG, mVideosList.size() + " retrieved from local database");
@@ -106,8 +108,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             Log.v(TAG, "The list of the video in the database is empty. Retrive the one saved" +
                     "in the local file");
             mVideosList = retrieveVideosListFromRawFile();
-            // TODO: Open a new thread for this
-            mVideoDataLayer.insertListDataToDatabase(mVideosList);
+            videosListToBeAddedToTheDatabase.addAll(mVideosList);
         }
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
@@ -118,7 +119,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         notifyObservers(videosModuleVideosListResponse);
 
         // 2. Retrieve the rest of the videos from the parse server
-        final List<Video> videosListFromParseServer = new ArrayList<Video>();
         // Callback prepared to retrieve all the videos from the parse server
         final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
             @Override
@@ -128,21 +128,25 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 Log.v(TAG, "List of videos received from the parse server");
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
-                    // Save the query results
-                    // TODO: Open a new thread for this
-                    mVideoDataLayer.insertListDataToDatabase(videosList);
                     // Add all the content to the general videos list so it will be available next time
                     mVideosList.addAll(videosList);
-                    // Add the video list to the temporal video list so it could be returned to the observer
-                    videosListFromParseServer.addAll(videosList);
-                    if (videosList.size() == MAX_PARSE_QUERY_ALLOWED) {
-                        // TODO: Return those videos to the observer and mark the other videos as extra
+
+                    // Save the list to be added to the database later
+                    videosListToBeAddedToTheDatabase.addAll(videosList);
+
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, videosList, areExtraVideos);
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+
+                    // If parse has returned the max number of results, that means there are more
+                    // video available. So, request more videos
+                    if (videosList.size() == MAX_PARSE_QUERY_RESULT) {
+                        Log.v(TAG, MAX_PARSE_QUERY_RESULT + " videos retrieved. Requesting for more");
                         requestVideoToParse(mVideosList.size(), this);
                     } else {
-                        VideosModuleVideosListResponse videosModuleVideosListResponse =
-                                new VideosModuleVideosListResponse(parseResponse, videosListFromParseServer, areExtraVideos);
-                        setChanged();
-                        notifyObservers(videosModuleVideosListResponse);
+                        Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
+                        saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
                     }
                 } else {
                     Log.e(TAG, "Error retrieving data from backend");
@@ -185,7 +189,25 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     @Override
     public Video getVideoInfo(String videoObjectId) {
         // Get the video directly from the list of videos in the database
-        return mVideoDataLayer.getVideoDetails(videoObjectId);
+        // The database could be not ready at beginning
+        Video videoInfo = mVideoDataLayer.getVideoDetails(videoObjectId);
+
+        if (videoInfo != null) {
+            return videoInfo;
+        }
+
+        Log.w(TAG, "Video not found in the database. Looking it in the temporal memory");
+        // The video info is null, try to get the data from the memory list
+        if (mVideosList != null) {
+            for (Video video: mVideosList) {
+                if (video.getObjectId().equals(videoObjectId)) {
+                    Log.v(TAG, "Video found in the temporal memory " + video);
+                    return video;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -286,7 +308,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     new YouTube.Builder(new NetHttpTransport(),
                             new JacksonFactory(), new HttpRequestInitializer() {
                         @Override
-                        public void initialize(HttpRequest httpRequest) throws IOException{}
+                        public void initialize(HttpRequest httpRequest) throws IOException {
+                        }
                     }).setApplicationName(mContext.getString(R.string.app_name)).build();
 
             try {
@@ -355,5 +378,29 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         }
         Log.v(TAG, "The size of the video retrieved from json file is " + videosList.size());
         return videosList;
+    }
+
+    /**
+     * Save the list of the videos into the database
+     * @param videosList
+     */
+    private void saveVideosListToDatabase(List<Video> videosList) {
+        // Execute it in another thread
+        mExecutorService.execute(new SaveVideosListToDatabaseRunnable(videosList));
+    }
+
+    private class SaveVideosListToDatabaseRunnable implements Runnable {
+
+        private List<Video> mVideosList;
+
+        public SaveVideosListToDatabaseRunnable(List<Video> videosList) {
+            super();
+            this.mVideosList = videosList;
+        }
+
+        @Override
+        public void run() {
+            mVideoDataLayer.insertListDataToDatabase(mVideosList);
+        }
     }
 }
