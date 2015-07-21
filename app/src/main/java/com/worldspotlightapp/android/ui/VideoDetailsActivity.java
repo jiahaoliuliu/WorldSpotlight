@@ -139,9 +139,11 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             if (mVideo == null) {
                 Log.e(TAG, "Error retrieving the video from the backend. The video with id " + mVideoObjectId + " no existe");
                 finish();
+            } else {
+                updateVideoDetails();
+                Log.v(TAG, "The content of mVideo is " + mVideo);
+                mVideosModule.requestAuthorInfo(this, mVideo.getVideoId());
             }
-            updateVideoDetails();
-            mVideosModule.requestAuthorInfo(this, mVideo.getVideoId());
         }
     }
 

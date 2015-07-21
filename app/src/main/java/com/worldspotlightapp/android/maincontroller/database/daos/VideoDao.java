@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseGeoPoint;
 import com.worldspotlightapp.android.maincontroller.database.MainDatabase;
 import com.worldspotlightapp.android.maincontroller.database.MainDatabase.TableVideo;
@@ -186,9 +187,9 @@ public class VideoDao {
         }
 
         // Latitude and longitude.
-        ParseGeoPoint location = video.getLocation();
-        contentValues.put(TableVideo.LATITUDE, location.getLatitude());
-        contentValues.put(TableVideo.LONGITUDE, location.getLongitude());
+        LatLng location = video.getPosition();
+        contentValues.put(TableVideo.LATITUDE, location.latitude);
+        contentValues.put(TableVideo.LONGITUDE, location.longitude);
 
         return mDatabase.insert(TableVideo.TABLE_NAME, null, contentValues);
     }
