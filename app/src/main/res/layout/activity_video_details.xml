@@ -50,8 +50,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
                 android:layout_toRightOf="@+id/author_thumbnail_image_view"
+                android:layout_toLeftOf="@+id/report_image_view"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/video_details_elements_margin_horizontal"
+                android:ellipsize="end"
                 />
 
             <!-- Like Button -->
@@ -61,6 +63,17 @@
                 android:layout_height="@dimen/video_details_like_image_size"
                 android:src="@drawable/ic_like_star"
                 android:layout_alignParentRight="true"
+                android:scaleType="fitXY"
+                android:layout_centerVertical="true"
+                />
+
+            <!-- Report Button -->
+            <ImageView
+                android:id="@+id/report_image_view"
+                android:layout_width="@dimen/video_details_like_image_size"
+                android:layout_height="@dimen/video_details_like_image_size"
+                android:src="@drawable/ic_report_alert"
+                android:layout_toLeftOf="@+id/like_image_view"
                 android:scaleType="fitXY"
                 android:layout_centerVertical="true"
                 />
