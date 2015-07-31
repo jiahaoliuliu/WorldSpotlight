@@ -19,6 +19,12 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+    signingConfigs {
+        debug {
+            storeFile file("./debug.keystore")
+        }
+    }
+
     defaultConfig {
         applicationId "com.worldspotlightapp.android"
         minSdkVersion 15
