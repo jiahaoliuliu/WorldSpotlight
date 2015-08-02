@@ -771,7 +771,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Launch YouTube app
         if (!launchYouTubeApp()) {
-            mNotificationModule.showToast(R.string.main_activity_error_launching_you_tube_app, true);
+            mNotificationModule.showToast(R.string.error_message_not_possible_launching_you_tube_app, true);
         }
     }
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.worldspotlightapp.android.R;
@@ -14,7 +15,9 @@ public class AddAVideoTutorialActivity extends AbstractBaseActivity {
 
     private static final String TAG = "AddAVideoTActivity";
 
-    private CheckBox disableMeCheckBox;
+    // Views
+    private CheckBox mDisableMeCheckBox;
+    private Button mLaunchYoutubeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +25,14 @@ public class AddAVideoTutorialActivity extends AbstractBaseActivity {
         setContentView(R.layout.activity_add_a_video_tutorial);
 
         // Link the views
-        disableMeCheckBox = (CheckBox) findViewById(R.id.disable_me_check_box);
-        disableMeCheckBox.setChecked(mUserDataModule.shouldTheAppNotShowAddAVideoTutorial());
+        mDisableMeCheckBox = (CheckBox) findViewById(R.id.disable_me_check_box);
+        mDisableMeCheckBox.setOnClickListener(onClickListener);
 
-        disableMeCheckBox.setOnClickListener(onClickListener);
+        mLaunchYoutubeButton = (Button) findViewById(R.id.launch_youtube_button);
+        mLaunchYoutubeButton.setOnClickListener(onClickListener);
 
+        // Update the views
+        mDisableMeCheckBox.setChecked(mUserDataModule.shouldTheAppNotShowAddAVideoTutorial());
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener(){
@@ -34,8 +40,14 @@ public class AddAVideoTutorialActivity extends AbstractBaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.disable_me_check_box:
-                    Log.v(TAG, "Is checkbox enabled? " + disableMeCheckBox.isChecked());
-                    mUserDataModule.hideAddAVideoTutorial(disableMeCheckBox.isChecked());
+                    Log.v(TAG, "Is checkbox enabled? " + mDisableMeCheckBox.isChecked());
+                    mUserDataModule.hideAddAVideoTutorial(mDisableMeCheckBox.isChecked());
+                    break;
+                case R.id.launch_youtube_button:
+                    // Try to launch youtube app
+                    if(!launchYouTubeApp()) {
+                        mNotificationModule.showToast(R.string.error_message_not_possible_launching_you_tube_app, true);
+                    }
                     break;
             }
         }

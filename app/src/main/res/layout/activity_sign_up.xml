@@ -62,7 +62,7 @@
             android:id="@+id/sign_up_button"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            style="@style/WorldSpotLightButton"
+            style="@style/WorldSpotlightButton"
             android:layout_below="@+id/verify_password_edit_text"
             android:text="@string/sign_up_activity_sign_up"
             />
