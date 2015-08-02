@@ -73,8 +73,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     // Views
     private GoogleMap mMap;
-    // Marker on the map
-    private Marker mMyPositionMarker;
     //      Drawer
     private DrawerLayout mDrawerLayout;
     private ImageView mUserProfileImageView;
@@ -88,7 +86,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     // By default drawer is not open
     private boolean mIsDrawerOpen;
 
-    private FloatingActionButton mMyLocationFloatingActionButton;
+    private FloatingActionButton mAddVideoFloatingActionButton;
 
     // ViewPager for preview
     private ViewPager mVideosPreviewViewPager;
@@ -125,8 +123,6 @@ public class MainActivity extends AbstractBaseActivityObserver {
         // Delete all the possible observers
         mVideosModule.deleteObserver(this);
         mUserDataModule.deleteObserver(this);
-
-        registerForLocalizationService();
 
         mPicasso = Picasso.with(mContext);
 
@@ -193,17 +189,14 @@ public class MainActivity extends AbstractBaseActivityObserver {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mMyLocationFloatingActionButton = (FloatingActionButton) findViewById(R.id.my_location_floating_action_button);
-        mMyLocationFloatingActionButton.setOnClickListener(onClickListener);
+        mAddVideoFloatingActionButton = (FloatingActionButton) findViewById(R.id.add_video_floating_action_button);
+        mAddVideoFloatingActionButton.setOnClickListener(onClickListener);
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
 
         // Update data
         setupMapIfNeeded();
-
-        // Center the map to the user
-        centerMapToUser();
     }
 
     private void setupMapIfNeeded() {
@@ -578,44 +571,12 @@ public class MainActivity extends AbstractBaseActivityObserver {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.my_location_floating_action_button:
-                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.USER_LOCALIZED);
-                    centerMapToUser();
+                case R.id.add_video_floating_action_button:
+                    // TODO: Ask the user to add a video
                     break;
             }
         }
     };
-
-    /**
-     * Show my actual location.
-     * If the map is null, don't do anything
-     */
-    private void centerMapToUser() {
-        if (mMap == null) {
-            return;
-        }
-
-        // Move to the point
-        Location myLastKnownLocation = mGpsLocalizationModule.getLastKnownLocation();
-        if (myLastKnownLocation == null) {
-            return;
-        }
-
-        LatLng myLastKnownLatLng = new LatLng(myLastKnownLocation.getLatitude(), myLastKnownLocation.getLongitude());
-
-        // Add the marker
-        if (mMyPositionMarker != null) {
-            mMyPositionMarker.remove();
-        }
-
-        mMyPositionMarker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(myLastKnownLatLng.latitude, myLastKnownLatLng.longitude))
-                .title(getString(R.string.main_activity_you_are_here)));
-        mMyPositionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location));
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
-        mMap.animateCamera(cameraUpdate);
-    }
 
     // Action bar
     @Override

@@ -140,10 +140,6 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_main_activity_search_finished), new JSONObject());
                 break;
-            case USER_LOCALIZED:
-                mMixpanel.track(prefix + " " +
-                        mContext.getString(R.string.mp_main_activity_localize_user), new JSONObject());
-                break;
             case VIDEOS_PREVIEW:
                 if (objects.length < 2) {
                     throw new IllegalArgumentException("You must provide at least one argument for this event");

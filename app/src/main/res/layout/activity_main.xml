@@ -18,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             class="com.google.android.gms.maps.SupportMapFragment"
-            app:cameraZoom="13"
-            app:cameraTargetLat="25.089521"
-            app:cameraTargetLng="55.152843"
+            app:cameraZoom="6"
+            app:cameraTargetLat="25.271139"
+            app:cameraTargetLng="55.307485"
             />
 
         <android.support.v4.view.ViewPager
@@ -39,7 +39,7 @@
             />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/my_location_floating_action_button"
+            android:id="@+id/add_video_floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
