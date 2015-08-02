@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,9 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 
     //    Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 99999;
+
+    // YouTube Package Name
+    private static final String YOU_TUBE_PACKAGE_NAME = "com.google.android.youtube";
 
     protected Context mContext;
     protected ActionBar mActionBar;
@@ -268,5 +272,23 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         return hasUserLoggedIn;
     }
 
-
+    /**
+     * Method used to launch YouTube app from this app. It checks if the user has the app installed first
+     *
+     * @return
+     *      True if the user has YouTube installed
+     *      False otherwise
+     */
+    protected boolean launchYouTubeApp() {
+        // Launcheds YouTube app
+        PackageManager packageManager = mContext.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(YOU_TUBE_PACKAGE_NAME);
+        if (intent == null) {
+            // The user has not YouTube Installed
+            return false;
+        }
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        mContext.startActivity(intent);
+        return true;
+    }
 }

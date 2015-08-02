@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
@@ -761,13 +762,16 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private void addVideo() {
         // 1. Check if it is the first time the user is doing it or if the user has done it, he has set
         // the flag of show_add_video_tutorial as false
-        if (mUserDataModule.shouldTheAppShowAddVideoTutorial()) {
-            // Launch the add video tutorial screen
-            Intent startAddAVideoTutorialActivityIntent = new Intent(mContext, AddAVideoTutorialActivity.class);
-            startActivity(startAddAVideoTutorialActivityIntent);
-            return;
+//        if (mUserDataModule.shouldTheAppShowAddVideoTutorial()) {
+//            // Launch the add video tutorial screen
+//            Intent startAddAVideoTutorialActivityIntent = new Intent(mContext, AddAVideoTutorialActivity.class);
+//            startActivity(startAddAVideoTutorialActivityIntent);
+//            return;
+//        }
+
+        // Launch YouTube app
+        if (!launchYouTubeApp()) {
+            mNotificationModule.showToast(R.string.main_activity_error_launching_you_tube_app, true);
         }
-
-
     }
 }

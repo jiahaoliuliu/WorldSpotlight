@@ -30,6 +30,7 @@
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
     <string name="main_activity_show_fav_videos_list_title">Favourites</string>
+    <string name="main_activity_error_launching_you_tube_app">It seems it is not possible launch YouTube app. Could you check if it is installed?</string>
 
     <!--    Drawer -->
     <string name="drawer_login">Login</string>
