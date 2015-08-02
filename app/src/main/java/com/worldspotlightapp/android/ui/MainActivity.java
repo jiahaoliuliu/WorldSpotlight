@@ -821,6 +821,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     /**
      * Parse the possible youtube video link and returns the video id
+     * TODO: Check the format of the YouTube links
+     * http://stackoverflow.com/questions/31776646/what-is-the-format-of-the-video-shared-by-youtube-in-android/31776773#31776773
      * @param youTubeLink
      *      The possible video link from YouTube
      * @return
@@ -840,6 +842,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     /**
      * Check if a specific video belongs to YouTube or not.
+     * TODO: The format of the video still need to be checked here:
+     * http://stackoverflow.com/questions/31776646/what-is-the-format-of-the-video-shared-by-youtube-in-android/31776773#31776773
      * @param youTubeLink
      *      The link to be checked
      * @return
