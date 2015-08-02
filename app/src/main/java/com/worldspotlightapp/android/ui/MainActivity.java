@@ -762,12 +762,12 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private void addVideo() {
         // 1. Check if it is the first time the user is doing it or if the user has done it, he has set
         // the flag of show_add_video_tutorial as false
-//        if (mUserDataModule.shouldTheAppShowAddVideoTutorial()) {
-//            // Launch the add video tutorial screen
-//            Intent startAddAVideoTutorialActivityIntent = new Intent(mContext, AddAVideoTutorialActivity.class);
-//            startActivity(startAddAVideoTutorialActivityIntent);
-//            return;
-//        }
+        if (!mUserDataModule.shouldTheAppNotShowAddAVideoTutorial()) {
+            // Launch the add video tutorial screen
+            Intent startAddAVideoTutorialActivityIntent = new Intent(mContext, AddAVideoTutorialActivity.class);
+            startActivity(startAddAVideoTutorialActivityIntent);
+            return;
+        }
 
         // Launch YouTube app
         if (!launchYouTubeApp()) {

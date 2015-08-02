@@ -503,12 +503,18 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     }
 
     @Override
-    public boolean shouldTheAppShowAddVideoTutorial() {
-        if (!mPreferences.contains(BooleanId.SHOW_ADD_VIDEOS_TUTORIAL)) {
-            return true;
+    public boolean shouldTheAppNotShowAddAVideoTutorial() {
+        // if the value is not set, the add video tutorial should be shown
+        if (!mPreferences.contains(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL)) {
+            return false;
         }
 
-        return mPreferences.get(BooleanId.SHOW_ADD_VIDEOS_TUTORIAL);
+        return mPreferences.get(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL);
+    }
+
+    @Override
+    public void hideAddAVideoTutorial(boolean enable) {
+        mPreferences.set(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL, enable);
     }
 
     /**

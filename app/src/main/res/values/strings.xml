@@ -39,9 +39,8 @@
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
 
-    <!--    Favourite videos list activity -->
-    <string name="favourite_videos_list_activity_name">My favourites</string>
-    <string name="favourite_videos_list_activity_empty_text">No favourites?\n\n Click on the star in a video details to save the video as favourite</string>
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_not_show_message">You are soooo anonying. I already knew this!</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
