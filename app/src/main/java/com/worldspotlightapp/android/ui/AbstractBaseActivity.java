@@ -45,6 +45,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     private static final String YOU_TUBE_PACKAGE_NAME = "com.google.android.youtube";
 
     protected Context mContext;
+    protected Intent mIntent;
     protected ActionBar mActionBar;
     protected MainController mMainController;
     protected INotificationModule mNotificationModule;
@@ -69,6 +70,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         mContext = this;
+
+        mIntent = getIntent();
 
         mActionBar = getSupportActionBar();
 

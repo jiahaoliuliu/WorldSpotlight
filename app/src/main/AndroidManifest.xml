@@ -77,6 +77,13 @@
 
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
+            <!-- Register to be shared with plain text -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -146,6 +153,10 @@
         <activity
             android:name=".ui.AddAVideoTutorialActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ui.AddAVideoActivity"
+            android:label="@string/app_name">
         </activity>
     </application>
 

@@ -14,6 +14,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,6 +63,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
     private static final String TAG = "MainActivity";
     private static final int MENU_ITEM_SEARCH_ID = 1000;
 
+    // Internal structured data
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
@@ -109,8 +111,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Launch Add A Video activity if the user has shared the text
+        if (hasActivityStartedBySharingText()) {
+            launchAddAVideoActivity();
         // Launch login activity if the user has not logged in
-        if (!mUserDataModule.hasUserData()) {
+        } else if (!mUserDataModule.hasUserData()) {
             launchSignUpLoginActivity();
         }
 
@@ -198,6 +203,19 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
         // Update data
         setupMapIfNeeded();
+    }
+
+    private boolean hasActivityStartedBySharingText() {
+        Log.v(TAG, "Intent get " + mIntent);
+        String action = mIntent.getAction();
+        String type = mIntent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setupMapIfNeeded() {
@@ -773,5 +791,79 @@ public class MainActivity extends AbstractBaseActivityObserver {
         if (!launchYouTubeApp()) {
             mNotificationModule.showToast(R.string.error_message_not_possible_launching_you_tube_app, true);
         }
+    }
+
+    /**
+     * This method launches the Add a video activity. It parses the intent and send the video id
+     * to the activity
+     */
+    private void launchAddAVideoActivity() {
+        Log.v(TAG, "The activity started because user has shared the text " + mIntent);
+        if (mIntent == null || !mIntent.hasExtra(Intent.EXTRA_TEXT)) {
+            Log.e(TAG, "Error checking text extra for the shared intent. It must be there");
+            return;
+        }
+
+        String sharedText = mIntent.getStringExtra(Intent.EXTRA_TEXT);
+        Log.v(TAG, "Text shared? \"" + sharedText + "\"");
+
+        String videoId = parseVideoId(sharedText);
+        if (videoId == null) {
+            Log.e(TAG, "The video id is not contained in the shared link. Not do anything");
+            return;
+        }
+
+        // Start Add a video activity
+        Intent startAddAVideoActivityIntent = new Intent(mContext, AddAVideoActivity.class);
+        startAddAVideoActivityIntent.putExtra(Video.INTENT_KEY_VIDEO_ID, videoId);
+        startActivity(startAddAVideoActivityIntent);
+    }
+
+    /**
+     * Parse the possible youtube video link and returns the video id
+     * @param youTubeLink
+     *      The possible video link from YouTube
+     * @return
+     *      VideoId if the link belongs to YouTube
+     *      Null if the video id is not found
+     */
+    private String parseVideoId(String youTubeLink) {
+        if (!isTheLinkBelongsToYouTube(youTubeLink)) {
+            return null;
+        }
+
+        // Get the last item. This works for YouTube v10.28.59
+        String[] youtubeLinkComponents = youTubeLink.split("/");
+        return youtubeLinkComponents[youtubeLinkComponents.length-1];
+    }
+
+
+    /**
+     * Check if a specific video belongs to YouTube or not.
+     * @param youTubeLink
+     *      The link to be checked
+     * @return
+     *      True if the link belongs to YouTube
+     *      False otherwise
+     */
+    private boolean isTheLinkBelongsToYouTube(String youTubeLink) {
+        if (TextUtils.isEmpty(youTubeLink)) {
+            return false;
+        }
+
+        // Remove all the https or http data
+        if (youTubeLink.startsWith("https://")) {
+            youTubeLink = youTubeLink.replaceFirst("https://", "");
+        }
+
+        if (youTubeLink.startsWith("http://")) {
+            youTubeLink = youTubeLink.replaceFirst("http://", "");
+        }
+
+        if (youTubeLink.startsWith("www")) {
+            youTubeLink = youTubeLink.replaceFirst("www", "");
+        }
+
+        return (youTubeLink.startsWith("youtu.be") || youTubeLink.startsWith("youtube."));
     }
 }

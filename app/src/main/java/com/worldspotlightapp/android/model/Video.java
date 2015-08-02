@@ -32,6 +32,7 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_DESCRIPTION = "com.worldspotlightapp.android.model.video.description";
     public static final String PARSE_COLUMN_DESCRIPTION = "description";
 
+    public static final String INTENT_KEY_VIDEO_ID = "com.worldspotlight.android.model.video.videoid";
     public static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
     private static final String VIDEO_URL_PREFIX = "http://www.worldspotlightapp.com/video/";
