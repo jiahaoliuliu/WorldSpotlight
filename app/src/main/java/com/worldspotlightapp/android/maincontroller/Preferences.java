@@ -20,6 +20,9 @@ public class Preferences {
     // Update the method clearUserData when modified
     public enum BooleanId {
 
+        // Used to store the user option to show the add videos tutorial or not
+        SHOW_ADD_VIDEOS_TUTORIAL,
+
         // The default value of the boolean id
         DEFAULT_BOOLEAN_ID;
 

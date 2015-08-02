@@ -572,7 +572,8 @@ public class MainActivity extends AbstractBaseActivityObserver {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.add_video_floating_action_button:
-                    // TODO: Ask the user to add a video
+                    // Track user action
+                    addVideo();
                     break;
             }
         }
@@ -742,5 +743,31 @@ public class MainActivity extends AbstractBaseActivityObserver {
         }
 
         mUserDataModule.retrieveFavouriteVideosList(this);
+    }
+
+    /**
+     * Method used to add a video in the database.
+     * if it is the first time the user is doing it, the app shows a small tutorial for the user.
+     * If not and the user has set "show tutorial" option as false, then not showing the tutorial.
+     *
+     * The next step is show the YouTube app and ask the user to share the video.
+     *
+     * Once the user has came back with the video shared, the app will ask the user to fill the location,
+     * the country and the city of the video.
+     *
+     * // TODO: Automatic fill the country and the city once the user has created the location.
+     *
+     */
+    private void addVideo() {
+        // 1. Check if it is the first time the user is doing it or if the user has done it, he has set
+        // the flag of show_add_video_tutorial as false
+        if (mUserDataModule.shouldTheAppShowAddVideoTutorial()) {
+            // Launch the add video tutorial screen
+            Intent startAddAVideoTutorialActivityIntent = new Intent(mContext, AddAVideoTutorialActivity.class);
+            startActivity(startAddAVideoTutorialActivityIntent);
+            return;
+        }
+
+
     }
 }
