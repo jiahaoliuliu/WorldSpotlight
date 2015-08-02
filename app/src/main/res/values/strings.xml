@@ -49,6 +49,8 @@
     <string name="share_title">Share it with &#8230;</string>
     <string name="share_subject">Check out this great video! %1$s</string>
     <string name="video_details_activity_user_must_logged_in_to_like">You must logged in to like this video. Would you like to log in now?</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">You must logged in to report this video. Would you like to log in now?</string>
+    <string name="video_details_activity_report_sent_correctly">Thanks to report this video. We will check it as soon as possible</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Loading &#8230;</string>
