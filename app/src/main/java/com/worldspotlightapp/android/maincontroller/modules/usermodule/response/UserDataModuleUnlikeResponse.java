@@ -5,6 +5,7 @@ import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.model.Like;
 
 /**
+ * Special class created to notify unlikes. This is different from notify likes
  * Created by jiahaoliuliu on 2/20/15.
  */
 public class UserDataModuleUnlikeResponse extends BaseModuleResponse {

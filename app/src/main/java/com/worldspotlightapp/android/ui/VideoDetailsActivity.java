@@ -21,6 +21,7 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleReportResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
@@ -93,6 +94,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mLikeImageView = (ImageView) findViewById(R.id.like_image_view);
         mLikeImageView.setOnClickListener(onClickListener);
 
+        mReportAVideoImageView = (ImageView) findViewById(R.id.report_image_view);
+        mReportAVideoImageView.setOnClickListener(onClickListener);
+
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
@@ -106,6 +110,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 case R.id.like_image_view:
                     likeThisVideo();
                     break;
+                case R.id.report_image_view:
+                    reportThisVideo();
             }
         }
     };
@@ -126,6 +132,18 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         Log.v(TAG, "The user like this video? " + likeThisVideo);
         mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
         mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
+    }
+
+    private void reportThisVideo() {
+        if (!showAlertIfUserHasNotLoggedIn(
+                getString(R.string.video_details_activity_user_must_logged_in_to_report))) {
+            return;
+        }
+
+        // The user has logged in
+        mUserDataModule.reportAVideo(this, mVideo.getObjectId());
+        // TODO: Implement this
+//        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.LIKE_A_VIDEO, mVideo.getObjectId());
     }
 
     @Override
@@ -162,6 +180,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         while(!mResponsesStack.isEmpty()) {
             Object response = mResponsesStack.pop();
             Log.v(TAG, "Response get " + response);
+            // Author info
             if (response instanceof VideosModuleAuthorResponse) {
                 Log.v(TAG, "videos module author response received");
                 VideosModuleAuthorResponse videosModuleAuthorResponse = (VideosModuleAuthorResponse) response;
@@ -179,6 +198,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                     // Some error happened
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            // Like info
             } else if (response instanceof UserDataModuleLikeResponse) {
                 Log.v(TAG, "User data module like response received");
                 UserDataModuleLikeResponse userDataModuleLikeResponse = (UserDataModuleLikeResponse) response;
@@ -192,6 +212,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            // Unlike info
             } else if (response instanceof UserDataModuleUnlikeResponse) {
                 Log.v(TAG, "User data module unlike response received");
                 UserDataModuleUnlikeResponse userDataModuleUnlikeResponse = (UserDataModuleUnlikeResponse) response;
@@ -205,8 +226,17 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            } else if (response instanceof UserDataModuleReportResponse) {
+                Log.v(TAG, "User data module report response received");
+                UserDataModuleReportResponse userDataModuleReportResponse = (UserDataModuleReportResponse)response;
+                ParseResponse parseResponse = userDataModuleReportResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    // The report has been sent correctly
+                    mNotificationModule.showToast(R.string.video_details_activity_report_sent_correctly, true);
+                } else {
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
-
         }
 
         mNotificationModule.dismissLoadingDialog();

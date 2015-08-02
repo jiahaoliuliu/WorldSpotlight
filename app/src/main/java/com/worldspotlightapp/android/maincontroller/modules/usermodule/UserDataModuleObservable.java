@@ -25,9 +25,11 @@ import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleReportResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
 import com.worldspotlightapp.android.model.Like;
+import com.worldspotlightapp.android.model.Report;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
@@ -352,7 +354,6 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
             setChanged();
             UserDataModuleLikeResponse userDataModuleLikeResponse =
                     new UserDataModuleLikeResponse(parseResponse, null);
-            setChanged();
             notifyObservers(userDataModuleLikeResponse);
             return;
         }
@@ -416,6 +417,42 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                 });
             }
         }
+    }
+
+    @Override
+    public void reportAVideo(Observer observer, final String videoId) {
+        addObserver(observer);
+        if (!hasUserData()) {
+            Log.e(TAG, "Trying to like a video while the user has not logged in");
+            ParseResponse parseResponse =
+                    new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_USER_NOT_LOGGED_IN).build();
+            setChanged();
+            UserDataModuleReportResponse userDataModuleReportResponse =
+                    new UserDataModuleReportResponse(parseResponse, null);
+            notifyObservers(userDataModuleReportResponse);
+            return;
+        }
+
+        final Report report = new Report(mUserData.getObjectId(), videoId);
+        report.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Video with id " + videoId + " reported correctly");
+                    UserDataModuleReportResponse userDataModuleReportResponse =
+                            new UserDataModuleReportResponse(parseResponse, report);
+                    setChanged();
+                    notifyObservers(userDataModuleReportResponse);
+                } else {
+                    Log.e(TAG, "Error reporting the video with id " + videoId, e);
+                    UserDataModuleReportResponse userDataModuleReportResponse =
+                            new UserDataModuleReportResponse(parseResponse, report);
+                    setChanged();
+                    notifyObservers(userDataModuleReportResponse);
+                }
+            }
+        });
     }
 
     @Override
