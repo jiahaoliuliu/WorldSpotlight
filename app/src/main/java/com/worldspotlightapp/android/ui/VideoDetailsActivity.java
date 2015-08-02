@@ -46,9 +46,10 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private Author mAuthor;
 
     // Views
-    private CardView mAuthorAndLikeCardView;
+    private CardView mExtraInfoCardView;
     private ImageView mAuthorThumbnailImageView;
     private TextView mAuthorNameTextView;
+    private ImageView mReportAVideoImageView;
     private ImageView mLikeImageView;
 
     private CardView mDescriptionCardView;
@@ -85,7 +86,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the views
-        mAuthorAndLikeCardView = (CardView) findViewById(R.id.author_and_like_card_view);
+        mExtraInfoCardView = (CardView) findViewById(R.id.extra_info_card_view);
         mAuthorThumbnailImageView = (ImageView) findViewById(R.id.author_thumbnail_image_view);
         mAuthorNameTextView = (TextView) findViewById(R.id.author_name_text_view);
 
@@ -267,8 +268,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             return;
         }
 
-        mAuthorAndLikeCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
-
+        mExtraInfoCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
         mPicasso.load(mAuthor.getThumbnailUrl()).into(mAuthorThumbnailImageView);
         mAuthorNameTextView.setText(mAuthor.getName());
     }
