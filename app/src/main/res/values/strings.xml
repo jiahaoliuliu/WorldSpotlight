@@ -41,6 +41,7 @@
     <!-- Add a video tutorial activity -->
     <string name="add_a_video_tutorial_activity_not_show_message">You are soooo anonying. I already knew this!</string>
     <string name="add_a_video_tutorial_activity_launch_youtube">Open YouTube!</string>
+    <string name="action_bar_done">Done</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
