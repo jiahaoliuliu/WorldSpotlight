@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
 
@@ -20,6 +22,8 @@ public class AddAVideoActivity extends AbstractBaseActivityObserver {
      * The YouTube video id of the video to be added
      */
     private String mVideoId;
+
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,9 @@ public class AddAVideoActivity extends AbstractBaseActivityObserver {
 
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
+
+        // Link the views
+        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
     }
 
