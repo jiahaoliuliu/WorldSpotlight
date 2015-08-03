@@ -6,6 +6,10 @@
         android:name="com.worldspotlightapp.android.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <!-- Tablet compatible -->
+    <supports-screens android:xlargeScreens="true" />
+    <uses-feature android:name="android.hardware.telephony"  android:required="false" />
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -20,7 +24,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!-- Parse special permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -79,7 +82,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_api_production" />
+            android:value="@string/google_api_debug" />
 
         <!-- Parse -->
         <service android:name="com.parse.PushService" />

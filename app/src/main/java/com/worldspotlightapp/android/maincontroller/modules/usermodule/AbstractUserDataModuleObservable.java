@@ -95,6 +95,16 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
     public abstract void likeAVideo(Observer observer, boolean likeIt, String videoId);
 
     /**
+     * Report a video.
+     *
+     * @param observer
+     *      The observer to notify when the like has been updated correctly
+     * @param videoId
+     *      The id of the video object. Note this is the object id in Parse, not the id of the video in YouTube
+     */
+    public abstract void reportAVideo(Observer observer, String videoId);
+
+    /**
      * Check if the user likes a certain video
      * @param videoId
      *      The id of the video
