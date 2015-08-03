@@ -44,6 +44,10 @@
     <!-- Video details Activity -->
     <string name="mp_video_details_activity_prefix">Video details</string>
 
+    <!--    REPORT a video -->
+    <string name="mp_video_details_activity_report_video_event">Report</string>
+    <string name="mp_video_details_activity_report_video_id">Video id</string>
+
     <!--    Like a video -->
     <string name="mp_video_details_activity_like_video_event">Like</string>
     <string name="mp_video_details_activity_like_video_id">Video id</string>

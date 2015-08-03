@@ -227,12 +227,34 @@ public class EventsTrackingModule implements IEventsTrackingModule {
     private void trackVideoDetailsScreenAction(EventId eventId, Object... objects) {
         String prefix = mContext.getString(R.string.mp_video_details_activity_prefix);
         switch (eventId) {
+            case REPORT_A_VIDEO:
+                if (objects.length < 1) {
+                    throw new IllegalArgumentException("You must provide at least two argument for this event");
+                }
+
+                String videoId = null;
+                try {
+                    videoId = (String) objects[0];
+                } catch (ClassCastException classCastException) {
+                    throw new ClassCastException("The first argument must be an instance of String or an extension of it");
+                }
+
+                try {
+                    JSONObject attributes = new JSONObject();
+                    attributes.put(mContext.getString(R.string.mp_video_details_activity_report_video_id), videoId);
+                    mMixpanel.track(prefix+ " " +
+                            mContext.getString(R.string.mp_video_details_activity_report_video_event), attributes);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error sending event to mixpanel", e);
+                }
+
+                break;
             case LIKE_A_VIDEO:
                 if (objects.length < 2) {
                     throw new IllegalArgumentException("You must provide at least two argument for this event");
                 }
 
-                String videoId = null;
+                videoId = null;
                 try {
                     videoId = (String) objects[0];
                 } catch (ClassCastException classCastException) {

@@ -24,7 +24,7 @@ public interface IEventsTrackingModule {
         LOGIN, FAVOURITES, LOGOUT,
 
         // Video details screen
-        LIKE_A_VIDEO, FULL_SCREEN, SHARE;
+        REPORT_A_VIDEO, LIKE_A_VIDEO, FULL_SCREEN, SHARE;
 
     }
 
