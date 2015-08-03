@@ -142,8 +142,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
         // The user has logged in
         mUserDataModule.reportAVideo(this, mVideo.getObjectId());
-        // TODO: Implement this
-//        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.LIKE_A_VIDEO, mVideo.getObjectId());
+        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.REPORT_A_VIDEO, mVideo.getObjectId());
     }
 
     @Override
