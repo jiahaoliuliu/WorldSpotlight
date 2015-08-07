@@ -389,19 +389,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
             } else if (response instanceof VideosModuleAddAVideoResponse) {
-                VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = (VideosModuleAddAVideoResponse) response;
+                final VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = (VideosModuleAddAVideoResponse) response;
                 final ParseResponse parseResponse = videosModuleAddAVideoResponse.getParseResponse();
                 // This is called from the another thread
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                    // TODO: Fix the RuntimeExeception
                     // Can't create handler inside thread that has not called Looper.prepare()
                         if (!parseResponse.isError()) {
                             Log.v(TAG, "Video added correctly");
                             mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
-                            // TODO: Add the list of videos to the actual list
-                            // TODO: Center the map to the video
+                            Video video = videosModuleAddAVideoResponse.getVideo();
+                            // Add the video to the current list
+                            mVideosList.add(video);
+                            mClusterManager.addItem(video);
+                            mClusterManager.cluster();
+
+                            // Center the map to the video and show the preview
+                            showVideoPreview(video);
                         } else {
                             Log.v(TAG, "Error adding the video " + parseResponse.getCode());
                             mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);

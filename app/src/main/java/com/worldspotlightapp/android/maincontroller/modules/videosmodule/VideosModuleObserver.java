@@ -413,6 +413,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "Video " + video + " added correctly to the backend");
+                    // Update the video list
+                    mVideosList.add(video);
+                    // The database should be updated according to the backend. This is because there could be several user adding
+                    // videos at the same time. So, the order the video was added are different. Since we based on the number of existence
+                    // videos in the database to update the list of videos, it is more safe do it asking directly to Parse.
                     VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, video);
                     setChanged();
                     notifyObservers(videosModuleAddAVideoResponse);
