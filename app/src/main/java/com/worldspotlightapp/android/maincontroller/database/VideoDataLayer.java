@@ -29,21 +29,41 @@ public class VideoDataLayer {
     }
 
     /**
-     * Returns a {@link Cursor} over the Video table that contains a specific Video. If
-     * the video does not exist, an empty cursor is returned.
-     * 
+     * Returns a {@link Video} if the video exists in the database. Otherwise, null
+     * will be returned.
+     *
      * @param objectId
-     *            the object id of the video to retrieve.
-     * @return The specific Cursor object build based on the data in the database.
-     *         Null if there are not video with such id
+     *      The object id of the video to retrieve.
+     * @return
+     *      Instance of the class {@link Video} with all the details.
+     *      Null if the video is not found
      */
     public Video getVideoDetails(String objectId) {
         try {
-            Cursor dataCursor = mVideoDao.queryData(objectId);
+            Cursor dataCursor = mVideoDao.queryDataByObjectId(objectId);
             return mVideoDao.getDataFromCursor(dataCursor, true);
         } catch (SQLiteException e) {
             Log.e(TAG, "Exception while querying video with id " + objectId, e);
             return null;
+        }
+    }
+
+    /**
+     * Check if a video with a specific video id exists or not.
+     *
+     * @param videoId
+     *         The id of the video in YouTube
+     * @return
+     *      True if the video with such video id exists
+     *      False otherwise
+     */
+    public boolean hasVideoByVideoId(String videoId) {
+        try {
+            Cursor dataCursor = mVideoDao.queryDataByVideoId(videoId);
+            return dataCursor != null && dataCursor.getCount() > 0;
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Exception while querying video with id " + videoId, e);
+            return false;
         }
     }
 

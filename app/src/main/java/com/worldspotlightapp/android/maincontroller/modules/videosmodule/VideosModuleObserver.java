@@ -293,7 +293,56 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void addAVideo(String videoId, LatLng videoLocation) {
+    public void addAVideo(final String videoId, final LatLng videoLocation) {
+        Log.v(TAG, "Adding a video with id " + videoId + ", location " + videoLocation);
+
+        boolean videoAlreadyExists = false;
+        Video videoToBeAdded = new Video(videoId);
+        // Check if the video already existed
+        if (mVideosList != null && !mVideosList.isEmpty()) {
+            // If the video already exists
+            if (mVideosList.contains(videoToBeAdded)) {
+                videoAlreadyExists = true;
+            }
+        // Check the database
+        } else {
+            if (mVideoDataLayer.hasVideoByVideoId(videoId)) {
+                videoAlreadyExists = true;
+            }
+        }
+
+        // The video already exists
+        if (videoAlreadyExists) {
+            // TODO: check what to do
+            Log.w(TAG, "The video with video id " + videoId + " already exists.");
+            return;
+        }
+
+        // Get the information about the video
+        //      Get the title and description
+        mExecutorService.execute(new RetrieveTitleDescriptionRunnable(videoId, new RequestTitleAndDescriptionCallback() {
+            @Override
+            public void done(String title, String description) {
+                addAVideo(videoId, title, description, videoLocation);
+            }
+        }));
+    }
+
+    /**
+     * Add a video into the backend. This method might not be running in the main thread
+     * @param videoId
+     *      The id of the video to be added
+     * @param title
+     *      The title of the video to be added
+     * @param description
+     *      The description of the video to be added. Since this is retrieved from YouTube Data API, it does not contain
+     *      all the information
+     * @param videoLocation
+     *      The location where the video was filmed
+     */
+    private void addAVideo(String videoId, String title, String description, LatLng videoLocation) {
+        Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
+                ", location " + videoLocation);
         // TODO: implement this.
 
         // Simulates the success added video
@@ -302,6 +351,73 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
         setChanged();
         notifyObservers(videosModuleAddAVideoResponse);
+    }
+
+    /**
+     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
+     * info is ready
+     */
+    private interface RequestTitleAndDescriptionCallback {
+        void done(String title, String description);
+    }
+
+    private class RetrieveTitleDescriptionRunnable implements Runnable {
+
+        private String mVideoId;
+        private RequestTitleAndDescriptionCallback mRequestTitleAndDescriptionCallback;
+
+        public RetrieveTitleDescriptionRunnable(String videoId, RequestTitleAndDescriptionCallback requestTitleAndDescriptionCallback) {
+            mVideoId = videoId;
+            mRequestTitleAndDescriptionCallback = requestTitleAndDescriptionCallback;
+        }
+
+        @Override
+        public void run() {
+            String title = "";
+            String description = "";
+
+            YouTube youtube =
+                    new YouTube.Builder(new NetHttpTransport(),
+                            new JacksonFactory(), new HttpRequestInitializer() {
+                        @Override
+                        public void initialize(HttpRequest httpRequest) throws IOException {
+                        }
+                    }).setApplicationName(mContext.getString(R.string.app_name)).build();
+
+            try {
+                YouTube.Search.List query = youtube.search().list("id,snippet");
+                query.setKey(Secret.YOUTUBE_DATA_API_KEY);
+                query.setType("video");
+                query.setFields("items(id,snippet/title,snippet/description)");
+                query.setQ("v=" + mVideoId);
+                query.setType("video");
+                SearchListResponse response = query.execute();
+                List<SearchResult> results = response.getItems();
+                Log.v(TAG, "List of search results retrieved. " + results.size());
+                for (final SearchResult searchResult : results) {
+                    Log.v(TAG, searchResult.toPrettyString());
+                    if (!searchResult.getId().getVideoId().equals(mVideoId)) {
+                        continue;
+                    }
+
+                    // Get the title and description
+                    title = searchResult.getSnippet().getTitle();
+                    description = searchResult.getSnippet().getDescription();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Could not search video data: ", e);
+            }
+
+            mRequestTitleAndDescriptionCallback.done(title, description);
+        }
+    }
+
+    /**
+     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
+     * info is ready
+     */
+    private interface RequestAuthorInfoCallback {
+        void done(Author author);
     }
 
     private class RetrieveAuthorInfoRunnable implements Runnable {
@@ -361,14 +477,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
             mRequestAuthorInfoCallback.done(author);
         }
-    }
-
-    /**
-     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
-     * info is ready
-     */
-    private interface RequestAuthorInfoCallback {
-        void done(Author author);
     }
 
     private List<Video> retrieveVideosListFromRawFile() {

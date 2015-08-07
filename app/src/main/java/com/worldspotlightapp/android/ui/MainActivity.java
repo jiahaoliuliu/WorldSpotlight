@@ -391,12 +391,15 @@ public class MainActivity extends AbstractBaseActivityObserver {
             } else if (response instanceof VideosModuleAddAVideoResponse) {
                 VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = (VideosModuleAddAVideoResponse) response;
                 ParseResponse parseResponse = videosModuleAddAVideoResponse.getParseResponse();
-                if (!parseResponse.isError()) {
-                    mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
-                    // TODO: Center the map to the video
-                } else {
-                    mNotificationModule.showToast(R.string.add_a_video_activity_error_adding_video, true);
-                }
+                // TODO: Fix the RuntimeExeception
+                // Can't create handler inside thread that has not called Looper.prepare()
+//                if (!parseResponse.isError()) {
+//                    mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
+//                    // TODO: Add the list of videos to the actual list
+//                    // TODO: Center the map to the video
+//                } else {
+//                    mNotificationModule.showToast(R.string.add_a_video_activity_error_adding_video, true);
+//                }
             }
 
             Log.v(TAG, "Dismissing the loading dialog");

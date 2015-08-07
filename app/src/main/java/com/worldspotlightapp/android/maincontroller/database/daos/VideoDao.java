@@ -35,15 +35,35 @@ public class VideoDao {
      * Returns a {@link Cursor} over the video table that contains a specific video. If
      * the video does not exist, an empty cursor is returned.
      *
-     * @param id
-     *            the ID of the video to retrieve.
+     * @param objectId
+     *        The Object id of the video to retrieve.
      * @return a Cursor pointing to the video.
      * @throws SQLException
      *             if any error while accessing the database.
      */
-    public Cursor queryData(String id) {
+    public Cursor queryDataByObjectId(String objectId) {
        Cursor cursor = mDatabase.query(TableVideo.TABLE_NAME, null, TableVideo._ID + "=?",
-                new String[] {id}, null, null, null);
+                new String[] {objectId}, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        return cursor;
+    }
+
+    /**
+     * Returns a {@link Cursor} over the video table that contains a specific video. If
+     * the video does not exist, an empty cursor is returned.
+     *
+     * @param videoId
+     *        The video id of the video to retrieve.
+     * @return a Cursor pointing to the video.
+     * @throws SQLException
+     *             if any error while accessing the database.
+     */
+    public Cursor queryDataByVideoId(String videoId) {
+        Cursor cursor = mDatabase.query(TableVideo.TABLE_NAME, null, TableVideo.VIDEO_ID + "=?",
+                new String[] {videoId}, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }

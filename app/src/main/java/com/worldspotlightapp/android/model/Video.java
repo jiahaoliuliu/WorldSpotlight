@@ -68,6 +68,18 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     /**
+     * Special constructor to set just the video Id to check if a
+     * video is equal to another. This is used in the follow cases
+     * - When add a new video. Check if the video already exists
+     * @param videoId
+     *      The id of the video in YouTube
+     */
+    public Video(String videoId) {
+        this();
+        setVideoId(videoId);
+    }
+
+    /**
      * Constructor from json object. The json object are from Parse,
      * so the name of the column of each one of the fields is a field
      * in JSON Object
@@ -254,10 +266,15 @@ public class Video extends ParseObject implements ClusterItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Video video = (Video) o;
+        Video anotherVideo = (Video) o;
 
-        return getObjectId().equals(video.getObjectId());
-
+        // Check if the object id exists.
+        if (anotherVideo.has(PARSE_COLUMN_OBJECT_ID)) {
+            return getObjectId().equals(anotherVideo.getObjectId());
+        // If the object id does not exists, check the video id
+        } else {
+            return getVideoId().equals(anotherVideo.getVideoId());
+        }
     }
 
     @Override
