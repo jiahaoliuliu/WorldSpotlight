@@ -47,6 +47,7 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.UserData;
@@ -386,6 +387,15 @@ public class MainActivity extends AbstractBaseActivityObserver {
                     mVideosModule.requestLikedVideosInfo(this, userDataModuleLikesListResponse.getLikesList());
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            } else if (response instanceof VideosModuleAddAVideoResponse) {
+                VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = (VideosModuleAddAVideoResponse) response;
+                ParseResponse parseResponse = videosModuleAddAVideoResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
+                    // TODO: Center the map to the video
+                } else {
+                    mNotificationModule.showToast(R.string.add_a_video_activity_error_adding_video, true);
                 }
             }
 

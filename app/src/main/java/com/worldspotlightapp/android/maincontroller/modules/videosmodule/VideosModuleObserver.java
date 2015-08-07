@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -20,6 +21,7 @@ import com.parse.ParseQuery;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
@@ -288,6 +290,18 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 }
             }
         }));
+    }
+
+    @Override
+    public void addAVideo(String videoId, LatLng videoLocation) {
+        // TODO: implement this.
+
+        // Simulates the success added video
+        // TODO: Remove this
+        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+        VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
+        setChanged();
+        notifyObservers(videosModuleAddAVideoResponse);
     }
 
     private class RetrieveAuthorInfoRunnable implements Runnable {

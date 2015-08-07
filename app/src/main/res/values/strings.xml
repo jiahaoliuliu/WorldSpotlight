@@ -41,7 +41,13 @@
     <!-- Add a video tutorial activity -->
     <string name="add_a_video_tutorial_activity_not_show_message">You are soooo anonying. I already knew this!</string>
     <string name="add_a_video_tutorial_activity_launch_youtube">Open YouTube!</string>
+
+    <!-- Add a video activity -->
     <string name="action_bar_done">Done</string>
+    <string name="add_a_video_activity_error_location_not_found">The location cannot be found. Could you try it later</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">It is not possible detect the city and the country automatically. Could you enter them manually</string>
+    <string name="add_a_video_activity_video_added_correctly">The video was added correctly</string>
+    <string name="add_a_video_activity_error_adding_video">There was an error Adding the video. Please try it again</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>

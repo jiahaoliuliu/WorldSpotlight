@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.ui;
 
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -7,16 +8,20 @@ import android.view.MenuItem;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.Observable;
 
-public class AddAVideoActivity extends AbstractBaseActivityObserver {
+public class AddAVideoActivity extends AbstractBaseActivity {
 
     private static final String TAG = "AddAVideoActivity";
 
     private static final int MENU_ITEM_ADD_A_VIDEO_ID = 1000;
+
+    private LatLng mVideoLocation;
 
     /**
      * The YouTube video id of the video to be added
@@ -46,16 +51,15 @@ public class AddAVideoActivity extends AbstractBaseActivityObserver {
         // Link the views
         mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
-    }
+        // Get the center of the map and update it as the camera changes
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                mVideoLocation = cameraPosition.target;
+                Log.v(TAG, "The position of the video is " + mVideoLocation);
+            }
+        });
 
-    @Override
-    protected void processDataIfExists() {
-        // TODO: Implement this
-    }
-
-    @Override
-    public void update(Observable observable, Object data) {
-        // TODO: Implement this
     }
 
     // Action bar
@@ -85,6 +89,20 @@ public class AddAVideoActivity extends AbstractBaseActivityObserver {
     }
 
     private void addThisVideo() {
-        // TDOO: Implement this
+        if (mVideoLocation == null) {
+            Log.e(TAG, "The location of the video is not detected.");
+            mNotificationModule.showToast(R.string.add_a_video_activity_error_location_not_found, true);
+            return;
+        }
+
+        // Try to see if the geoCoder is precent
+        if (!Geocoder.isPresent()) {
+            mNotificationModule.showToast(R.string.add_a_video_activity_error_geocoder_not_present, true);
+            // TODO: implement this case
+            return;
+        }
+
+        mVideosModule.addAVideo(mVideoId, mVideoLocation);
+        finish();
     }
 }
