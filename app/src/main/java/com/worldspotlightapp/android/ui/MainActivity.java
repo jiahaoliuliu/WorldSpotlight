@@ -390,16 +390,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 }
             } else if (response instanceof VideosModuleAddAVideoResponse) {
                 VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = (VideosModuleAddAVideoResponse) response;
-                ParseResponse parseResponse = videosModuleAddAVideoResponse.getParseResponse();
-                // TODO: Fix the RuntimeExeception
-                // Can't create handler inside thread that has not called Looper.prepare()
-//                if (!parseResponse.isError()) {
-//                    mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
-//                    // TODO: Add the list of videos to the actual list
-//                    // TODO: Center the map to the video
-//                } else {
-//                    mNotificationModule.showToast(R.string.add_a_video_activity_error_adding_video, true);
-//                }
+                final ParseResponse parseResponse = videosModuleAddAVideoResponse.getParseResponse();
+                // This is called from the another thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                    // TODO: Fix the RuntimeExeception
+                    // Can't create handler inside thread that has not called Looper.prepare()
+                        if (!parseResponse.isError()) {
+                            Log.v(TAG, "Video added correctly");
+                            mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
+                            // TODO: Add the list of videos to the actual list
+                            // TODO: Center the map to the video
+                        } else {
+                            Log.v(TAG, "Error adding the video " + parseResponse.getCode());
+                            mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                        }
+                    }
+                });
             }
 
             Log.v(TAG, "Dismissing the loading dialog");

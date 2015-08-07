@@ -80,6 +80,33 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     /**
+     * Constructor to create instance of the video from the app. Note that the video id is not
+     * set by now.
+     *
+     * @param title
+     *      The title of the video
+     * @param description
+     *      The description of the video
+     * @param videoId
+     *      The id of the video in YouTube
+     * @param city
+     *      The city where the video was filmed
+     * @param country
+     *      The country where the video was filmed
+     * @param position
+     *      The geoposition where the video was filmed
+     */
+    public Video(String title, String description, String videoId, String city, String country, LatLng position) {
+        this();
+        setTitle(title);
+        setDescription(description);
+        setVideoId(videoId);
+        setCity(city);
+        setCountry(country);
+        setPosition(position.latitude, position.longitude);
+    }
+
+    /**
      * Constructor from json object. The json object are from Parse,
      * so the name of the column of each one of the fields is a field
      * in JSON Object
@@ -245,7 +272,7 @@ public class Video extends ParseObject implements ClusterItem {
 
     @Override
     public LatLng getPosition() {
-        if (mLocation == null) {
+        if (mLocation == null && has(PARSE_COLUMN_LOCATION)) {
             ParseGeoPoint parseGeoPoint = getParseGeoPoint(PARSE_COLUMN_LOCATION);
             mLocation = new LatLng(parseGeoPoint.getLatitude(), parseGeoPoint.getLongitude());
         }

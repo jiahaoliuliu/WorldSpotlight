@@ -1,6 +1,8 @@
 package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -18,6 +20,7 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
@@ -39,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observer;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -278,7 +282,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     @Override
     public void requestAuthorInfo(Observer observer, final String videoId) {
         addObserver(observer);
-
         mExecutorService.execute(new RetrieveAuthorInfoRunnable(videoId, new RequestAuthorInfoCallback() {
             @Override
             public void done(Author author) {
@@ -313,8 +316,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         // The video already exists
         if (videoAlreadyExists) {
-            // TODO: check what to do
             Log.w(TAG, "The video with video id " + videoId + " already exists.");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_ADDING_AN_EXISTING_VIDEO).build();
+            VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
+            setChanged();
+            notifyObservers(videosModuleAddAVideoResponse);
             return;
         }
 
@@ -343,14 +349,81 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private void addAVideo(String videoId, String title, String description, LatLng videoLocation) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation);
-        // TODO: implement this.
 
-        // Simulates the success added video
-        // TODO: Remove this
-        ParseResponse parseResponse = new ParseResponse.Builder(null).build();
-        VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
-        setChanged();
-        notifyObservers(videosModuleAddAVideoResponse);
+        String city = "";
+        String country = "";
+        // Get the city and the country
+        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+        List<Address> addressesList = null;
+        try {
+            addressesList = geocoder.getFromLocation(videoLocation.latitude, videoLocation.longitude, 1);
+        } catch (IOException ioException) {
+            // Service not available
+            Log.e(TAG, "Error getting the city from the geocoder. Service not available", ioException);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // Invalid latitude and longitude
+            Log.e(TAG, "Error getting the city form the geocoder. The latitude or/and the longitude are" +
+                    "not correct. " + videoLocation.latitude + ", " + videoLocation.longitude + ".", illegalArgumentException);
+        }
+
+        // If there was not address retrieved
+        if (addressesList != null && !addressesList.isEmpty()) {
+            Address address = addressesList.get(0);
+            Log.v(TAG, "Address found " + address);
+            Log.v(TAG, "The locality is " + address.getLocality());
+            Log.v(TAG, "The country is " + address.getCountryName());
+
+            // Set the city if exists
+            String locality = address.getLocality();
+            if (locality != null) {
+                city = locality;
+            }
+
+            // Set the country if exists
+            String countryName = address.getCountryName();
+            if (countryName != null) {
+                country = countryName;
+            }
+        }
+        addAVideo(videoId, title, description, videoLocation, city, country);
+    }
+
+    /**
+     * Method used to save a video to the backend. The video Id shouldn't exist before.
+     * @param videoId
+     *      The id of the video in YouTube
+     * @param title
+     *      The title of the video
+     * @param description
+     *      The description of the video
+     * @param videoLocation
+     *      The location where the video was filmed
+     * @param city
+     *      The city where the video was filmed
+     * @param country
+     *      The country where the video was filmed.
+     */
+    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country) {
+        Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
+                ", location " + videoLocation + ", city " + city + ", country " + country);
+        final Video video = new Video(title, description, videoId, city, country, videoLocation);
+        video.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Video " + video + " added correctly to the backend");
+                    VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, video);
+                    setChanged();
+                    notifyObservers(videosModuleAddAVideoResponse);
+                } else {
+                    Log.e(TAG, "Error adding video " + video + " to the backend. ", e);
+                    VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
+                    setChanged();
+                    notifyObservers(videosModuleAddAVideoResponse);
+                }
+            }
+        });
     }
 
     /**
@@ -373,6 +446,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         @Override
         public void run() {
+            // Set empty title and description as default
             String title = "";
             String description = "";
 
