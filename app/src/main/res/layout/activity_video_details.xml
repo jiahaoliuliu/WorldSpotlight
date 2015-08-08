@@ -14,7 +14,6 @@
         android:id="@+id/youtube_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
         />
 
     <!-- Author -->
@@ -24,7 +23,7 @@
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="@dimen/card_view_card_corner_radius"
         card_view:cardElevation="@dimen/card_view_card_elevation"
-        android:layout_marginTop="@dimen/video_details_group_margin_vertical"
+        android:layout_marginTop="@dimen/video_details_group_margin_vertical_absolute"
         android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
         >
 

@@ -1,12 +1,16 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +66,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     // Check if it was full screen or not
     private boolean mIsFullScreen;
 
+    // Check if the screen orientation is landscape or not
+    private boolean mIsLandscape;
+
     // Others
     private Picasso mPicasso;
 
@@ -101,6 +108,19 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
         mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
         initializeYouTubePlayerFragment();
+
+        // Get the screen orientation
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        int orientation = display.getRotation();
+        if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
+            Log.v(TAG, "The screen started on landscape mode");
+            mIsLandscape = true;
+            updateScreenViews();
+        } else {
+            Log.v(TAG, "The screen started on portrait mode");
+            mIsLandscape = false;
+            updateScreenViews();
+        }
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener(){
@@ -297,7 +317,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
             return;
         }
 
-        mExtraInfoCardView.setVisibility(mIsFullScreen? View.GONE : View.VISIBLE);
         mPicasso.load(mAuthor.getThumbnailUrl()).into(mAuthorThumbnailImageView);
         mAuthorNameTextView.setText(mAuthor.getName());
     }
@@ -310,12 +329,8 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                 @Override
                 public void onFullscreen(boolean isFullScreen) {
                     mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.FULL_SCREEN, mVideo.getObjectId());
-
-                    mDescriptionCardView.setVisibility(isFullScreen? View.GONE : View.VISIBLE);
                     mIsFullScreen = isFullScreen;
-
-                    // Update author card view
-                    updateAuthorInfo();
+                    updateScreenViews();
                 }
             });
 
@@ -406,6 +421,56 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
                         mVideo.getVideoUrl();
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Check the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.v(TAG, "The screen is now on landscape. Hidding the elements");
+            mIsLandscape = true;
+            updateScreenViews();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.v(TAG, "The screen is now on portrait. Showing the elements");
+            mIsLandscape = false;
+            updateScreenViews();
+        }
+    }
+
+    /**
+     * Method used to update the views in the screen depending the screen orientation and if the YouTube fragment
+     * is in full screen or not.
+     * This method does not allow the user to exit full screen mode while in landscape
+     *
+     * If the screen is in Landscape mode or the YouTube fragment is in the full screen mode, the YouTube fragment
+     * should be the unique element of the screen.
+     *
+     * The rest of the elements, including the actionbar should be hidden.
+     *
+     * If the screen is in Portrait mode and not in the full screen mode, all the elements should appear
+     *
+     */
+    private void updateScreenViews() {
+        // If the YouTube fragment is in full screen or landscape mode
+        if (mIsFullScreen || mIsLandscape) {
+            mActionBar.hide();
+            mExtraInfoCardView.setVisibility(View.GONE);
+            mDescriptionCardView.setVisibility(View.GONE);
+            // Set it as full screen when it was not in full screen
+            if (mYouTubePlayer != null && !mIsFullScreen) {
+                mYouTubePlayer.setFullscreen(true);
+            }
+        } else {
+            mActionBar.show();
+            mExtraInfoCardView.setVisibility(View.VISIBLE);
+            mDescriptionCardView.setVisibility(View.VISIBLE);
+            if (mYouTubePlayer != null) {
+                mYouTubePlayer.setFullscreen(false);
+            }
+        }
+
     }
 
     @Override

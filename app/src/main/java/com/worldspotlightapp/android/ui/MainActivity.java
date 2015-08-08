@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
@@ -108,6 +109,9 @@ public class MainActivity extends AbstractBaseActivityObserver {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Lock the screen orientation
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         super.onCreate(savedInstanceState);
 
         // Launch login activity if the user has not logged in
@@ -254,7 +258,7 @@ public class MainActivity extends AbstractBaseActivityObserver {
                 }
 
                 List<Video> videosListToShow = new ArrayList<Video>();
-                for (Video video: clusterVideos) {
+                for (Video video : clusterVideos) {
                     videosListToShow.add(video);
                 }
 
