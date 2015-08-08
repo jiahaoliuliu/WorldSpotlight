@@ -11,8 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -453,16 +455,28 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
      *
      */
     private void updateScreenViews() {
-
-        // Show or hide the action bar
+        // If the YouTube fragment is in full screen or landscape mode
         if (mIsFullScreen || mIsLandscape) {
             mActionBar.hide();
+
+            // The YouTube Player fragment should be full screen
+            mYoutubePlayerFragment.getView().setLayoutParams(
+                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            mExtraInfoCardView.setVisibility(View.GONE);
+            mDescriptionCardView.setVisibility(View.GONE);
+
         } else {
             mActionBar.show();
+
+            // The YouTube Player fragment should wrap the content for the height
+            mYoutubePlayerFragment.getView().setLayoutParams(
+                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            mExtraInfoCardView.setVisibility(View.VISIBLE);
+            mDescriptionCardView.setVisibility(View.VISIBLE);
         }
 
-        mDescriptionCardView.setVisibility(mIsFullScreen || mIsLandscape? View.GONE : View.VISIBLE);
-        mExtraInfoCardView.setVisibility(mIsFullScreen || mIsLandscape ? View.GONE : View.VISIBLE);
     }
 
     @Override
