@@ -1,7 +1,6 @@
 package com.worldspotlightapp.android.ui;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -11,10 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -445,6 +442,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     /**
      * Method used to update the views in the screen depending the screen orientation and if the YouTube fragment
      * is in full screen or not.
+     * This method does not allow the user to exit full screen mode while in landscape
      *
      * If the screen is in Landscape mode or the YouTube fragment is in the full screen mode, the YouTube fragment
      * should be the unique element of the screen.
@@ -458,23 +456,19 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         // If the YouTube fragment is in full screen or landscape mode
         if (mIsFullScreen || mIsLandscape) {
             mActionBar.hide();
-
-            // The YouTube Player fragment should be full screen
-            mYoutubePlayerFragment.getView().setLayoutParams(
-                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
             mExtraInfoCardView.setVisibility(View.GONE);
             mDescriptionCardView.setVisibility(View.GONE);
-
+            // Set it as full screen when it was not in full screen
+            if (mYouTubePlayer != null && !mIsFullScreen) {
+                mYouTubePlayer.setFullscreen(true);
+            }
         } else {
             mActionBar.show();
-
-            // The YouTube Player fragment should wrap the content for the height
-            mYoutubePlayerFragment.getView().setLayoutParams(
-                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
             mExtraInfoCardView.setVisibility(View.VISIBLE);
             mDescriptionCardView.setVisibility(View.VISIBLE);
+            if (mYouTubePlayer != null) {
+                mYouTubePlayer.setFullscreen(false);
+            }
         }
 
     }
