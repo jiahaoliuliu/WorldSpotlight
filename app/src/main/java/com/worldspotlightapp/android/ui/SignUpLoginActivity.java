@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.ui;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -54,6 +55,9 @@ public class SignUpLoginActivity extends AbstractBaseActivityObserver implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Lock the screen orientation
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_login);
 
