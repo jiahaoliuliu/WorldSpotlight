@@ -797,13 +797,11 @@ public class MainActivity extends AbstractBaseActivityObserver {
      *
      * The next step is show the YouTube app and ask the user to share the video.
      *
-     * Once the user has came back with the video shared, the app will ask the user to fill the location,
-     * the country and the city of the video.
-     *
-     * // TODO: Automatic fill the country and the city once the user has created the location.
-     *
      */
     private void addVideo() {
+        // 0. Register the user action. Based on this we can know how many user tried to add a video
+        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.ADD_A_VIDEO);
+
         // 1. Check if it is the first time the user is doing it or if the user has done it, he has set
         // the flag of show_add_video_tutorial as false
         if (!mUserDataModule.shouldTheAppNotShowAddAVideoTutorial()) {

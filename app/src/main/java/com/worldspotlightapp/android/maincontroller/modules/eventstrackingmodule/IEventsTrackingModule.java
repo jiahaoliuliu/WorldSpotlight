@@ -23,6 +23,9 @@ public interface IEventsTrackingModule {
         //      Drawer
         LOGIN, FAVOURITES, LOGOUT,
 
+        //      Other
+        ADD_A_VIDEO,
+
         // Video details screen
         REPORT_A_VIDEO, LIKE_A_VIDEO, FULL_SCREEN, SHARE;
 
