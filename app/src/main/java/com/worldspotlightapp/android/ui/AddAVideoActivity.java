@@ -11,6 +11,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.model.Video;
 
 import java.util.Observable;
@@ -81,6 +83,7 @@ public class AddAVideoActivity extends AbstractBaseActivity {
                 onBackPressed();
                 return true;
             case MENU_ITEM_ADD_A_VIDEO_ID:
+                mEventTrackingModule.trackUserAction(ScreenId.ADD_A_VIDEO_SCREEN, EventId.DONE);
                 addThisVideo();
                 return true;
             default:
@@ -95,7 +98,7 @@ public class AddAVideoActivity extends AbstractBaseActivity {
             return;
         }
 
-        // Try to see if the geoCoder is precent
+        // Try to see if the geoCoder is present
         if (!Geocoder.isPresent()) {
             mNotificationModule.showToast(R.string.add_a_video_activity_error_geocoder_not_present, true);
             // TODO: implement this case
@@ -104,5 +107,11 @@ public class AddAVideoActivity extends AbstractBaseActivity {
 
         mVideosModule.addAVideo(mVideoId, mVideoLocation);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        mEventTrackingModule.trackUserAction(ScreenId.ADD_A_VIDEO_SCREEN, EventId.CANCEL);
+        super.onBackPressed();
     }
 }

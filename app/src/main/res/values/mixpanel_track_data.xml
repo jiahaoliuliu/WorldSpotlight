@@ -41,6 +41,11 @@
     <!--    Others -->
     <string name="mp_main_activity_add_a_video">Add a video</string>
 
+    <!-- Add a video activity -->
+    <string name="mp_add_a_video_activity_prefix">Add a video</string>
+    <string name="mp_add_a_video_activity_cancel">Cancel</string>
+    <string name="mp_add_a_video_activity_done">Done</string>
+
     <!-- Video details Activity -->
     <string name="mp_video_details_activity_prefix">Video details</string>
 
