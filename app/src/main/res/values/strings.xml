@@ -48,6 +48,7 @@
     <string name="add_a_video_activity_error_geocoder_not_present">It is not possible detect the city and the country automatically. Could you enter them manually</string>
     <string name="add_a_video_activity_video_added_correctly">The video was added correctly</string>
     <string name="add_a_video_activity_error_adding_video">There was an error Adding the video. Please try it again</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">You must logged in to add a video. Would you like to login now?</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>

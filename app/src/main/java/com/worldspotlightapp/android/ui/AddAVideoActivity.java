@@ -92,6 +92,10 @@ public class AddAVideoActivity extends AbstractBaseActivity {
     }
 
     private void addThisVideo() {
+        if (!showAlertIfUserHasNotLoggedIn(getString(R.string.add_a_video_activity_error_user_not_logged_in))) {
+            return;
+        }
+
         if (mVideoLocation == null) {
             Log.e(TAG, "The location of the video is not detected.");
             mNotificationModule.showToast(R.string.add_a_video_activity_error_location_not_found, true);
