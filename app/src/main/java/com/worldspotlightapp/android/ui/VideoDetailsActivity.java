@@ -34,6 +34,7 @@ import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
 
@@ -43,7 +44,13 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     private static final int RECOVERY_DIALOG_REQUEST = 1;
     private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
 
-    private String mVideoObjectId;
+    /**
+     * The intent key for the list of object ids received which belong the list of the video
+     * to be displayed
+     */
+    public static final String INTENT_KEY_VIDEO_LIST_OBJECT_IDS = "com.worldspotlightapp.android.ui.VideoDetailsActivity.videoListObjectIds";
+
+    private List<String> mVideoObjectIdsList;
 
     // The stack of responses from backend
     private Stack<Object> mResponsesStack;
@@ -79,10 +86,11 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
         // Retrieve the video id from the intent
         Bundle extras = getIntent().getExtras();
-        if (extras == null || !extras.containsKey(Video.INTENT_KEY_OBJECT_ID)) {
+        if (extras == null || !extras.containsKey(INTENT_KEY_VIDEO_LIST_OBJECT_IDS)) {
             throw new IllegalArgumentException("You must pass the video id using intent");
         }
-        mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
+        mVideoObjectIdsList = extras.getStringArrayList(INTENT_KEY_VIDEO_LIST_OBJECT_IDS);
+        Log.d(TAG, "The list of the video ids are " + mVideoObjectIdsList);
 
         // Initialize items
         mResponsesStack = new Stack<Object>();
@@ -171,11 +179,11 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
 
         // Fill the video info if it is empty
         if (mVideo == null) {
-            mVideo = mVideosModule.getVideoInfo(mVideoObjectId);
+            mVideo = mVideosModule.getVideoInfo(mVideoObjectIdsList.get(0));
 
             // Finish if there is any problem with the video
             if (mVideo == null) {
-                Log.e(TAG, "Error retrieving the video from the backend. The video with id " + mVideoObjectId + " no existe");
+                Log.e(TAG, "Error retrieving the video from the backend. The video with id " + mVideoObjectIdsList + " no existe");
                 finish();
             } else {
                 updateVideoDetails();

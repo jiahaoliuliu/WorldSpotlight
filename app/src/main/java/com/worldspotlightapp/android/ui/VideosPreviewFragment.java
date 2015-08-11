@@ -21,6 +21,8 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
+
 public class VideosPreviewFragment extends Fragment {
 
     private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.VideosPreviewFragment.showArrows";
@@ -146,7 +148,10 @@ public class VideosPreviewFragment extends Fragment {
 
                     // Start the video details activity
                     Intent startVideoDetailsActivityIntent = new Intent(mActivity, VideoDetailsActivity.class);
-                    startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mObjectId);
+                    ArrayList<String> objectIdsList = new ArrayList<String>();
+                    objectIdsList.add(mObjectId);
+                    startVideoDetailsActivityIntent.putStringArrayListExtra(VideoDetailsActivity.INTENT_KEY_VIDEO_LIST_OBJECT_IDS,
+                            objectIdsList);
                     startActivity(startVideoDetailsActivityIntent);
                     break;
             }
