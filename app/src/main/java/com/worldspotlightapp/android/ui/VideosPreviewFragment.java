@@ -60,9 +60,6 @@ public class VideosPreviewFragment extends Fragment {
     private ImageView mRightArrowImageView;
 
     // Others
-    private OnEventTrackingModuleRequestedListener mOnEventTrackingModuleRequestedListener;
-    private IEventsTrackingModule mEventTrackingModule;
-
     private IOnVideosPreviewFragmentClickedListener mOnVideosPreviewFragmentClickedListener;
 
     public static VideosPreviewFragment newInstance(
@@ -82,12 +79,6 @@ public class VideosPreviewFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = activity;
-
-        try {
-            mOnEventTrackingModuleRequestedListener = (OnEventTrackingModuleRequestedListener)activity;
-        } catch (ClassCastException classCastException) {
-            throw new ClassCastException(activity.toString() + " must implements the mOnEventTrackingModuleRequestedListener interface");
-        }
 
         try {
             mOnVideosPreviewFragmentClickedListener = (IOnVideosPreviewFragmentClickedListener)activity;
@@ -129,9 +120,6 @@ public class VideosPreviewFragment extends Fragment {
         }
 
         mObjectId = bundle.getString(Video.INTENT_KEY_OBJECT_ID);
-
-        // Get the Event module
-        mEventTrackingModule = mOnEventTrackingModuleRequestedListener.getEventsTrackingModule();
 
         // Load images
         mThumbnailUrl = bundle.getString(Video.INTENT_KEY_THUMBNAIL_URL);
