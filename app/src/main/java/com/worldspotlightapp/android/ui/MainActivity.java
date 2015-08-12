@@ -57,7 +57,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
 
-public class MainActivity extends AbstractBaseActivityObserver {
+public class MainActivity extends AbstractBaseActivityObserver implements
+                    VideosPreviewFragment.IOnVideosPreviewFragmentClickedListener{
 
     private static final String TAG = "MainActivity";
     private static final int MENU_ITEM_SEARCH_ID = 1000;
@@ -550,6 +551,24 @@ public class MainActivity extends AbstractBaseActivityObserver {
         mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
         mVideosPreviewViewPagerIndicator.setFades(false);
 
+    }
+
+    @Override
+    public void onClickOnVideoPreviewFragment(String objectId) {
+        // Register the event
+        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, objectId);
+
+        // Start the video details activity
+        Intent startVideoDetailsActivityIntent = new Intent(mContext, VideoDetailsActivity.class);
+
+        //      Pass the list of videos ids
+        startVideoDetailsActivityIntent.putStringArrayListExtra(VideoDetailsActivity.INTENT_KEY_VIDEO_LIST_OBJECT_IDS,
+                mVideosPreviewViewPagerAdapter.getVideosObjectIdList());
+        //      Pass the id of the video
+        startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, objectId);
+
+        // Start the activity
+        startActivity(startVideoDetailsActivityIntent);
     }
 
     private class VideosRenderer extends DefaultClusterRenderer<Video> {

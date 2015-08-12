@@ -51,6 +51,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
     public static final String INTENT_KEY_VIDEO_LIST_OBJECT_IDS = "com.worldspotlightapp.android.ui.VideoDetailsActivity.videoListObjectIds";
 
     private List<String> mVideoObjectIdsList;
+    private String mVideoObjectId;
 
     // The stack of responses from backend
     private Stack<Object> mResponsesStack;
@@ -84,13 +85,20 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_details);
 
-        // Retrieve the video id from the intent
+        // Retrieve the video ids list from the intent
         Bundle extras = getIntent().getExtras();
         if (extras == null || !extras.containsKey(INTENT_KEY_VIDEO_LIST_OBJECT_IDS)) {
-            throw new IllegalArgumentException("You must pass the video id using intent");
+            throw new IllegalArgumentException("You must pass the video ids list using intent");
         }
         mVideoObjectIdsList = extras.getStringArrayList(INTENT_KEY_VIDEO_LIST_OBJECT_IDS);
         Log.d(TAG, "The list of the video ids are " + mVideoObjectIdsList);
+
+        // Retrieve the video object id from the intent
+        if (extras == null || !extras.containsKey(Video.INTENT_KEY_OBJECT_ID)) {
+            throw new IllegalArgumentException("You must pass the video id using intent");
+        }
+        mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
+        Log.d(TAG, "The id of the video is " + mVideoObjectId);
 
         // Initialize items
         mResponsesStack = new Stack<Object>();

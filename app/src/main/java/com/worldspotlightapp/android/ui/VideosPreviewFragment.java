@@ -36,9 +36,8 @@ public class VideosPreviewFragment extends Fragment {
          *      The object id of the video which the data is displaying in the
          *      video preview fragment
          */
-        void onClick(String objectId);
+        void onClickOnVideoPreviewFragment(String objectId);
     }
-
 
     private Activity mActivity;
     private Picasso mPicasso;
@@ -166,7 +165,7 @@ public class VideosPreviewFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.video_preview_relative_layout:
-                    mOnVideosPreviewFragmentClickedListener.onClick(mObjectId);
+                    mOnVideosPreviewFragmentClickedListener.onClickOnVideoPreviewFragment(mObjectId);
                     break;
             }
         }

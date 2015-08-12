@@ -9,12 +9,21 @@ import android.view.ViewGroup;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class VideosPreviewViewPagerAdapter extends FragmentStatePagerAdapter
-        implements VideosPreviewFragment.IOnVideosPreviewFragmentClickedListener{
+public class VideosPreviewViewPagerAdapter extends FragmentStatePagerAdapter {
 
+    /**
+     * The list of videos
+     */
     private List<Video> mVideosList;
+
+    /**
+     * The list of the video's object id.
+     * The list is lazy created
+     */
+    private ArrayList<String> mVideosObjectIdList;
 
     public VideosPreviewViewPagerAdapter(FragmentManager fm,
             List<Video> videosList) {
@@ -44,17 +53,30 @@ public class VideosPreviewViewPagerAdapter extends FragmentStatePagerAdapter
         return mVideosList.size();
     }
 
-    @Override
-    public void onClick(String objectId) {
-//                    // Register the event
-//                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, mObjectId);
-//
-//                    // Start the video details activity
-//                    Intent startVideoDetailsActivityIntent = new Intent(mActivity, VideoDetailsActivity.class);
-//                    ArrayList<String> objectIdsList = new ArrayList<String>();
-//                    objectIdsList.add(mObjectId);
-//                    startVideoDetailsActivityIntent.putStringArrayListExtra(VideoDetailsActivity.INTENT_KEY_VIDEO_LIST_OBJECT_IDS,
-//                            objectIdsList);
-//                    startActivity(startVideoDetailsActivityIntent);
+    /**
+     * Get the list of the video's object id.
+     * @return
+     *      The list of the video's object id
+     */
+    public ArrayList<String> getVideosObjectIdList() {
+        if (mVideosObjectIdList == null) {
+            mVideosObjectIdList = createVideosObjectIdList();
+        }
+
+        return mVideosObjectIdList;
+    }
+
+    /**
+     * Creates the list of the video's object id based on the video list
+     * @return
+     *      The list of the video's object id
+     */
+    private ArrayList<String> createVideosObjectIdList() {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Video video: mVideosList) {
+            result.add(video.getObjectId());
+        }
+
+        return result;
     }
 }
