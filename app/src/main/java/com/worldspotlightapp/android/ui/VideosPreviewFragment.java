@@ -90,11 +90,11 @@ public class VideosPreviewFragment extends Fragment {
             throw new ClassCastException(activity.toString() + " must implements the mOnEventTrackingModuleRequestedListener interface");
         }
 
-//        try {
-//            mOnVideosPreviewFragmentClickedListener = (IOnVideosPreviewFragmentClickedListener)activity;
-//        } catch (ClassCastException classCastException) {
-//            throw new ClassCastException(activity.toString() + " must implements the IOnVideosPreviewFragmentClickedListener interface");
-//        }
+        try {
+            mOnVideosPreviewFragmentClickedListener = (IOnVideosPreviewFragmentClickedListener)activity;
+        } catch (ClassCastException classCastException) {
+            throw new ClassCastException(activity.toString() + " must implements the IOnVideosPreviewFragmentClickedListener interface");
+        }
 
     }
 
@@ -166,15 +166,9 @@ public class VideosPreviewFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.video_preview_relative_layout:
-                    if (mOnVideosPreviewFragmentClickedListener != null) {
-                        mOnVideosPreviewFragmentClickedListener.onClick(mObjectId);
-                    }
+                    mOnVideosPreviewFragmentClickedListener.onClick(mObjectId);
                     break;
             }
         }
     };
-
-    public void setOnVideosPreviewFragmentClickedListener(IOnVideosPreviewFragmentClickedListener onVideosPreviewFragmentClickedListener) {
-        this.mOnVideosPreviewFragmentClickedListener = onVideosPreviewFragmentClickedListener;
-    }
 }
