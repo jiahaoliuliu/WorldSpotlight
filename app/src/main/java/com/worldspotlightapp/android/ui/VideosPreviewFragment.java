@@ -27,6 +27,19 @@ public class VideosPreviewFragment extends Fragment {
 
     private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.VideosPreviewFragment.showArrows";
 
+    public interface IOnVideosPreviewFragmentClickedListener {
+
+        /**
+         * Method invoked when the user clicks on the video preview fragment.
+         *
+         * @param objectId
+         *      The object id of the video which the data is displaying in the
+         *      video preview fragment
+         */
+        void onClick(String objectId);
+    }
+
+
     private Activity mActivity;
     private Picasso mPicasso;
 
@@ -51,6 +64,8 @@ public class VideosPreviewFragment extends Fragment {
     private OnEventTrackingModuleRequestedListener mOnEventTrackingModuleRequestedListener;
     private IEventsTrackingModule mEventTrackingModule;
 
+    private IOnVideosPreviewFragmentClickedListener mOnVideosPreviewFragmentClickedListener;
+
     public static VideosPreviewFragment newInstance(
             String objectId, String thumbnailUrl, String title, String description, boolean showArrows) {
         VideosPreviewFragment videosPreviewFragment = new VideosPreviewFragment();
@@ -68,11 +83,19 @@ public class VideosPreviewFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = activity;
+
         try {
             mOnEventTrackingModuleRequestedListener = (OnEventTrackingModuleRequestedListener)activity;
         } catch (ClassCastException classCastException) {
             throw new ClassCastException(activity.toString() + " must implements the mOnEventTrackingModuleRequestedListener interface");
         }
+
+//        try {
+//            mOnVideosPreviewFragmentClickedListener = (IOnVideosPreviewFragmentClickedListener)activity;
+//        } catch (ClassCastException classCastException) {
+//            throw new ClassCastException(activity.toString() + " must implements the IOnVideosPreviewFragmentClickedListener interface");
+//        }
+
     }
 
     @Override
@@ -143,18 +166,15 @@ public class VideosPreviewFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.video_preview_relative_layout:
-                    // Register the event
-                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, mObjectId);
-
-                    // Start the video details activity
-                    Intent startVideoDetailsActivityIntent = new Intent(mActivity, VideoDetailsActivity.class);
-                    ArrayList<String> objectIdsList = new ArrayList<String>();
-                    objectIdsList.add(mObjectId);
-                    startVideoDetailsActivityIntent.putStringArrayListExtra(VideoDetailsActivity.INTENT_KEY_VIDEO_LIST_OBJECT_IDS,
-                            objectIdsList);
-                    startActivity(startVideoDetailsActivityIntent);
+                    if (mOnVideosPreviewFragmentClickedListener != null) {
+                        mOnVideosPreviewFragmentClickedListener.onClick(mObjectId);
+                    }
                     break;
             }
         }
     };
+
+    public void setOnVideosPreviewFragmentClickedListener(IOnVideosPreviewFragmentClickedListener onVideosPreviewFragmentClickedListener) {
+        this.mOnVideosPreviewFragmentClickedListener = onVideosPreviewFragmentClickedListener;
+    }
 }
