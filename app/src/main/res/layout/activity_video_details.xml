@@ -8,17 +8,20 @@
     tools:context=".VideoDetailsActivity"
     >
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/videos_preview_view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
     <com.viewpagerindicator.UnderlinePageIndicator
-        android:id="@+id/videos_preview_view_pager_indicator"
-        android:layout_height="@dimen/main_activity_view_pager_indicator_height"
+        android:id="@+id/videos_details_view_pager_indicator"
+        android:layout_height="@dimen/video_details_view_pager_indicator_height"
         android:layout_width="fill_parent"
         android:background="@color/generic_background"
         app:selectedColor="@color/accent"
+        android:layout_alignParentTop="true"
         />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/videos_details_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/videos_details_view_pager_indicator"
+        />
+
 </RelativeLayout>

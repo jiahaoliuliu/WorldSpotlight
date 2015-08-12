@@ -1,9 +1,13 @@
 package com.worldspotlightapp.android.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
 
@@ -22,13 +26,23 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
      */
     public static final String INTENT_KEY_VIDEO_LIST_OBJECT_IDS = "com.worldspotlightapp.android.ui.VideoDetailsActivity.videoListObjectIds";
 
+    // Data
     private List<String> mVideoObjectIdsList;
     private String mVideoObjectId;
+
+    private FragmentManager mFragmentManager;
+
+    // Views
+    private ViewPager mVideosDetailsViewPager;
+    private UnderlinePageIndicator mVideosDetailsViewPagerIndicator;
+
+    // Others
+    private VideosDetailsViewPagerAdapter mVideoDetailsViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_video_details);
+        setContentView(R.layout.activity_video_details);
 
         // Retrieve the video ids list from the intent
         Bundle extras = getIntent().getExtras();
@@ -48,9 +62,22 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
         mVideosModule.deleteObserver(this);
         mUserDataModule.deleteObserver(this);
 
+        // Initialize data
+        mFragmentManager = getSupportFragmentManager();
+
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
+        // Link the views
+        mVideosDetailsViewPager = (ViewPager) findViewById(R.id.videos_details_view_pager);
+        mVideosDetailsViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_details_view_pager_indicator);
+
+        mVideoDetailsViewPagerAdapter = new VideosDetailsViewPagerAdapter(mFragmentManager, mVideoObjectIdsList);
+        mVideosDetailsViewPager.setAdapter(mVideoDetailsViewPagerAdapter);
+
+        // Set the view pager in the view pager indicator
+        mVideosDetailsViewPagerIndicator.setViewPager(mVideosDetailsViewPager);
+        mVideosDetailsViewPagerIndicator.setFades(false);
     }
 
 
