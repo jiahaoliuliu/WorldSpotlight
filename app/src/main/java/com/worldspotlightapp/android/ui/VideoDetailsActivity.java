@@ -17,7 +17,6 @@ import java.util.Observable;
 public class VideoDetailsActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "VideoDetailsActivity";
-    private static final int RECOVERY_DIALOG_REQUEST = 1;
     private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
 
     /**
@@ -37,7 +36,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
     private UnderlinePageIndicator mVideosDetailsViewPagerIndicator;
 
     // Others
-    private VideosDetailsViewPagerAdapter mVideoDetailsViewPagerAdapter;
+    private VideosDetailsViewPagerAdapter mVideosDetailsViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +71,20 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
         mVideosDetailsViewPager = (ViewPager) findViewById(R.id.videos_details_view_pager);
         mVideosDetailsViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_details_view_pager_indicator);
 
-        mVideoDetailsViewPagerAdapter = new VideosDetailsViewPagerAdapter(mFragmentManager, mVideoObjectIdsList);
-        mVideosDetailsViewPager.setAdapter(mVideoDetailsViewPagerAdapter);
+        mVideosDetailsViewPagerAdapter = new VideosDetailsViewPagerAdapter(mFragmentManager, mVideoObjectIdsList);
+        mVideosDetailsViewPager.setAdapter(mVideosDetailsViewPagerAdapter);
 
         // Set the view pager in the view pager indicator
         mVideosDetailsViewPagerIndicator.setViewPager(mVideosDetailsViewPager);
         mVideosDetailsViewPagerIndicator.setFades(false);
+
+        // Set the initial position
+        // if the video id is contained inside of the
+        int positionInTheList = mVideoObjectIdsList.contains(mVideoObjectId) ?
+            mVideoObjectIdsList.indexOf(mVideoObjectId) :
+            0;
+
+        mVideosDetailsViewPager.setCurrentItem(positionInTheList);
     }
 
 
