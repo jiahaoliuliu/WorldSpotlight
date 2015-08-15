@@ -131,31 +131,26 @@ public class VideoDetailsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-//        // Set the content of the view
-//        LinearLayout videoDetailsFragmentLineraLayout = (LinearLayout)inflater.inflate(R.layout.fragment_video_details, container,
-//                false);
-//
-//        // TODO: Get the rest of the elements
-//        return videoDetailsFragmentLineraLayout;
+        // Set the content of the view
+        LinearLayout videoDetailsFragmentLineraLayout = (LinearLayout)inflater.inflate(R.layout.fragment_video_details, container,
+                false);
 
-//        // Link the views
-//        mExtraInfoCardView = (CardView) findViewById(R.id.extra_info_card_view);
-//        mAuthorThumbnailImageView = (ImageView) findViewById(R.id.author_thumbnail_image_view);
-//        mAuthorNameTextView = (TextView) findViewById(R.id.author_name_text_view);
-//
-//        mLikeImageView = (ImageView) findViewById(R.id.like_image_view);
-//        mLikeImageView.setOnClickListener(onClickListener);
-//
-//        mReportAVideoImageView = (ImageView) findViewById(R.id.report_image_view);
-//        mReportAVideoImageView.setOnClickListener(onClickListener);
-//
-//        mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
-//        mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
-//        mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
+        // Link the views
+        mExtraInfoCardView = (CardView) videoDetailsFragmentLineraLayout.findViewById(R.id.extra_info_card_view);
+        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentLineraLayout.findViewById(R.id.author_thumbnail_image_view);
+        mAuthorNameTextView = (TextView) videoDetailsFragmentLineraLayout.findViewById(R.id.author_name_text_view);
 
-        return textView;
+        mLikeImageView = (ImageView) videoDetailsFragmentLineraLayout.findViewById(R.id.like_image_view);
+        mLikeImageView.setOnClickListener(onClickListener);
+
+        mReportAVideoImageView = (ImageView) videoDetailsFragmentLineraLayout.findViewById(R.id.report_image_view);
+        mReportAVideoImageView.setOnClickListener(onClickListener);
+
+        mDescriptionCardView = (CardView) videoDetailsFragmentLineraLayout.findViewById(R.id.description_card_view);
+        mDescriptionTextView = (TextView) videoDetailsFragmentLineraLayout.findViewById(R.id.description_text_view);
+        mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
+
+        return videoDetailsFragmentLineraLayout;
     }
 
 
@@ -189,18 +184,18 @@ public class VideoDetailsFragment extends Fragment
         super.onDetach();
     }
 
-//    private View.OnClickListener onClickListener = new View.OnClickListener(){
-//        @Override
-//        public void onClick(View v) {
-//            switch (v.getId()) {
-//                case R.id.like_image_view:
+    private View.OnClickListener onClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.like_image_view:
 //                    likeThisVideo();
-//                    break;
-//                case R.id.report_image_view:
+                    break;
+                case R.id.report_image_view:
 //                    reportThisVideo();
-//            }
-//        }
-//    };
+            }
+        }
+    };
 
 //    /**
 //     * Method used to like or unlike this video.
