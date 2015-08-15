@@ -23,9 +23,8 @@ public class VideosDetailsViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int index) {
         // Show show arrow or not
-        // TODO: Pass correctly the parameters
         Fragment videoDetailsFragment =
-                VideoDetailsFragment.newInstance("param1", "param2");
+                VideoDetailsFragment.newInstance(mVideosIdList.get(index));
 
         return videoDetailsFragment;
     }

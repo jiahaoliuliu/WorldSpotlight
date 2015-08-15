@@ -43,17 +43,10 @@ import java.util.Stack;
 public class VideoDetailsFragment extends Fragment
 //        implements YouTubePlayer.OnInitializedListener
     {
+    private static final String TAG = "VideoDetailsFragment";
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
-
-        // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mVideoObjectId;
 
     // The stack of responses from backend
     private Stack<Object> mResponsesStack;
@@ -87,16 +80,13 @@ public class VideoDetailsFragment extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param videoObjectId The object id of the video
      * @return A new instance of fragment VideoDetailsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static VideoDetailsFragment newInstance(String param1, String param2) {
+    public static VideoDetailsFragment newInstance(String videoObjectId) {
         VideoDetailsFragment fragment = new VideoDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(Video.INTENT_KEY_OBJECT_ID, videoObjectId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,10 +98,14 @@ public class VideoDetailsFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        Bundle arguments = getArguments();
+
+        if (arguments == null || !arguments.containsKey(Video.INTENT_KEY_OBJECT_ID)) {
+            throw new IllegalArgumentException("You must pass the video object id as argument");
         }
+
+        mVideoObjectId = arguments.getString(Video.INTENT_KEY_OBJECT_ID);
+        Log.v(TAG, "Video object id received " + mVideoObjectId);
 
 //        // Initialize items
 //        mResponsesStack = new Stack<Object>();
