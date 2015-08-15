@@ -1,8 +1,7 @@
 
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,17 +14,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.model.Video;
-
-import java.util.ArrayList;
 
 public class VideosPreviewFragment extends Fragment {
 
-    private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.VideosPreviewFragment.showArrows";
+    private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.mainactivity.VideosPreviewFragment.showArrows";
 
     public interface IOnVideosPreviewFragmentClickedListener {
 

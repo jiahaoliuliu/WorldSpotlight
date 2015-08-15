@@ -1,19 +1,13 @@
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.videodetails;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,20 +18,11 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
-import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleReportResponse;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.model.Author;
-import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
-import java.util.Observable;
 import java.util.Stack;
 
 public class VideoDetailsFragment extends Fragment implements YouTubePlayer.OnInitializedListener {

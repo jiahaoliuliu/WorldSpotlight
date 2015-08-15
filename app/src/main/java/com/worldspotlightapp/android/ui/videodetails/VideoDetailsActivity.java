@@ -1,4 +1,4 @@
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.videodetails;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.AbstractBaseActivityObserver;
 
 import java.util.List;
 import java.util.Observable;
@@ -23,7 +24,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
      * The intent key for the list of object ids received which belong the list of the video
      * to be displayed
      */
-    public static final String INTENT_KEY_VIDEO_LIST_OBJECT_IDS = "com.worldspotlightapp.android.ui.VideoDetailsActivity.videoListObjectIds";
+    public static final String INTENT_KEY_VIDEO_LIST_OBJECT_IDS = "com.worldspotlightapp.android.ui.videodetails.VideoDetailsActivity.videoListObjectIds";
 
     // Data
     private List<String> mVideoObjectIdsList;

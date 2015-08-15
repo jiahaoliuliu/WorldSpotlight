@@ -1,5 +1,5 @@
 
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.videodetails;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

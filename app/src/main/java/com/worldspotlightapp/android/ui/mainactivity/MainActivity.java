@@ -1,4 +1,4 @@
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +50,9 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.AbstractBaseActivityObserver;
+import com.worldspotlightapp.android.ui.SignUpLoginActivity;
+import com.worldspotlightapp.android.ui.videodetails.VideoDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +61,7 @@ import java.util.Observable;
 import java.util.Stack;
 
 public class MainActivity extends AbstractBaseActivityObserver implements
-                    VideosPreviewFragment.IOnVideosPreviewFragmentClickedListener{
+        VideosPreviewFragment.IOnVideosPreviewFragmentClickedListener {
 
     private static final String TAG = "MainActivity";
     private static final int MENU_ITEM_SEARCH_ID = 1000;
