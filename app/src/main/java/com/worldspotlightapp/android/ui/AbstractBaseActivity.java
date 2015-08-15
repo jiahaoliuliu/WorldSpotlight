@@ -16,6 +16,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.interfaces.IOnActionBarRequestListener;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
@@ -31,7 +32,8 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.Abstrac
  * - Check for Google Play services
  */
 public abstract class AbstractBaseActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, MainController.IOnMainControllerInstantiatedListener {
+        GoogleApiClient.OnConnectionFailedListener, MainController.IOnMainControllerInstantiatedListener,
+        IOnActionBarRequestListener {
 
     private static final String TAG = "AbstractBaseActivity";
 
@@ -287,5 +289,10 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     public IActivityTrackerModule getActivityTrackerModule() {
         return mActivityTrackerModule;
     }
+
+    @Override
+    public ActionBar getActionBarFromActivity() {
+        return mActionBar;
+    };
 
 }

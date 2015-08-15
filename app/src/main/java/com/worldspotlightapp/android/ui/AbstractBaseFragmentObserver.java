@@ -5,9 +5,15 @@ import android.util.Log;
 import java.util.Observer;
 
 /**
- * Created by jiahaoliuliu on 15/8/15.
+ *
+ * This class extends from {@link AbstractBaseFragment} bring all the modules availables. The main
+ * function is use it as observer by implementing PostmanPattern for Fragment.
+ *
+ * @see <a href="http://www.jiahaoliuliu.com/2015/06/postman-pattern.html">Postman Pattern</a>
+ *
+ * @author jiahaoliuliu on 15/8/15.
  */
-public abstract class AbstractBaseFragmentObserver extends AbstractBaseActivity implements Observer{
+public abstract class AbstractBaseFragmentObserver extends AbstractBaseFragment implements Observer{
 
     private static final String TAG = "AbstractBaseFragmentObs";
 
@@ -23,7 +29,7 @@ public abstract class AbstractBaseFragmentObserver extends AbstractBaseActivity 
     // fragment is in foreground. This is because the view pager adapter loads the "next"
     // fragment by default. For the purpose of this pattern this is enough.
     @Override
-    protected void onResume() {
+    public void onResume() {
         mIsInForeground = true;
         super.onResume();
         Log.v(TAG, "On Resume. The fragment is in foreground");
@@ -31,7 +37,7 @@ public abstract class AbstractBaseFragmentObserver extends AbstractBaseActivity 
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         mIsInForeground = false;
         super.onPause();
         Log.v(TAG, "On Pause. The fragmen is not in foreground");

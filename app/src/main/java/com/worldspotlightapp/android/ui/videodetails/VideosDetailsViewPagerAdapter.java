@@ -12,25 +12,25 @@ public class VideosDetailsViewPagerAdapter extends FragmentStatePagerAdapter {
     /**
      * The list of videos
      */
-    private List<String> mVideosIdList;
+    private List<String> mVideosObjectIdList;
 
     public VideosDetailsViewPagerAdapter(FragmentManager fm,
-                                         List<String> videosIdList) {
+                                         List<String> videosObjectIdList) {
         super(fm);
-        this.mVideosIdList = videosIdList;
+        this.mVideosObjectIdList = videosObjectIdList;
     }
 
     @Override
     public Fragment getItem(int index) {
         // Show show arrow or not
         Fragment videoDetailsFragment =
-                VideoDetailsFragment.newInstance(mVideosIdList.get(index));
+                VideoDetailsFragment.newInstance(mVideosObjectIdList.get(index));
 
         return videoDetailsFragment;
     }
 
     @Override
     public int getCount() {
-        return mVideosIdList.size();
+        return mVideosObjectIdList.size();
     }
 }

@@ -3,7 +3,6 @@ package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,8 +14,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.AbstractBaseFragment;
 
-public class VideosPreviewFragment extends Fragment {
+public class VideosPreviewFragment extends AbstractBaseFragment {
 
     private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.mainactivity.VideosPreviewFragment.showArrows";
 

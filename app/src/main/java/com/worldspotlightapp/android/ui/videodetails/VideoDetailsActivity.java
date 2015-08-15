@@ -10,12 +10,13 @@ import android.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.AbstractBaseActivity;
 import com.worldspotlightapp.android.ui.AbstractBaseActivityObserver;
 
 import java.util.List;
 import java.util.Observable;
 
-public class VideoDetailsActivity extends AbstractBaseActivityObserver {
+public class VideoDetailsActivity extends AbstractBaseActivity {
 
     private static final String TAG = "VideoDetailsActivity";
     private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
@@ -59,9 +60,6 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
         mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
         Log.d(TAG, "The id of the video is " + mVideoObjectId);
 
-        mVideosModule.deleteObserver(this);
-        mUserDataModule.deleteObserver(this);
-
         // Initialize data
         mFragmentManager = getSupportFragmentManager();
 
@@ -71,6 +69,9 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
         // Link the views
         mVideosDetailsViewPager = (ViewPager) findViewById(R.id.videos_details_view_pager);
         mVideosDetailsViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_details_view_pager_indicator);
+
+        // Limit the number of fragments loaded offScreen because YouTube Player Fragment does not support it
+        mVideosDetailsViewPager.setOffscreenPageLimit(0);
 
         mVideosDetailsViewPagerAdapter = new VideosDetailsViewPagerAdapter(mFragmentManager, mVideoObjectIdsList);
         mVideosDetailsViewPager.setAdapter(mVideosDetailsViewPagerAdapter);
@@ -85,6 +86,7 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
             mVideoObjectIdsList.indexOf(mVideoObjectId) :
             0;
 
+        // Set the current item
         mVideosDetailsViewPager.setCurrentItem(positionInTheList);
     }
 
@@ -126,15 +128,5 @@ public class VideoDetailsActivity extends AbstractBaseActivityObserver {
     @Override
     public int hashCode() {
         return 0;
-    }
-
-    @Override
-    protected void processDataIfExists() {
-        // TODO: Implement this
-    }
-
-    @Override
-    public void update(Observable observable, Object data) {
-        // TODO: Implement this
     }
 }
