@@ -40,9 +40,7 @@ import com.worldspotlightapp.android.utils.Secret;
 import java.util.Observable;
 import java.util.Stack;
 
-public class VideoDetailsFragment extends Fragment
-//        implements YouTubePlayer.OnInitializedListener
-    {
+public class VideoDetailsFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
     private static final String TAG = "VideoDetailsFragment";
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
@@ -52,6 +50,8 @@ public class VideoDetailsFragment extends Fragment
     private Stack<Object> mResponsesStack;
     private Video mVideo;
     private Author mAuthor;
+
+    private Activity mAttachedActivity;
 
     // Views
     private CardView mExtraInfoCardView;
@@ -106,26 +106,6 @@ public class VideoDetailsFragment extends Fragment
 
         mVideoObjectId = arguments.getString(Video.INTENT_KEY_OBJECT_ID);
         Log.v(TAG, "Video object id received " + mVideoObjectId);
-
-//        // Initialize items
-//        mResponsesStack = new Stack<Object>();
-//        mPicasso = Picasso.with(mContext);
-
-//        initializeYouTubePlayerFragment();
-//
-//        // Get the screen orientation
-//        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
-//        int orientation = display.getRotation();
-//        if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
-//            Log.v(TAG, "The screen started on landscape mode");
-//            mIsLandscape = true;
-//            updateScreenViews();
-//        } else {
-//            Log.v(TAG, "The screen started on portrait mode");
-//            mIsLandscape = false;
-//            updateScreenViews();
-//        }
-
     }
 
     @Override
@@ -157,9 +137,34 @@ public class VideoDetailsFragment extends Fragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mAttachedActivity = activity;
     }
 
-//    @Override
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // Initialize items
+        mResponsesStack = new Stack<Object>();
+        mPicasso = Picasso.with(mAttachedActivity);
+
+        initializeYouTubePlayerFragment();
+
+//        // Get the screen orientation
+//        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+//        int orientation = display.getRotation();
+//        if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
+//            Log.v(TAG, "The screen started on landscape mode");
+//            mIsLandscape = true;
+//            updateScreenViews();
+//        } else {
+//            Log.v(TAG, "The screen started on portrait mode");
+//            mIsLandscape = false;
+//            updateScreenViews();
+//        }
+
+    }
+
+    //    @Override
 //    protected void onResume() {
 //        super.onResume();
 //
@@ -283,36 +288,37 @@ public class VideoDetailsFragment extends Fragment
 //        mAuthorNameTextView.setText(mAuthor.getName());
 //    }
 //
-//    @Override
-//    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-//        if (!wasRestored) {
-//            mYouTubePlayer = youTubePlayer;
-//            mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
-//                @Override
-//                public void onFullscreen(boolean isFullScreen) {
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+        if (!wasRestored) {
+            mYouTubePlayer = youTubePlayer;
+            mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+                @Override
+                public void onFullscreen(boolean isFullScreen) {
 //                    mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN, IEventsTrackingModule.EventId.FULL_SCREEN, mVideo.getObjectId());
-//                    mIsFullScreen = isFullScreen;
+                    mIsFullScreen = isFullScreen;
 //                    updateScreenViews();
-//                }
-//            });
-//
+                }
+            });
+
+            mYouTubePlayer.cueVideo("piH5_aP0fY8");
 //            // If the video was ready
 //            if (mVideo != null) {
 //                mYouTubePlayer.cueVideo(mVideo.getVideoId());
 //            }
-//        }
-//    }
-//
-//    @Override
-//    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-//        if (youTubeInitializationResult.isUserRecoverableError()) {
-//            youTubeInitializationResult.getErrorDialog(this, RECOVERY_DIALOG_REQUEST).show();
-//        } else {
-//            String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
-//            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        if (youTubeInitializationResult.isUserRecoverableError()) {
+            youTubeInitializationResult.getErrorDialog(mAttachedActivity, RECOVERY_DIALOG_REQUEST).show();
+        } else {
+            String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
+            Toast.makeText(mAttachedActivity, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == RECOVERY_DIALOG_REQUEST) {
@@ -332,13 +338,13 @@ public class VideoDetailsFragment extends Fragment
 //        super.onBackPressed();
 //    }
 //
-//    private void initializeYouTubePlayerFragment() {
-//        if (MainApplication.IS_PRODUCTION) {
-//            mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_PRODUCTION, this);
-//        } else {
-//            mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_DEBUG, this);
-//        }
-//    }
+    private void initializeYouTubePlayerFragment() {
+        if (MainApplication.IS_PRODUCTION) {
+            mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_PRODUCTION, this);
+        } else {
+            mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_DEBUG, this);
+        }
+    }
 
 //    @Override
 //    protected void processDataIfExists() {
