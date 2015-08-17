@@ -31,6 +31,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.AbstractBaseActivity;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
@@ -190,7 +191,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.like_image_view:
-//                    likeThisVideo();
+                    likeThisVideo();
                     break;
                 case R.id.report_image_view:
 //                    reportThisVideo();
@@ -234,23 +235,24 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         }
     }
 
-    //    /**
-//     * Method used to like or unlike this video.
-//     * Only logged user can like a video. So, if a user has not logged in, he cannot
-//     * like a video.
-//     */
-//    private void likeThisVideo() {
-//        if (!showAlertIfUserHasNotLoggedIn(
-//                getString(R.string.video_details_activity_user_must_logged_in_to_like))) {
-//            return;
-//        }
-//
-//        // The user has logged in
-//        boolean likeThisVideo = mLikeImageView.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.ic_like_star).getConstantState();
-//        Log.v(TAG, "The user like this video? " + likeThisVideo);
-//        mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
-//        mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN, IEventsTrackingModule.EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
-//    }
+    /**
+     * Method used to like or unlike this video.
+     * Only logged user can like a video. So, if a user has not logged in, he cannot
+     * like a video.
+     */
+    private void likeThisVideo() {
+        if (!((AbstractBaseActivity)mAttachedActivity).showAlertIfUserHasNotLoggedIn(
+                getString(R.string.video_details_activity_user_must_logged_in_to_like))) {
+            return;
+        }
+
+        // The user has logged in
+        boolean likeThisVideo = mLikeImageView.getDrawable().getConstantState() ==
+                                getResources().getDrawable(R.drawable.ic_like_star).getConstantState();
+        Log.v(TAG, "The user like this video? " + likeThisVideo);
+        mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
+        mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN, IEventsTrackingModule.EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
+    }
 
 //    private void reportThisVideo() {
 //        if (!showAlertIfUserHasNotLoggedIn(
@@ -520,7 +522,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     }
 
     // Action bar
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);

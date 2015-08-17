@@ -230,7 +230,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
      *      True if the user has logged in
      *      False if the user has not logged in
      */
-    protected boolean showAlertIfUserHasNotLoggedIn(String message) {
+    public boolean showAlertIfUserHasNotLoggedIn(String message) {
         boolean hasUserLoggedIn = mUserDataModule.hasUserData();
 
         // Show alert dialog if the user has not logged in
