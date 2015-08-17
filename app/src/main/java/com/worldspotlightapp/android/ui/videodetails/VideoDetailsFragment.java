@@ -1,9 +1,13 @@
 package com.worldspotlightapp.android.ui.videodetails;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,6 +42,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private static final String TAG = "VideoDetailsFragment";
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
+
+    private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
+
     private String mVideoObjectId;
 
     // The stack of responses from backend
@@ -100,6 +107,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         mVideoObjectId = arguments.getString(Video.INTENT_KEY_OBJECT_ID);
         Log.v(TAG, "Video object id received " + mVideoObjectId);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -460,26 +469,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         // Since we are using a stack, there is not need to remove the responses
     }
 
-
-//    private void shareThisVideo() {
-//        // Tracking the user
-//        mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN, IEventsTrackingModule.EventId.SHARE, mVideo.getObjectId());
-//
-//        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-//        sharingIntent.setType("text/plain");
-//
-//        // Subject/Title
-//        String subject = getString(R.string.share_subject, "\n\n" + mVideo.getTitle());
-//        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-//        String videoDescription = mVideo.getDescription();
-//        String shareBody =
-//                videoDescription != null?
-//                        videoDescription + "\n\n" + mVideo.getVideoUrl():
-//                        mVideo.getVideoUrl();
-//        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-//        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
-//    }
-//
 //    @Override
 //    public void onConfigurationChanged(Configuration newConfig) {
 //        super.onConfigurationChanged(newConfig);
@@ -528,5 +517,52 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 mYouTubePlayer.setFullscreen(false);
             }
         }
+    }
+
+    // Action bar
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Update user profile
+        MenuItem menuItemShareVideo = menu.add(Menu.NONE, MENU_ITEM_SHARE_VIDEO_ID, Menu
+                .NONE, R.string.action_bar_share)
+                .setIcon(R.drawable.ic_action_share);
+        menuItemShareVideo.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "home button pressed");
+                mAttachedActivity.onBackPressed();
+                return true;
+            case MENU_ITEM_SHARE_VIDEO_ID:
+                shareThisVideo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void shareThisVideo() {
+        // Tracking the user
+        mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN,
+                                            IEventsTrackingModule.EventId.SHARE, mVideo.getObjectId());
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+
+        // Subject/Title
+        String subject = getString(R.string.share_subject, "\n\n" + mVideo.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        String videoDescription = mVideo.getDescription();
+        String shareBody =
+                videoDescription != null?
+                        videoDescription + "\n\n" + mVideo.getVideoUrl():
+                        mVideo.getVideoUrl();
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
     }
 }
