@@ -1,15 +1,19 @@
 package com.worldspotlightapp.android.ui.videodetails;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -145,8 +149,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mAttachedActivity);
 
+        // TODO: Capture the screen orientation when the fragment starts
 //        // Get the screen orientation
-//        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+//        Display display = ((WindowManager) mAttachedActivity.getSystemService(mAttachedActivity.WINDOW_SERVICE)).getDefaultDisplay();
 //        int orientation = display.getRotation();
 //        if (orientation == Surface.ROTATION_90 || orientation == Surface.ROTATION_270) {
 //            Log.v(TAG, "The screen started on landscape mode");
@@ -355,6 +360,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         }
     }
 
+// TODO: Implement this for the fragment
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == RECOVERY_DIALOG_REQUEST) {
@@ -365,6 +371,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 //        super.onActivityResult(requestCode, resultCode, data);
 //    }
 
+// TODO: Listen to the back button
 //    @Override
 //    public void onBackPressed() {
 //        if (mIsFullScreen) {
@@ -472,22 +479,21 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         // Since we are using a stack, there is not need to remove the responses
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//
-//        // Check the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Log.v(TAG, "The screen is now on landscape. Hidding the elements");
-//            mIsLandscape = true;
-//            updateScreenViews();
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            Log.v(TAG, "The screen is now on portrait. Showing the elements");
-//            mIsLandscape = false;
-//            updateScreenViews();
-//        }
-//    }
-//
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Check the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.v(TAG, "The screen is now on landscape. Hidding the elements");
+            mIsLandscape = true;
+            updateScreenViews();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.v(TAG, "The screen is now on portrait. Showing the elements");
+            mIsLandscape = false;
+            updateScreenViews();
+        }
+    }
 
     /**
      * Method used to update the views in the screen depending the screen orientation and if the YouTube fragment
