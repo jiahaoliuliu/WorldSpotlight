@@ -67,6 +67,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
     // Others
     private Picasso mPicasso;
+    private boolean mIsThisFragmentVisible;
 
 
     /**
@@ -155,6 +156,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         if (mVideo == null) {
             mVideo = mVideosModule.getVideoInfo(mVideoObjectId);
 
+            Log.d(TAG, "Video info retrieved for the video id " + mVideoObjectId + " is " + mVideo);
+
             // Finish if there is any problem with the video
             if (mVideo == null) {
                 Log.e(TAG, "Error retrieving the video from the backend. The video with id " + mVideoObjectId + " no existe");
@@ -192,6 +195,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         if (isVisibleToUser) {
             Log.v(TAG, "The fragment with video object id " + mVideoObjectId + " is visible to the user");
 
+            mIsThisFragmentVisible = true;
+
             // Set the real youtube player fragment
             mYoutubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
             getChildFragmentManager().beginTransaction().replace(R.id.youtube_fragment_container, mYoutubePlayerFragment).commit();
@@ -210,10 +215,13 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 return;
             }
 
+            mIsThisFragmentVisible = false;
+
             // Remove the actual youtube fragment because Youtube fragment cannot be used more in more than one places at
             // the same time.
             getChildFragmentManager().beginTransaction().remove(mYoutubePlayerFragment).commit();
             mYoutubePlayerFragment = null;
+
         }
     }
 
@@ -273,6 +281,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         }
 
         Log.v(TAG, "Updating video details of " + mVideo.toString());
+
+        // Action bar
+        if (mIsThisFragmentVisible) {
+            mActionBar.setTitle(mVideo.getTitle());
+        }
 
         // Likes
         if(mUserDataModule.doesUserLikeThisVideo(mVideo.getObjectId())) {
