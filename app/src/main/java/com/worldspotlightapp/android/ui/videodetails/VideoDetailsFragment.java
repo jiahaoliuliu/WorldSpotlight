@@ -393,19 +393,25 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             if (response instanceof VideosModuleAuthorResponse) {
                 Log.v(TAG, "videos module author response received");
                 VideosModuleAuthorResponse videosModuleAuthorResponse = (VideosModuleAuthorResponse) response;
-                ParseResponse parseResponse = videosModuleAuthorResponse.getParseResponse();
-                if (!parseResponse.isError()) {
-                    mAuthor = videosModuleAuthorResponse.getAuthor();
-                    // Ensure the follow code run on the UI thread
-                    mAttachedActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateAuthorInfo();
-                        }
-                    });
-                } else {
-                    // Some error happened
-                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mAttachedActivity), true);
+                // There could be other fragments requesting the author info at the same time, so it is important
+                // to verify the author is correct by checking the video object id
+                String videoObjectId = videosModuleAuthorResponse.getVideoObjectId();
+                Log.v(TAG, "The video object id received is " + videoObjectId + " and my video is " + mVideo);
+                if (videoObjectId != null && mVideo != null && videoObjectId.equals(mVideo.getVideoId())) {
+                    ParseResponse parseResponse = videosModuleAuthorResponse.getParseResponse();
+                    if (!parseResponse.isError()) {
+                        mAuthor = videosModuleAuthorResponse.getAuthor();
+                        // Ensure the follow code run on the UI thread
+                        mAttachedActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateAuthorInfo();
+                            }
+                        });
+                    } else {
+                        // Some error happened
+                        mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mAttachedActivity), true);
+                    }
                 }
                 // Like info
             } else if (response instanceof UserDataModuleLikeResponse) {
