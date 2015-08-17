@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +56,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private TextView mDescriptionTextView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
+    private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
     private YouTubePlayer mYouTubePlayer;
 
     // Check if it was full screen or not
@@ -104,25 +105,25 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Set the content of the view
-        LinearLayout videoDetailsFragmentLineraLayout = (LinearLayout)inflater.inflate(R.layout.fragment_video_details, container,
+        RelativeLayout videoDetailsFragmentRelativeLayout = (RelativeLayout)inflater.inflate(R.layout.fragment_video_details, container,
                 false);
 
         // Link the views
-        mExtraInfoCardView = (CardView) videoDetailsFragmentLineraLayout.findViewById(R.id.extra_info_card_view);
-        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentLineraLayout.findViewById(R.id.author_thumbnail_image_view);
-        mAuthorNameTextView = (TextView) videoDetailsFragmentLineraLayout.findViewById(R.id.author_name_text_view);
+        mExtraInfoCardView = (CardView) videoDetailsFragmentRelativeLayout.findViewById(R.id.extra_info_card_view);
+        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.author_thumbnail_image_view);
+        mAuthorNameTextView = (TextView) videoDetailsFragmentRelativeLayout.findViewById(R.id.author_name_text_view);
 
-        mLikeImageView = (ImageView) videoDetailsFragmentLineraLayout.findViewById(R.id.like_image_view);
+        mLikeImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.like_image_view);
         mLikeImageView.setOnClickListener(onClickListener);
 
-        mReportAVideoImageView = (ImageView) videoDetailsFragmentLineraLayout.findViewById(R.id.report_image_view);
+        mReportAVideoImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.report_image_view);
         mReportAVideoImageView.setOnClickListener(onClickListener);
 
-        mDescriptionCardView = (CardView) videoDetailsFragmentLineraLayout.findViewById(R.id.description_card_view);
-        mDescriptionTextView = (TextView) videoDetailsFragmentLineraLayout.findViewById(R.id.description_text_view);
-//        mYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
+        mDescriptionCardView = (CardView) videoDetailsFragmentRelativeLayout.findViewById(R.id.description_card_view);
+        mDescriptionTextView = (TextView) videoDetailsFragmentRelativeLayout.findViewById(R.id.description_text_view);
+        mDummyYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.dummy_youtube_fragment);
 
-        return videoDetailsFragmentLineraLayout;
+        return videoDetailsFragmentRelativeLayout;
     }
 
     @Override
@@ -190,21 +191,27 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             Log.v(TAG, "The fragment with video object id " + mVideoObjectId + " is visible to the user");
+
+            // Set the real youtube player fragment
             mYoutubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
             getChildFragmentManager().beginTransaction().replace(R.id.youtube_fragment_container, mYoutubePlayerFragment).commit();
 
             initializeYouTubePlayerFragment();
-            // Title
-            mActionBar.setTitle(mVideo.getTitle());
+
+            // Set the title. The action bar and the video could be null
+            if (mActionBar != null && mVideo != null) {
+                mActionBar.setTitle(mVideo.getTitle());
+            }
 
         } else {
             Log.v(TAG, "The fragment with video object id " + mVideoObjectId + " is not longer visible to the user");
-
             if (!mIsActivityCreated) {
                 Log.w(TAG, "The activity has not been created yet. Not do anything");
                 return;
             }
 
+            // Remove the actual youtube fragment because Youtube fragment cannot be used more in more than one places at
+            // the same time.
             getChildFragmentManager().beginTransaction().remove(mYoutubePlayerFragment).commit();
             mYoutubePlayerFragment = null;
         }
