@@ -21,7 +21,8 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleReportResponse;
@@ -194,7 +195,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     likeThisVideo();
                     break;
                 case R.id.report_image_view:
-//                    reportThisVideo();
+                    reportThisVideo();
             }
         }
     };
@@ -241,7 +242,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
      * like a video.
      */
     private void likeThisVideo() {
-        if (!((AbstractBaseActivity)mAttachedActivity).showAlertIfUserHasNotLoggedIn(
+        if (!showAlertIfUserHasNotLoggedIn(
                 getString(R.string.video_details_activity_user_must_logged_in_to_like))) {
             return;
         }
@@ -251,19 +252,19 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                                 getResources().getDrawable(R.drawable.ic_like_star).getConstantState();
         Log.v(TAG, "The user like this video? " + likeThisVideo);
         mUserDataModule.likeAVideo(this, likeThisVideo, mVideo.getObjectId());
-        mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN, IEventsTrackingModule.EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
+        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.LIKE_A_VIDEO, mVideo.getObjectId(), likeThisVideo);
     }
 
-//    private void reportThisVideo() {
-//        if (!showAlertIfUserHasNotLoggedIn(
-//                getString(R.string.video_details_activity_user_must_logged_in_to_report))) {
-//            return;
-//        }
-//
-//        // The user has logged in
-//        mUserDataModule.reportAVideo(this, mVideo.getObjectId());
-//        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.REPORT_A_VIDEO, mVideo.getObjectId());
-//    }
+    private void reportThisVideo() {
+        if (!showAlertIfUserHasNotLoggedIn(
+                getString(R.string.video_details_activity_user_must_logged_in_to_report))) {
+            return;
+        }
+
+        // The user has logged in
+        mUserDataModule.reportAVideo(this, mVideo.getObjectId());
+        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.REPORT_A_VIDEO, mVideo.getObjectId());
+    }
 
     @Override
     public void update(Observable observable, Object o) {
@@ -331,7 +332,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mYouTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
                 @Override
                 public void onFullscreen(boolean isFullScreen) {
-                    mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN, IEventsTrackingModule.EventId.FULL_SCREEN, mVideo.getObjectId());
+                    mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN, EventId.FULL_SCREEN, mVideo.getObjectId());
                     mIsFullScreen = isFullScreen;
                     updateScreenViews();
                 }
@@ -549,8 +550,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
     private void shareThisVideo() {
         // Tracking the user
-        mEventTrackingModule.trackUserAction(IEventsTrackingModule.ScreenId.VIDEO_DETAILS_SCREEN,
-                                            IEventsTrackingModule.EventId.SHARE, mVideo.getObjectId());
+        mEventTrackingModule.trackUserAction(ScreenId.VIDEO_DETAILS_SCREEN,
+                                            EventId.SHARE, mVideo.getObjectId());
 
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");

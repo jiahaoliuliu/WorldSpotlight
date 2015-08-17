@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 
+import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.interfaces.IOnActionBarRequestListener;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
@@ -76,5 +77,18 @@ public abstract class AbstractBaseFragment extends Fragment {
         mVideosModule = mOnMainControllerInstantiatedListener.getVideosModule();
         mEventTrackingModule = mOnMainControllerInstantiatedListener.getEventTrackingModule();
         mActivityTrackerModule = mOnMainControllerInstantiatedListener.getActivityTrackerModule();
+    }
+
+    /**
+     * Invoking the same method in the attached activity
+     * @param message
+     * @return
+     */
+    protected boolean showAlertIfUserHasNotLoggedIn(String message) {
+        return ((AbstractBaseActivity)mAttachedActivity).showAlertIfUserHasNotLoggedIn(message);
+    }
+
+    protected boolean showAlertIfUserHasNotLoggedIn() {
+        return ((AbstractBaseActivity)mAttachedActivity).showAlertIfUserHasNotLoggedIn();
     }
 }
