@@ -1,117 +1,27 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    tools:context="com.worldspotlightapp.android.ui.VideoDetailsActivity"
-    android:orientation="vertical"
-    android:background="@color/generic_background"
+    android:layout_width="match_parent"
+    tools:context=".VideoDetailsActivity"
     >
 
-    <fragment
-        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
-        android:id="@+id/youtube_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.viewpagerindicator.UnderlinePageIndicator
+        android:id="@+id/videos_details_view_pager_indicator"
+        android:layout_height="@dimen/video_details_view_pager_indicator_height"
+        android:layout_width="fill_parent"
+        android:background="@color/generic_background"
+        app:selectedColor="@color/accent"
+        android:layout_alignParentTop="true"
         />
 
-    <!-- Author -->
-    <android.support.v7.widget.CardView
-        android:id="@+id/extra_info_card_view"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/videos_details_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="@dimen/card_view_card_corner_radius"
-        card_view:cardElevation="@dimen/card_view_card_elevation"
-        android:layout_marginTop="@dimen/video_details_group_margin_vertical_absolute"
-        android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
-        >
+        android:layout_height="match_parent"
+        android:layout_below="@+id/videos_details_view_pager_indicator"
+        />
 
-        <RelativeLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:padding="@dimen/card_view_inside_padding"
-            android:orientation="horizontal"
-            >
-            <!-- Author info -->
-            <ImageView
-                android:id="@+id/author_thumbnail_image_view"
-                android:layout_width="@dimen/video_details_author_image_size"
-                android:layout_height="@dimen/video_details_author_image_size"
-                android:src="@mipmap/ic_launcher"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:id="@+id/author_name_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:layout_toRightOf="@+id/author_thumbnail_image_view"
-                android:layout_toLeftOf="@+id/report_image_view"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/video_details_elements_margin_horizontal"
-                android:ellipsize="end"
-                />
-
-            <!-- Like Button -->
-            <ImageView
-                android:id="@+id/like_image_view"
-                android:layout_width="@dimen/video_details_like_image_size"
-                android:layout_height="@dimen/video_details_like_image_size"
-                android:src="@drawable/ic_like_star"
-                android:layout_alignParentRight="true"
-                android:scaleType="fitXY"
-                android:layout_centerVertical="true"
-                />
-
-            <!-- Report Button -->
-            <ImageView
-                android:id="@+id/report_image_view"
-                android:layout_width="@dimen/video_details_like_image_size"
-                android:layout_height="@dimen/video_details_like_image_size"
-                android:src="@drawable/ic_report_alert"
-                android:layout_toLeftOf="@+id/like_image_view"
-                android:scaleType="fitXY"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-
-    <!-- Description -->
-    <android.support.v7.widget.CardView
-        android:id="@+id/description_card_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="@dimen/card_view_card_corner_radius"
-        card_view:cardElevation="@dimen/card_view_card_elevation"
-        android:layout_marginTop="@dimen/video_details_group_margin_vertical"
-        android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
-        >
-
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:padding="@dimen/card_view_inside_padding"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:id="@+id/title_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/card_view_title_size"
-                android:text="@string/video_details_description_title"
-                />
-
-            <TextView
-                android:id="@+id/description_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
+</RelativeLayout>

@@ -1,18 +1,27 @@
 
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VideosPreviewViewPagerAdapter extends FragmentStatePagerAdapter {
 
+    /**
+     * The list of videos
+     */
     private List<Video> mVideosList;
+
+    /**
+     * The list of the video's object id.
+     * The list is lazy created
+     */
+    private ArrayList<String> mVideosObjectIdList;
 
     public VideosPreviewViewPagerAdapter(FragmentManager fm,
             List<Video> videosList) {
@@ -40,5 +49,32 @@ public class VideosPreviewViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return mVideosList.size();
+    }
+
+    /**
+     * Get the list of the video's object id.
+     * @return
+     *      The list of the video's object id
+     */
+    public ArrayList<String> getVideosObjectIdList() {
+        if (mVideosObjectIdList == null) {
+            mVideosObjectIdList = createVideosObjectIdList();
+        }
+
+        return mVideosObjectIdList;
+    }
+
+    /**
+     * Creates the list of the video's object id based on the video list
+     * @return
+     *      The list of the video's object id
+     */
+    private ArrayList<String> createVideosObjectIdList() {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Video video: mVideosList) {
+            result.add(video.getObjectId());
+        }
+
+        return result;
     }
 }

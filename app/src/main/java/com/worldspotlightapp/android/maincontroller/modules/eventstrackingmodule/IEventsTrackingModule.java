@@ -57,8 +57,4 @@ public interface IEventsTrackingModule {
      * Track the app has been finalized
      */
     void trackAppFinalization();
-
-    public static interface OnEventTrackingModuleRequestedListener{
-        IEventsTrackingModule getEventsTrackingModule();
-    }
 }

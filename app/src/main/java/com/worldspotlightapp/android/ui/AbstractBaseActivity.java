@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +16,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.interfaces.IOnActionBarRequestListener;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
@@ -33,7 +32,8 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.Abstrac
  * - Check for Google Play services
  */
 public abstract class AbstractBaseActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, OnEventTrackingModuleRequestedListener {
+        GoogleApiClient.OnConnectionFailedListener, MainController.IOnMainControllerInstantiatedListener,
+        IOnActionBarRequestListener {
 
     private static final String TAG = "AbstractBaseActivity";
 
@@ -72,7 +72,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         mGpsLocalizationModule = mMainController.getGpsLocalizationModule();
         mVideosModule = mMainController.getVideosModule();
         mEventTrackingModule = mMainController.getEventTrackingModule();
-        mActivityTrackerModule = mMainController.getActivityTRackerModule();
+        mActivityTrackerModule = mMainController.getActivityTrackerModule();
 
         // Getting the resolution error saved for localization service
         mResolvingError =
@@ -206,11 +206,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
     }
 
-    @Override
-    public IEventsTrackingModule getEventsTrackingModule() {
-        return mEventTrackingModule;
-    }
-
     /**
      * Method used to check if the user has logged in or not.
      * if not, it will show the alert dialog ask the user to log in
@@ -235,7 +230,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
      *      True if the user has logged in
      *      False if the user has not logged in
      */
-    protected boolean showAlertIfUserHasNotLoggedIn(String message) {
+    public boolean showAlertIfUserHasNotLoggedIn(String message) {
         boolean hasUserLoggedIn = mUserDataModule.hasUserData();
 
         // Show alert dialog if the user has not logged in
@@ -265,5 +260,39 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         return hasUserLoggedIn;
     }
 
+    @Override
+    public INotificationModule getNotificationModule() {
+        return mNotificationModule;
+    }
+
+    @Override
+    public AbstractUserDataModuleObservable getUserDataModule() {
+        return mUserDataModule;
+    }
+
+    @Override
+    public IGpsLocalizationModule getGpsLocalizationModule() {
+        return mGpsLocalizationModule;
+    }
+
+    @Override
+    public AbstractVideosModuleObservable getVideosModule() {
+        return mVideosModule;
+    }
+
+    @Override
+    public IEventsTrackingModule getEventTrackingModule() {
+        return mEventTrackingModule;
+    }
+
+    @Override
+    public IActivityTrackerModule getActivityTrackerModule() {
+        return mActivityTrackerModule;
+    }
+
+    @Override
+    public ActionBar getActionBarFromActivity() {
+        return mActionBar;
+    };
 
 }

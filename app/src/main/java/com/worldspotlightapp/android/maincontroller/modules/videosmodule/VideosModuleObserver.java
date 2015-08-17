@@ -280,9 +280,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         mExecutorService.execute(new RetrieveAuthorInfoRunnable(videoId, new RequestAuthorInfoCallback() {
             @Override
             public void done(Author author) {
+                // In case that the author has some problems, just don't do anything
                 if (author != null) {
                     ParseResponse parseResponse = new ParseResponse.Builder(null).build();
-                    VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author);
+                    VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author, videoId);
                     setChanged();
                     notifyObservers(videosModuleAuthorResponse);
                 }

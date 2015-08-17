@@ -270,6 +270,7 @@ public class Video extends ParseObject implements ClusterItem {
     @Override
     public String toString() {
         return "Video{" +
+                "objectId='" + getObjectId() + "\'" +
                 "title='" + getTitle() + '\'' +
                 "description='" + getDescription() + '\'' +
                 "city='" + getCity() + '\'' +
