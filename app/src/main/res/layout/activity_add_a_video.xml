@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_add_a_video_location"
-        android:paddingBottom="@dimen/add_a_video_tutorial_activity_mark_padding_bottom"
+        android:paddingBottom="@dimen/add_a_video_activity_mark_padding_bottom"
         />
 
 </RelativeLayout>

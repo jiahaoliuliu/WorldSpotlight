@@ -3,17 +3,140 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:fillViewport="false"
+    android:fadingEdge="none"
     tools:context="com.worldspotlightapp.android.ui.AddAVideoTutorialActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         >
+
+        <!-- 1. Click on the button -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/add_a_video_tutorial_activity_1_click_on_button"
+            />
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:src="@drawable/open_youtube"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
+            />
+
+        <!-- 2. Select a video -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/add_a_video_tutorial_activity_2_select_a_video"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_group_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_element_margin"
+            />
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:src="@drawable/select_a_video"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
+            />
+
+        <!-- 3. Click on Share -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/add_a_video_tutorial_activity_3_click_on_share"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_group_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_element_margin"
+            />
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:src="@drawable/click_share"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
+            />
+
+        <!-- 4. Select our app -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/add_a_video_tutorial_activity_4_select_our_app"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_group_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_element_margin"
+            />
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:src="@drawable/select_the_app"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
+            />
+
+        <!-- 5. Select the place where the video was filmed -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/add_a_video_tutorial_activity_5_choose_place"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_group_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_element_margin"
+            />
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:src="@drawable/select_the_place_in_the_map"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
+            />
+
+        <!-- 6. Click on done -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/add_a_video_tutorial_activity_6_click_on_done"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_group_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_element_margin"
+            />
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:src="@drawable/click_on_done"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
+            />
+
+        <com.github.snuffix.android.material.RippleButton
+            android:id="@+id/launch_youtube_button"
+            android:layout_alignParentBottom="true"
+            style="@style/WorldSpotlightButton"
+            android:text="@string/add_a_video_tutorial_activity_launch_youtube"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_group_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_element_margin"
+            />
 
         <CheckBox
             android:id="@+id/disable_me_check_box"
@@ -22,13 +145,8 @@
             android:text="@string/add_a_video_tutorial_activity_not_show_message"
             android:gravity="center"
             android:layout_above="@+id/launch_youtube_button"
-            />
-
-        <com.github.snuffix.android.material.RippleButton
-            android:id="@+id/launch_youtube_button"
-            android:layout_alignParentBottom="true"
-            style="@style/WorldSpotlightButton"
-            android:text="@string/add_a_video_tutorial_activity_launch_youtube"
+            android:layout_marginTop="@dimen/add_a_video_tutorial_activity_element_margin"
+            android:layout_marginBottom="@dimen/add_a_video_tutorial_activity_group_margin"
             />
     </LinearLayout>
 </ScrollView>

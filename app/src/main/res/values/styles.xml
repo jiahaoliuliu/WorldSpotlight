@@ -97,4 +97,5 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
+
 </resources>
