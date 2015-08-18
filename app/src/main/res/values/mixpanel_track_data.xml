@@ -25,9 +25,6 @@
     <string name="mp_main_activity_search_by_keyword_keyword">Keyword</string>
     <string name="mp_main_activity_search_finished">Search finished</string>
 
-    <!--    Localization -->
-    <string name="mp_main_activity_localize_user">User localized</string>
-
     <!--    Video preview -->
     <string name="mp_main_activity_videos_preview_event">Videos Preview</string>
     <string name="mp_main_activity_videos_preview_videos_id">Videos id</string>
@@ -40,6 +37,18 @@
     <string name="mp_main_activity_login">Login</string>
     <string name="mp_main_activity_favourites">Favourites</string>
     <string name="mp_main_activity_logout">Logout</string>
+
+    <!--    Others -->
+    <string name="mp_main_activity_add_a_video">Add a video</string>
+
+    <!-- Add a video activity -->
+    <string name="mp_add_a_video_activity_prefix">Add a video</string>
+    <string name="mp_add_a_video_activity_cancel">Cancel</string>
+    <string name="mp_add_a_video_activity_done">Done</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="mp_add_a_video_tutorial_activity_prefix">Add a video tutorial</string>
+    <string name="mp_add_a_video_tutorial_activity_open_youtube">Open youtube</string>
 
     <!-- Video details Activity -->
     <string name="mp_video_details_activity_prefix">Video details</string>

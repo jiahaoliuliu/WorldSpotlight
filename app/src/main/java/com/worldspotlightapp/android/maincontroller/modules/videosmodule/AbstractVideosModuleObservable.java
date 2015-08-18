@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.worldspotlightapp.android.maincontroller.AbstractBaseModuleObservable;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
@@ -61,4 +62,17 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The id of the video which the author is looking for
      */
     public abstract void requestAuthorInfo(Observer observer, String videoId);
+
+    /**
+     * Add a new video to the database.
+     * The video shoudln't already exists in the database.
+     * This method is aim to be invoked by {@link com.worldspotlightapp.android.ui.AddAVideoActivity},
+     * which once the invokation is done, will be MainActivity the one which handle the notifications.
+     * Since MainActivity is subscribed to this module, there is not need to call it here.
+     * @param videoId
+     *      The id of the video
+     * @param videoLocation
+     *      The location of the video
+     */
+    public abstract void addAVideo(String videoId, LatLng videoLocation);
 }

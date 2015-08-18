@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.ui.mainactivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,11 +48,14 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseActivityObserver;
+import com.worldspotlightapp.android.ui.AddAVideoActivity;
+import com.worldspotlightapp.android.ui.AddAVideoTutorialActivity;
 import com.worldspotlightapp.android.ui.SignUpLoginActivity;
 import com.worldspotlightapp.android.ui.videodetails.VideoDetailsActivity;
 
@@ -66,6 +71,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private static final String TAG = "MainActivity";
     private static final int MENU_ITEM_SEARCH_ID = 1000;
 
+    // Internal structured data
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
@@ -78,8 +84,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
     // Views
     private GoogleMap mMap;
-    // Marker on the map
-    private Marker mMyPositionMarker;
     //      Drawer
     private DrawerLayout mDrawerLayout;
     private ImageView mUserProfileImageView;
@@ -93,7 +97,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     // By default drawer is not open
     private boolean mIsDrawerOpen;
 
-    private FloatingActionButton mMyLocationFloatingActionButton;
+    private FloatingActionButton mAddVideoFloatingActionButton;
 
     // ViewPager for preview
     private ViewPager mVideosPreviewViewPager;
@@ -118,8 +122,11 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
         super.onCreate(savedInstanceState);
 
+        // Launch Add A Video activity if the user has shared the text
+        if (hasActivityStartedBySharingText()) {
+            launchAddAVideoActivity();
         // Launch login activity if the user has not logged in
-        if (!mUserDataModule.hasUserData()) {
+        } else if (!mUserDataModule.hasUserData()) {
             launchSignUpLoginActivity();
         }
 
@@ -133,8 +140,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         // Delete all the possible observers
         mVideosModule.deleteObserver(this);
         mUserDataModule.deleteObserver(this);
-
-        registerForLocalizationService();
 
         mPicasso = Picasso.with(mContext);
 
@@ -201,17 +206,27 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mMyLocationFloatingActionButton = (FloatingActionButton) findViewById(R.id.my_location_floating_action_button);
-        mMyLocationFloatingActionButton.setOnClickListener(onClickListener);
+        mAddVideoFloatingActionButton = (FloatingActionButton) findViewById(R.id.add_video_floating_action_button);
+        mAddVideoFloatingActionButton.setOnClickListener(onClickListener);
 
         mVideosPreviewViewPager = (ViewPager) findViewById(R.id.videos_preview_view_pager);
         mVideosPreviewViewPagerIndicator = (UnderlinePageIndicator) findViewById(R.id.videos_preview_view_pager_indicator);
 
         // Update data
         setupMapIfNeeded();
+    }
 
-        // Center the map to the user
-        centerMapToUser();
+    private boolean hasActivityStartedBySharingText() {
+        Log.v(TAG, "Intent get " + mIntent);
+        String action = mIntent.getAction();
+        String type = mIntent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setupMapIfNeeded() {
@@ -383,6 +398,31 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            } else if (response instanceof VideosModuleAddAVideoResponse) {
+                final VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = (VideosModuleAddAVideoResponse) response;
+                final ParseResponse parseResponse = videosModuleAddAVideoResponse.getParseResponse();
+                // This is called from the another thread
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                    // Can't create handler inside thread that has not called Looper.prepare()
+                        if (!parseResponse.isError()) {
+                            Log.v(TAG, "Video added correctly");
+                            mNotificationModule.showToast(R.string.add_a_video_activity_video_added_correctly, true);
+                            Video video = videosModuleAddAVideoResponse.getVideo();
+                            // Add the video to the current list
+                            mVideosList.add(video);
+                            mClusterManager.addItem(video);
+                            mClusterManager.cluster();
+
+                            // Center the map to the video and show the preview
+                            showVideoPreview(video);
+                        } else {
+                            Log.v(TAG, "Error adding the video " + parseResponse.getCode());
+                            mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                        }
+                    }
+                });
             }
 
             Log.v(TAG, "Dismissing the loading dialog");
@@ -604,44 +644,13 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.my_location_floating_action_button:
-                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.USER_LOCALIZED);
-                    centerMapToUser();
+                case R.id.add_video_floating_action_button:
+                    // Track user action
+                    addVideo();
                     break;
             }
         }
     };
-
-    /**
-     * Show my actual location.
-     * If the map is null, don't do anything
-     */
-    private void centerMapToUser() {
-        if (mMap == null) {
-            return;
-        }
-
-        // Move to the point
-        Location myLastKnownLocation = mGpsLocalizationModule.getLastKnownLocation();
-        if (myLastKnownLocation == null) {
-            return;
-        }
-
-        LatLng myLastKnownLatLng = new LatLng(myLastKnownLocation.getLatitude(), myLastKnownLocation.getLongitude());
-
-        // Add the marker
-        if (mMyPositionMarker != null) {
-            mMyPositionMarker.remove();
-        }
-
-        mMyPositionMarker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(myLastKnownLatLng.latitude, myLastKnownLatLng.longitude))
-                .title(getString(R.string.main_activity_you_are_here)));
-        mMyPositionMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location));
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(myLastKnownLatLng);
-        mMap.animateCamera(cameraUpdate);
-    }
 
     // Action bar
     @Override
@@ -807,5 +816,110 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         }
 
         mUserDataModule.retrieveFavouriteVideosList(this);
+    }
+
+    /**
+     * Method used to add a video in the database.
+     * if it is the first time the user is doing it, the app shows a small tutorial for the user.
+     * If not and the user has set "show tutorial" option as false, then not showing the tutorial.
+     *
+     * The next step is show the YouTube app and ask the user to share the video.
+     *
+     */
+    private void addVideo() {
+        // 0. Register the user action. Based on this we can know how many user tried to add a video
+        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.ADD_A_VIDEO);
+
+        // 1. Check if it is the first time the user is doing it or if the user has done it, he has set
+        // the flag of show_add_video_tutorial as false
+        if (!mUserDataModule.shouldTheAppNotShowAddAVideoTutorial()) {
+            // Launch the add video tutorial screen
+            Intent startAddAVideoTutorialActivityIntent = new Intent(mContext, AddAVideoTutorialActivity.class);
+            startActivity(startAddAVideoTutorialActivityIntent);
+            return;
+        }
+
+        // Launch YouTube app
+        if (!launchYouTubeApp()) {
+            mNotificationModule.showToast(R.string.error_message_not_possible_launching_you_tube_app, true);
+        }
+    }
+
+    /**
+     * This method launches the Add a video activity. It parses the intent and send the video id
+     * to the activity
+     */
+    private void launchAddAVideoActivity() {
+        Log.v(TAG, "The activity started because user has shared the text " + mIntent);
+        if (mIntent == null || !mIntent.hasExtra(Intent.EXTRA_TEXT)) {
+            Log.e(TAG, "Error checking text extra for the shared intent. It must be there");
+            return;
+        }
+
+        String sharedText = mIntent.getStringExtra(Intent.EXTRA_TEXT);
+        Log.v(TAG, "Text shared? \"" + sharedText + "\"");
+
+        String videoId = parseVideoId(sharedText);
+        if (videoId == null) {
+            Log.e(TAG, "The video id is not contained in the shared link. Not do anything");
+            return;
+        }
+
+        // Start Add a video activity
+        Intent startAddAVideoActivityIntent = new Intent(mContext, AddAVideoActivity.class);
+        startAddAVideoActivityIntent.putExtra(Video.INTENT_KEY_VIDEO_ID, videoId);
+        startActivity(startAddAVideoActivityIntent);
+    }
+
+    /**
+     * Parse the possible youtube video link and returns the video id
+     * TODO: Check the format of the YouTube links
+     * http://stackoverflow.com/questions/31776646/what-is-the-format-of-the-video-shared-by-youtube-in-android/31776773#31776773
+     * @param youTubeLink
+     *      The possible video link from YouTube
+     * @return
+     *      VideoId if the link belongs to YouTube
+     *      Null if the video id is not found
+     */
+    private String parseVideoId(String youTubeLink) {
+        if (!isTheLinkBelongsToYouTube(youTubeLink)) {
+            return null;
+        }
+
+        // Get the last item. This works for YouTube v10.28.59
+        String[] youtubeLinkComponents = youTubeLink.split("/");
+        return youtubeLinkComponents[youtubeLinkComponents.length-1];
+    }
+
+
+    /**
+     * Check if a specific video belongs to YouTube or not.
+     * TODO: The format of the video still need to be checked here:
+     * http://stackoverflow.com/questions/31776646/what-is-the-format-of-the-video-shared-by-youtube-in-android/31776773#31776773
+     * @param youTubeLink
+     *      The link to be checked
+     * @return
+     *      True if the link belongs to YouTube
+     *      False otherwise
+     */
+    private boolean isTheLinkBelongsToYouTube(String youTubeLink) {
+        if (TextUtils.isEmpty(youTubeLink)) {
+            return false;
+        }
+
+        // Remove all the https or http data
+        if (youTubeLink.startsWith("https://")) {
+            youTubeLink = youTubeLink.replaceFirst("https://", "");
+        }
+
+        if (youTubeLink.startsWith("http://")) {
+            youTubeLink = youTubeLink.replaceFirst("http://", "");
+        }
+
+        if (youTubeLink.startsWith("www")) {
+            youTubeLink = youTubeLink.replaceFirst("www", "");
+        }
+
+        return (youTubeLink.startsWith("youtu.be") || youTubeLink.startsWith("youtube."));
     }
 }

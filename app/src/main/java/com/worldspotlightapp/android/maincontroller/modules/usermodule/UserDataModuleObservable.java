@@ -22,6 +22,7 @@ import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.StringId;
+import com.worldspotlightapp.android.maincontroller.Preferences.BooleanId;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
@@ -33,7 +34,6 @@ import com.worldspotlightapp.android.model.Report;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
-
 
 public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
 
@@ -500,6 +500,21 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
             mUserData = null;
             mLikedVideosList = null;
         }
+    }
+
+    @Override
+    public boolean shouldTheAppNotShowAddAVideoTutorial() {
+        // if the value is not set, the add video tutorial should be shown
+        if (!mPreferences.contains(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL)) {
+            return false;
+        }
+
+        return mPreferences.get(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL);
+    }
+
+    @Override
+    public void hideAddAVideoTutorial(boolean enable) {
+        mPreferences.set(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL, enable);
     }
 
     /**

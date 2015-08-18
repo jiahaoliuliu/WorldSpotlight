@@ -48,6 +48,11 @@ public class ParseResponse extends ParseException {
      */
     public static final int ERROR_USER_NOT_LOGGED_IN = 10005;
 
+    /**
+     * The user is trying to add a video that already exists.
+     */
+    public static final int ERROR_ADDING_AN_EXISTING_VIDEO = 10006;
+
     // Status code
     // This should be the same as ParseException.
     // Since the variable code from the class ParseException is private
@@ -300,6 +305,9 @@ public class ParseResponse extends ParseException {
                 break;
             case ERROR_USER_NOT_LOGGED_IN:
                 resultMessage = context.getResources().getString(R.string.error_message_user_not_logged_in);
+                break;
+            case ERROR_ADDING_AN_EXISTING_VIDEO:
+                resultMessage = context.getResources().getString(R.string.error_message_adding_an_existing_video);
                 break;
             default:
                 Log.w(TAG, "Request status not recognized " + getCode());

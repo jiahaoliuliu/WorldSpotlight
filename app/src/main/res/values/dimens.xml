@@ -39,6 +39,13 @@
     <dimen name="main_activity_video_preview_image_height">80dp</dimen>
     <dimen name="main_activity_video_preview_image_width">145dp</dimen>
 
+    <!-- Add a video tutorial activity -->
+    <dimen name="add_a_video_tutorial_activity_group_margin">15dp</dimen>
+    <dimen name="add_a_video_tutorial_activity_element_margin">10dp</dimen>
+
+    <!-- Add a video activity -->
+    <dimen name="add_a_video_activity_mark_padding_bottom">70dp</dimen>
+
     <!-- Video details -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
     <dimen name="video_details_group_margin_vertical">3dp</dimen>
