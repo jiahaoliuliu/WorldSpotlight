@@ -24,6 +24,9 @@ public class AddAVideoTutorialActivity extends AbstractBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_a_video_tutorial);
 
+        // Set the action bar
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+
         // Link the views
         mDisableMeCheckBox = (CheckBox) findViewById(R.id.disable_me_check_box);
         mDisableMeCheckBox.setOnClickListener(onClickListener);
@@ -52,4 +55,16 @@ public class AddAVideoTutorialActivity extends AbstractBaseActivity {
             }
         }
     };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "home button pressed");
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
