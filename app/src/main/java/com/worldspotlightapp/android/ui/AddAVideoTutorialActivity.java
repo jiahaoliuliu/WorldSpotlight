@@ -1,15 +1,15 @@
 package com.worldspotlightapp.android.ui;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 
 public class AddAVideoTutorialActivity extends AbstractBaseActivity {
 
@@ -47,6 +47,7 @@ public class AddAVideoTutorialActivity extends AbstractBaseActivity {
                     mUserDataModule.hideAddAVideoTutorial(mDisableMeCheckBox.isChecked());
                     break;
                 case R.id.launch_youtube_button:
+                    mEventTrackingModule.trackUserAction(ScreenId.ADD_A_VIDEO_TUTORIAL_SCREEN, EventId.OPEN_YOUTUBE);
                     // Try to launch youtube app
                     if(!launchYouTubeApp()) {
                         mNotificationModule.showToast(R.string.error_message_not_possible_launching_you_tube_app, true);

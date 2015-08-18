@@ -6,7 +6,7 @@ package com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodul
 public interface IEventsTrackingModule {
 
     enum ScreenId {
-        LOGIN_SCREEN, MAIN_SCREEN, VIDEO_DETAILS_SCREEN, ADD_A_VIDEO_SCREEN;
+        LOGIN_SCREEN, MAIN_SCREEN, VIDEO_DETAILS_SCREEN, ADD_A_VIDEO_SCREEN, ADD_A_VIDEO_TUTORIAL_SCREEN;
     }
 
     enum EventId {
@@ -30,7 +30,10 @@ public interface IEventsTrackingModule {
         REPORT_A_VIDEO, LIKE_A_VIDEO, FULL_SCREEN, SHARE,
 
         // Add a video screen
-        CANCEL, DONE;
+        CANCEL, DONE,
+
+        // Add a video tutorial screen
+        OPEN_YOUTUBE;
     }
 
     /**

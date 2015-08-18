@@ -46,6 +46,10 @@
     <string name="mp_add_a_video_activity_cancel">Cancel</string>
     <string name="mp_add_a_video_activity_done">Done</string>
 
+    <!-- Add a video tutorial activity -->
+    <string name="mp_add_a_video_tutorial_activity_prefix">Add a video tutorial</string>
+    <string name="mp_add_a_video_tutorial_activity_open_youtube">Open youtube</string>
+
     <!-- Video details Activity -->
     <string name="mp_video_details_activity_prefix">Video details</string>
 

@@ -58,6 +58,9 @@ public class EventsTrackingModule implements IEventsTrackingModule {
             case VIDEO_DETAILS_SCREEN:
                 trackVideoDetailsScreenAction(eventId, objects);
                 break;
+            case ADD_A_VIDEO_TUTORIAL_SCREEN:
+                trackAddAVideoTutorialScreenAction(eventId, objects);
+                break;
             case ADD_A_VIDEO_SCREEN:
                 trackAddAVideoScreenAction(eventId, objects);
                 break;
@@ -353,6 +356,26 @@ public class EventsTrackingModule implements IEventsTrackingModule {
             case CANCEL:
                 mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_add_a_video_activity_cancel), new JSONObject());
+                break;
+            default:
+                throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
+                        "to Add a video screen, so it cannot be tracked");
+        }
+    }
+
+    /**
+     * Track the actions from the add a video screen
+     * @param eventId
+     *      The id of the event happened
+     * @param objects
+     *      The details to be tracked
+     */
+    private void trackAddAVideoTutorialScreenAction(EventId eventId, Object... objects) {
+        String prefix = mContext.getString(R.string.mp_add_a_video_tutorial_activity_prefix);
+        switch (eventId) {
+            case OPEN_YOUTUBE:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_add_a_video_tutorial_activity_open_youtube), new JSONObject());
                 break;
             default:
                 throw new IllegalArgumentException("The event " + eventId.toString() + " does not belongs" +
