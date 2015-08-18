@@ -6,7 +6,7 @@ package com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodul
 public interface IEventsTrackingModule {
 
     enum ScreenId {
-        LOGIN_SCREEN, MAIN_SCREEN, VIDEO_DETAILS_SCREEN;
+        LOGIN_SCREEN, MAIN_SCREEN, VIDEO_DETAILS_SCREEN, ADD_A_VIDEO_SCREEN, ADD_A_VIDEO_TUTORIAL_SCREEN;
     }
 
     enum EventId {
@@ -17,18 +17,23 @@ public interface IEventsTrackingModule {
         //      SEARCH
         SEARCH_STARTED, SEARCH_FINISHED, SEARCH_BY_KEYWORD,
 
-        //      Self localization
-        USER_LOCALIZED,
-
         //      Videos Preview
         VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK,
 
         //      Drawer
         LOGIN, FAVOURITES, LOGOUT,
 
-        // Video details screen
-        REPORT_A_VIDEO, LIKE_A_VIDEO, FULL_SCREEN, SHARE;
+        //      Other
+        ADD_A_VIDEO,
 
+        // Video details screen
+        REPORT_A_VIDEO, LIKE_A_VIDEO, FULL_SCREEN, SHARE,
+
+        // Add a video screen
+        CANCEL, DONE,
+
+        // Add a video tutorial screen
+        OPEN_YOUTUBE;
     }
 
     /**
@@ -57,8 +62,4 @@ public interface IEventsTrackingModule {
      * Track the app has been finalized
      */
     void trackAppFinalization();
-
-    public static interface OnEventTrackingModuleRequestedListener{
-        IEventsTrackingModule getEventsTrackingModule();
-    }
 }

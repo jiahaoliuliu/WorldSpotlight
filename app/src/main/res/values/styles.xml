@@ -92,9 +92,10 @@
     </style>
 
     <!--    Normal button -->
-    <style name="WorldSpotLightButton" parent="SignUpLoginElement">
+    <style name="WorldSpotlightButton" parent="SignUpLoginElement">
         <item name="android:background">@drawable/sign_up_login_activity_skip_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
+
 </resources>

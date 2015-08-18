@@ -1,10 +1,8 @@
 
-package com.worldspotlightapp.android.ui;
+package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,15 +13,24 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.AbstractBaseFragment;
 
-public class VideosPreviewFragment extends Fragment {
+public class VideosPreviewFragment extends AbstractBaseFragment {
 
-    private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.VideosPreviewFragment.showArrows";
+    private static final String INTENT_KEY_SHOW_ARROWS = "com.worldspotlightapp.android.ui.mainactivity.VideosPreviewFragment.showArrows";
+
+    public interface IOnVideosPreviewFragmentClickedListener {
+
+        /**
+         * Method invoked when the user clicks on the video preview fragment.
+         *
+         * @param objectId
+         *      The object id of the video which the data is displaying in the
+         *      video preview fragment
+         */
+        void onClickOnVideoPreviewFragment(String objectId);
+    }
 
     private Activity mActivity;
     private Picasso mPicasso;
@@ -46,8 +53,7 @@ public class VideosPreviewFragment extends Fragment {
     private ImageView mRightArrowImageView;
 
     // Others
-    private OnEventTrackingModuleRequestedListener mOnEventTrackingModuleRequestedListener;
-    private IEventsTrackingModule mEventTrackingModule;
+    private IOnVideosPreviewFragmentClickedListener mOnVideosPreviewFragmentClickedListener;
 
     public static VideosPreviewFragment newInstance(
             String objectId, String thumbnailUrl, String title, String description, boolean showArrows) {
@@ -66,11 +72,13 @@ public class VideosPreviewFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = activity;
+
         try {
-            mOnEventTrackingModuleRequestedListener = (OnEventTrackingModuleRequestedListener)activity;
+            mOnVideosPreviewFragmentClickedListener = (IOnVideosPreviewFragmentClickedListener)activity;
         } catch (ClassCastException classCastException) {
-            throw new ClassCastException(activity.toString() + " must implements the mOnEventTrackingModuleRequestedListener interface");
+            throw new ClassCastException(activity.toString() + " must implements the IOnVideosPreviewFragmentClickedListener interface");
         }
+
     }
 
     @Override
@@ -106,9 +114,6 @@ public class VideosPreviewFragment extends Fragment {
 
         mObjectId = bundle.getString(Video.INTENT_KEY_OBJECT_ID);
 
-        // Get the Event module
-        mEventTrackingModule = mOnEventTrackingModuleRequestedListener.getEventsTrackingModule();
-
         // Load images
         mThumbnailUrl = bundle.getString(Video.INTENT_KEY_THUMBNAIL_URL);
         mPicasso = Picasso.with(mActivity);
@@ -141,13 +146,7 @@ public class VideosPreviewFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.video_preview_relative_layout:
-                    // Register the event
-                    mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, mObjectId);
-
-                    // Start the video details activity
-                    Intent startVideoDetailsActivityIntent = new Intent(mActivity, VideoDetailsActivity.class);
-                    startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mObjectId);
-                    startActivity(startVideoDetailsActivityIntent);
+                    mOnVideosPreviewFragmentClickedListener.onClickOnVideoPreviewFragment(mObjectId);
                     break;
             }
         }

@@ -10,14 +10,24 @@ import com.worldspotlightapp.android.model.Video;
  */
 public class VideosModuleAuthorResponse extends BaseModuleResponse {
 
+    /**
+     * The object id of the video which the author has created
+     */
+    private String mVideoObjectId;
+
     private Author mAuthor;
 
-    public VideosModuleAuthorResponse(ParseResponse parseResponse, Author author) {
+    public VideosModuleAuthorResponse(ParseResponse parseResponse, Author author, String videoObjectId) {
         super(parseResponse);
         mAuthor = author;
+        mVideoObjectId = videoObjectId;
     }
 
     public Author getAuthor(){
         return mAuthor;
+    }
+
+    public String getVideoObjectId() {
+        return mVideoObjectId;
     }
 }

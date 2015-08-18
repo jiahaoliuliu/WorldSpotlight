@@ -29,26 +29,6 @@ import java.util.concurrent.Executors;
  */
 public final class MainController {
 
-    /**
-     * This class is used to implement the error completion handler.
-     */
-    public interface RequestSessionCallback {
-
-        /**
-         * Method called when the operation has been finished.
-         *
-         * @param parseException
-         *            Indication of if any error happened or not
-         * @param mainController
-         *            The session obtained
-         * @param errorMessage
-         *            The message error. Null if there is no error
-         */
-        void done(final ParseException parseException, final MainController mainController, final String errorMessage);
-    }
-
-    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
     private Preferences preferences;
 
     private static MainController currentMainController = null;
@@ -175,7 +155,7 @@ public final class MainController {
         return mEventTrackingModule;
     }
 
-    public IActivityTrackerModule getActivityTRackerModule() {
+    public IActivityTrackerModule getActivityTrackerModule() {
         return mActivityTrackerModule;
     }
 
@@ -219,5 +199,20 @@ public final class MainController {
         private ExecutorService createExecutorService() {
             return Executors.newFixedThreadPool(MAXIMUM_NUM_RUNNING_THREAD);
         }
+    }
+
+    public interface IOnMainControllerInstantiatedListener {
+
+        public INotificationModule getNotificationModule();
+
+        public AbstractUserDataModuleObservable getUserDataModule();
+
+        public IGpsLocalizationModule getGpsLocalizationModule();
+
+        public AbstractVideosModuleObservable getVideosModule();
+
+        public IEventsTrackingModule getEventTrackingModule();
+
+        public IActivityTrackerModule getActivityTrackerModule();
     }
 }

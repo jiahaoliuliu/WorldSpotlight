@@ -126,4 +126,20 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      * Log out. After this the method {@link #hasUserData()} will return false.
      */
     public abstract void logout();
+
+    /**
+     * Check if the app should show or not the add video tutorial to the user or not.
+     * Note
+     * @return
+     *      False if the the app should show the add video tutorial
+     *      True otherwise
+     */
+    public abstract boolean shouldTheAppNotShowAddAVideoTutorial();
+
+    /**
+     * Enable or disable the option to show the addAVideoTutorial
+     * @param enable
+     *      If the tutorial about addAVideo should be displayed
+     */
+    public abstract void hideAddAVideoTutorial(boolean enable);
 }

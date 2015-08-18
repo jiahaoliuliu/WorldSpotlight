@@ -11,8 +11,6 @@
     <string name="sign_up_login_activity_log_in">Log In</string>
     <string name="sign_up_login_activity_skip">Skip</string>
 
-    <!-- Sign Up Activity -->
-
     <!-- Sign up Activity -->
     <string name="sign_up_activity_title">Sign Up with your mail</string>
     <string name="sign_up_activity_email_hint">Enter your email</string>
@@ -38,9 +36,23 @@
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
 
-    <!--    Favourite videos list activity -->
-    <string name="favourite_videos_list_activity_name">My favourites</string>
-    <string name="favourite_videos_list_activity_empty_text">No favourites?\n\n Click on the star in a video details to save the video as favourite</string>
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">Open YouTube!</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. Click on "Open YouTube" button at the bottom. \n\nWe will open YouTube app</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. Select a video</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. Click on share</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. Select our app</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. Choose the place where the video was filmed</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. Click on done</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">You are soooo annoying. I already knew this!</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">Done</string>
+    <string name="add_a_video_activity_error_location_not_found">The location cannot be found. Could you try it later</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">It is not possible detect the city and the country automatically. Could you enter them manually</string>
+    <string name="add_a_video_activity_video_added_correctly">The video was added correctly</string>
+    <string name="add_a_video_activity_error_adding_video">There was an error Adding the video. Please try it again</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">You must logged in to add a video. Would you like to login now?</string>
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
@@ -73,10 +85,17 @@
     <string name="error_message_login_with_google">There was some error trying to login in with Google Plus. Please try it again later</string>
     <string name="error_message_login_with_parse">The username or the password does not match. Could you check them?</string>
     <string name="error_message_user_not_logged_in">The user must logged in for this. Could you try to log in?</string>
+    <string name="error_message_adding_an_existing_video">The video you are trying to add already exists</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">It seems it is not possible launch YouTube app. Could you check if it is installed?</string>
 
     <!-- Generic error message for Edit Text -->
     <string name="error_message_field_empty">This field canont be empty</string>
     <string name="error_message_string_too_short">You must enter at least %1$s characters</string>
     <string name="error_message_email_address_required">You must enter a valid email address</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

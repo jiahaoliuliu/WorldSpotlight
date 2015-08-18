@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +17,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.interfaces.IOnActionBarRequestListener;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
-import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.OnEventTrackingModuleRequestedListener;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
@@ -33,14 +33,19 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.Abstrac
  * - Check for Google Play services
  */
 public abstract class AbstractBaseActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, OnEventTrackingModuleRequestedListener {
+        GoogleApiClient.OnConnectionFailedListener, MainController.IOnMainControllerInstantiatedListener,
+        IOnActionBarRequestListener {
 
     private static final String TAG = "AbstractBaseActivity";
 
     //    Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 99999;
 
+    // YouTube Package Name
+    private static final String YOU_TUBE_PACKAGE_NAME = "com.google.android.youtube";
+
     protected Context mContext;
+    protected Intent mIntent;
     protected ActionBar mActionBar;
     protected MainController mMainController;
     protected INotificationModule mNotificationModule;
@@ -59,12 +64,11 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Lock the screen orientation
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         super.onCreate(savedInstanceState);
 
         mContext = this;
+
+        mIntent = getIntent();
 
         mActionBar = getSupportActionBar();
 
@@ -75,7 +79,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         mGpsLocalizationModule = mMainController.getGpsLocalizationModule();
         mVideosModule = mMainController.getVideosModule();
         mEventTrackingModule = mMainController.getEventTrackingModule();
-        mActivityTrackerModule = mMainController.getActivityTRackerModule();
+        mActivityTrackerModule = mMainController.getActivityTrackerModule();
 
         // Getting the resolution error saved for localization service
         mResolvingError =
@@ -209,11 +213,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
     }
 
-    @Override
-    public IEventsTrackingModule getEventsTrackingModule() {
-        return mEventTrackingModule;
-    }
-
     /**
      * Method used to check if the user has logged in or not.
      * if not, it will show the alert dialog ask the user to log in
@@ -238,7 +237,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
      *      True if the user has logged in
      *      False if the user has not logged in
      */
-    protected boolean showAlertIfUserHasNotLoggedIn(String message) {
+    public boolean showAlertIfUserHasNotLoggedIn(String message) {
         boolean hasUserLoggedIn = mUserDataModule.hasUserData();
 
         // Show alert dialog if the user has not logged in
@@ -268,5 +267,59 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         return hasUserLoggedIn;
     }
 
+    /**
+     * Method used to launch YouTube app from this app. It checks if the user has the app installed first
+     *
+     * @return
+     *      True if the user has YouTube installed
+     *      False otherwise
+     */
+    protected boolean launchYouTubeApp() {
+        // Launcheds YouTube app
+        PackageManager packageManager = mContext.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(YOU_TUBE_PACKAGE_NAME);
+        if (intent == null) {
+            // The user has not YouTube Installed
+            return false;
+        }
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        mContext.startActivity(intent);
+        return true;
+    }
+
+    @Override
+    public INotificationModule getNotificationModule() {
+        return mNotificationModule;
+    }
+
+    @Override
+    public AbstractUserDataModuleObservable getUserDataModule() {
+        return mUserDataModule;
+    }
+
+    @Override
+    public IGpsLocalizationModule getGpsLocalizationModule() {
+        return mGpsLocalizationModule;
+    }
+
+    @Override
+    public AbstractVideosModuleObservable getVideosModule() {
+        return mVideosModule;
+    }
+
+    @Override
+    public IEventsTrackingModule getEventTrackingModule() {
+        return mEventTrackingModule;
+    }
+
+    @Override
+    public IActivityTrackerModule getActivityTrackerModule() {
+        return mActivityTrackerModule;
+    }
+
+    @Override
+    public ActionBar getActionBarFromActivity() {
+        return mActionBar;
+    };
 
 }

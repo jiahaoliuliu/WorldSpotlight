@@ -1,8 +1,11 @@
 package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -17,9 +20,11 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
@@ -37,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observer;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -276,18 +282,222 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     @Override
     public void requestAuthorInfo(Observer observer, final String videoId) {
         addObserver(observer);
-
         mExecutorService.execute(new RetrieveAuthorInfoRunnable(videoId, new RequestAuthorInfoCallback() {
             @Override
             public void done(Author author) {
+                // In case that the author has some problems, just don't do anything
                 if (author != null) {
                     ParseResponse parseResponse = new ParseResponse.Builder(null).build();
-                    VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author);
+                    VideosModuleAuthorResponse videosModuleAuthorResponse = new VideosModuleAuthorResponse(parseResponse, author, videoId);
                     setChanged();
                     notifyObservers(videosModuleAuthorResponse);
                 }
             }
         }));
+    }
+
+    @Override
+    public void addAVideo(final String videoId, final LatLng videoLocation) {
+        Log.v(TAG, "Adding a video with id " + videoId + ", location " + videoLocation);
+
+        boolean videoAlreadyExists = false;
+        Video videoToBeAdded = new Video(videoId);
+        // Check if the video already existed
+        if (mVideosList != null && !mVideosList.isEmpty()) {
+            // If the video already exists
+            if (mVideosList.contains(videoToBeAdded)) {
+                videoAlreadyExists = true;
+            }
+        // Check the database
+        } else {
+            if (mVideoDataLayer.hasVideoByVideoId(videoId)) {
+                videoAlreadyExists = true;
+            }
+        }
+
+        // The video already exists
+        if (videoAlreadyExists) {
+            Log.w(TAG, "The video with video id " + videoId + " already exists.");
+            ParseResponse parseResponse = new ParseResponse.Builder(null).statusCode(ParseResponse.ERROR_ADDING_AN_EXISTING_VIDEO).build();
+            VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
+            setChanged();
+            notifyObservers(videosModuleAddAVideoResponse);
+            return;
+        }
+
+        // Get the information about the video
+        //      Get the title and description
+        mExecutorService.execute(new RetrieveTitleDescriptionRunnable(videoId, new RequestTitleAndDescriptionCallback() {
+            @Override
+            public void done(String title, String description) {
+                addAVideo(videoId, title, description, videoLocation);
+            }
+        }));
+    }
+
+    /**
+     * Add a video into the backend. This method might not be running in the main thread
+     * @param videoId
+     *      The id of the video to be added
+     * @param title
+     *      The title of the video to be added
+     * @param description
+     *      The description of the video to be added. Since this is retrieved from YouTube Data API, it does not contain
+     *      all the information
+     * @param videoLocation
+     *      The location where the video was filmed
+     */
+    private void addAVideo(String videoId, String title, String description, LatLng videoLocation) {
+        Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
+                ", location " + videoLocation);
+
+        String city = "";
+        String country = "";
+        // Get the city and the country
+        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+        List<Address> addressesList = null;
+        try {
+            addressesList = geocoder.getFromLocation(videoLocation.latitude, videoLocation.longitude, 1);
+        } catch (IOException ioException) {
+            // Service not available
+            Log.e(TAG, "Error getting the city from the geocoder. Service not available", ioException);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // Invalid latitude and longitude
+            Log.e(TAG, "Error getting the city form the geocoder. The latitude or/and the longitude are" +
+                    "not correct. " + videoLocation.latitude + ", " + videoLocation.longitude + ".", illegalArgumentException);
+        }
+
+        // If there was not address retrieved
+        if (addressesList != null && !addressesList.isEmpty()) {
+            Address address = addressesList.get(0);
+            Log.v(TAG, "Address found " + address);
+            Log.v(TAG, "The locality is " + address.getLocality());
+            Log.v(TAG, "The country is " + address.getCountryName());
+
+            // Set the city if exists
+            String locality = address.getLocality();
+            if (locality != null) {
+                city = locality;
+            }
+
+            // Set the country if exists
+            String countryName = address.getCountryName();
+            if (countryName != null) {
+                country = countryName;
+            }
+        }
+        addAVideo(videoId, title, description, videoLocation, city, country);
+    }
+
+    /**
+     * Method used to save a video to the backend. The video Id shouldn't exist before.
+     * @param videoId
+     *      The id of the video in YouTube
+     * @param title
+     *      The title of the video
+     * @param description
+     *      The description of the video
+     * @param videoLocation
+     *      The location where the video was filmed
+     * @param city
+     *      The city where the video was filmed
+     * @param country
+     *      The country where the video was filmed.
+     */
+    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country) {
+        Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
+                ", location " + videoLocation + ", city " + city + ", country " + country);
+        final Video video = new Video(title, description, videoId, city, country, videoLocation);
+        video.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Video " + video + " added correctly to the backend");
+                    // Update the video list
+                    mVideosList.add(video);
+                    // The database should be updated according to the backend. This is because there could be several user adding
+                    // videos at the same time. So, the order the video was added are different. Since we based on the number of existence
+                    // videos in the database to update the list of videos, it is more safe do it asking directly to Parse.
+                    VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, video);
+                    setChanged();
+                    notifyObservers(videosModuleAddAVideoResponse);
+                } else {
+                    Log.e(TAG, "Error adding video " + video + " to the backend. ", e);
+                    VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, null);
+                    setChanged();
+                    notifyObservers(videosModuleAddAVideoResponse);
+                }
+            }
+        });
+    }
+
+    /**
+     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
+     * info is ready
+     */
+    private interface RequestTitleAndDescriptionCallback {
+        void done(String title, String description);
+    }
+
+    private class RetrieveTitleDescriptionRunnable implements Runnable {
+
+        private String mVideoId;
+        private RequestTitleAndDescriptionCallback mRequestTitleAndDescriptionCallback;
+
+        public RetrieveTitleDescriptionRunnable(String videoId, RequestTitleAndDescriptionCallback requestTitleAndDescriptionCallback) {
+            mVideoId = videoId;
+            mRequestTitleAndDescriptionCallback = requestTitleAndDescriptionCallback;
+        }
+
+        @Override
+        public void run() {
+            // Set empty title and description as default
+            String title = "";
+            String description = "";
+
+            YouTube youtube =
+                    new YouTube.Builder(new NetHttpTransport(),
+                            new JacksonFactory(), new HttpRequestInitializer() {
+                        @Override
+                        public void initialize(HttpRequest httpRequest) throws IOException {
+                        }
+                    }).setApplicationName(mContext.getString(R.string.app_name)).build();
+
+            try {
+                YouTube.Search.List query = youtube.search().list("id,snippet");
+                query.setKey(Secret.YOUTUBE_DATA_API_KEY);
+                query.setType("video");
+                query.setFields("items(id,snippet/title,snippet/description)");
+                query.setQ("v=" + mVideoId);
+                query.setType("video");
+                SearchListResponse response = query.execute();
+                List<SearchResult> results = response.getItems();
+                Log.v(TAG, "List of search results retrieved. " + results.size());
+                for (final SearchResult searchResult : results) {
+                    Log.v(TAG, searchResult.toPrettyString());
+                    if (!searchResult.getId().getVideoId().equals(mVideoId)) {
+                        continue;
+                    }
+
+                    // Get the title and description
+                    title = searchResult.getSnippet().getTitle();
+                    description = searchResult.getSnippet().getDescription();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Could not search video data: ", e);
+            }
+
+            mRequestTitleAndDescriptionCallback.done(title, description);
+        }
+    }
+
+    /**
+     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
+     * info is ready
+     */
+    private interface RequestAuthorInfoCallback {
+        void done(Author author);
     }
 
     private class RetrieveAuthorInfoRunnable implements Runnable {
@@ -347,14 +557,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
             mRequestAuthorInfoCallback.done(author);
         }
-    }
-
-    /**
-     * Interface created to be passed to {@link RetrieveAuthorInfoRunnable} to inform when the author
-     * info is ready
-     */
-    private interface RequestAuthorInfoCallback {
-        void done(Author author);
     }
 
     private List<Video> retrieveVideosListFromRawFile() {

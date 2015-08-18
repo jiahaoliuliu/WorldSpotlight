@@ -80,7 +80,7 @@
             android:id="@+id/skip_button"
             android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
             android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
-            style="@style/WorldSpotLightButton"
+            style="@style/WorldSpotlightButton"
             android:text="@string/sign_up_login_activity_skip"
         />
     </LinearLayout>

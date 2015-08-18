@@ -29,8 +29,8 @@ android {
         applicationId "com.worldspotlightapp.android"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 7
-        versionName "1.06"
+        versionCode 8
+        versionName "1.07"
     }
     buildTypes {
         release {
@@ -57,8 +57,7 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
 
     // Google Play services for location
-    //compile 'com.google.android.gms:play-services:7.5.+'
-    compile 'com.google.android.gms:play-services-location:7.5.+'
+    compile 'com.google.android.gms:play-services-location:7.8.+'
 
     // Maps utility
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
@@ -82,7 +81,7 @@ dependencies {
 
     // Support library for Google Plus login
     compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.google.android.gms:play-services-plus:7.5.+'
+    compile 'com.google.android.gms:play-services-plus:7.8.+'
 
     //Ripple Effect
     compile "com.github.snuffix.android.material.rippleeffect:library:1.0"

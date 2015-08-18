@@ -20,6 +20,9 @@ public class Preferences {
     // Update the method clearUserData when modified
     public enum BooleanId {
 
+        // Used to store the user option to show the add videos tutorial or not
+        HIDE_ADD_A_VIDEO_TUTORIAL,
+
         // The default value of the boolean id
         DEFAULT_BOOLEAN_ID;
 
@@ -138,7 +141,7 @@ public class Preferences {
     /**
      * The name of the file utilized to store the data.
      */
-    private static final String FILE_NAME = "BuyIt.Preferences";
+    private static final String FILE_NAME = "WorldSpotlight.Preferences";
 
     // The default values
     private static final boolean DEFAULT_BOOLEAN = false;

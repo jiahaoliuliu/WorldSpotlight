@@ -32,6 +32,7 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_DESCRIPTION = "com.worldspotlightapp.android.model.video.description";
     public static final String PARSE_COLUMN_DESCRIPTION = "description";
 
+    public static final String INTENT_KEY_VIDEO_ID = "com.worldspotlight.android.model.video.videoid";
     public static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
     private static final String VIDEO_URL_PREFIX = "http://www.worldspotlightapp.com/video/";
@@ -64,6 +65,45 @@ public class Video extends ParseObject implements ClusterItem {
      */
     public Video(){
         super();
+    }
+
+    /**
+     * Special constructor to set just the video Id to check if a
+     * video is equal to another. This is used in the follow cases
+     * - When add a new video. Check if the video already exists
+     * @param videoId
+     *      The id of the video in YouTube
+     */
+    public Video(String videoId) {
+        this();
+        setVideoId(videoId);
+    }
+
+    /**
+     * Constructor to create instance of the video from the app. Note that the video id is not
+     * set by now.
+     *
+     * @param title
+     *      The title of the video
+     * @param description
+     *      The description of the video
+     * @param videoId
+     *      The id of the video in YouTube
+     * @param city
+     *      The city where the video was filmed
+     * @param country
+     *      The country where the video was filmed
+     * @param position
+     *      The geoposition where the video was filmed
+     */
+    public Video(String title, String description, String videoId, String city, String country, LatLng position) {
+        this();
+        setTitle(title);
+        setDescription(description);
+        setVideoId(videoId);
+        setCity(city);
+        setCountry(country);
+        setPosition(position.latitude, position.longitude);
     }
 
     /**
@@ -232,7 +272,7 @@ public class Video extends ParseObject implements ClusterItem {
 
     @Override
     public LatLng getPosition() {
-        if (mLocation == null) {
+        if (mLocation == null && has(PARSE_COLUMN_LOCATION)) {
             ParseGeoPoint parseGeoPoint = getParseGeoPoint(PARSE_COLUMN_LOCATION);
             mLocation = new LatLng(parseGeoPoint.getLatitude(), parseGeoPoint.getLongitude());
         }
@@ -253,10 +293,15 @@ public class Video extends ParseObject implements ClusterItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Video video = (Video) o;
+        Video anotherVideo = (Video) o;
 
-        return getObjectId().equals(video.getObjectId());
-
+        // Check if the object id exists.
+        if (anotherVideo.has(PARSE_COLUMN_OBJECT_ID)) {
+            return getObjectId().equals(anotherVideo.getObjectId());
+        // If the object id does not exists, check the video id
+        } else {
+            return getVideoId().equals(anotherVideo.getVideoId());
+        }
     }
 
     @Override
@@ -270,6 +315,7 @@ public class Video extends ParseObject implements ClusterItem {
     @Override
     public String toString() {
         return "Video{" +
+                "objectId='" + getObjectId() + "\'" +
                 "title='" + getTitle() + '\'' +
                 "description='" + getDescription() + '\'' +
                 "city='" + getCity() + '\'' +
