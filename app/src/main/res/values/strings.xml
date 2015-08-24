@@ -17,7 +17,6 @@
     <string name="sign_up_activity_password_hint">Enter your password</string>
     <string name="sign_up_activity_verify_password_hint">Verify your password</string>
     <string name="sign_up_activity_sign_up">Sign Up</string>
-
     <string name="sign_up_activity_error_message_password_not_match">Your passwords do not match</string>
 
     <!-- Login Activity -->
