@@ -1,0 +1,98 @@
+<resources>
+    <string name="app_name">World Spotlight</string>
+
+    <!-- Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">Für diese Aktion musst du angemeldet sein. Jetzt anmelden??</string>
+
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Mit Facebook anmelden</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Mit Google anmelden</string>
+    <string name="sign_up_login_activity_sign_up">Registrieren</string>
+    <string name="sign_up_login_activity_log_in">Anmelden</string>
+    <string name="sign_up_login_activity_skip">Überspringen</string>
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Mit E-Mail anmelden</string>
+    <string name="sign_up_activity_email_hint">Deine E-Mail Adresse eingeben</string>
+    <string name="sign_up_activity_password_hint">Dein Passwort eingeben</string>
+    <string name="sign_up_activity_verify_password_hint">Dein Passwort bestätigen</string>
+    <string name="sign_up_activity_sign_up">Anmelden</string>
+
+    <string name="sign_up_activity_error_message_password_not_match">Deine Passworte stimmen nicht überein.</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">Mit E-Mail anmelden</string>
+    <string name="login_activity_login">Anmelden</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">Du bist hier</string>
+    <string name="action_bar_search">Suche</string>
+    <string name="main_activity_show_fav_videos_list_title">Favoriten</string>
+
+    <!--    Drawer -->
+    <string name="drawer_login">Anmelden</string>
+    <string name="drawer_likes">Favoriten</string>
+    <string name="drawer_logout">Abmelden</string>
+    <string name="drawer_open">Schublade offen</string>
+    <string name="drawer_close">Schublade geschlossen</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">YouTube öffnen!</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. Klick auf den „YouTube öffnen“ Knopf. \n\nWir werden die YouTube App für dich öffnen.</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. Wähle ein Video</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. Klicke auf Teilen</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. Wähle unsere App</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. Gib den Ort an, an dem das Video aufgenommen wurde.</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. Klick auf Fertig</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">Ihr nervt. Das wusste ich bereits!</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">Fertig</string>
+    <string name="add_a_video_activity_error_location_not_found">Ort konnte nicht gefunden werden. Bitte später noch einmal versuchen.</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">Stadt und Land konnten nicht automatisch erkannt werden. Bitte manuell eingeben.</string>
+    <string name="add_a_video_activity_video_added_correctly">Das Video wurde hinzugefügt</string>
+    <string name="add_a_video_activity_error_adding_video">Ein Fehler ist beim Hinzufügen aufgetreten. Bitte erneut versuchen.</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">Um ein Video hinzufügen zu können musst du angemeldet sein. Jetzt anmelden?</string>
+
+    <!-- Video details activity -->
+    <string name="video_details_description_title">Beschreibung</string>
+    <string name="error_player">Fehler bei der Initialisierung des YouTube Player (%1$s)</string>
+    <string name="action_bar_share">Teilen</string>
+    <string name="share_title">Teilen mit &#8230;</string>
+    <string name="share_subject">Seht euch dieses großartige Video an! %1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">Du musst angemeldet sein um dieses Video sehen zu können. Jetzt anmelden?</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">Du musst angemeldet sein um dieses Video melden zu können. Jetzt anmelden?</string>
+    <string name="video_details_activity_report_sent_correctly">Danke dass du das Video gemeldet hast. Wir werden uns dies so schnell wie möglich genauer ansehen.</string>
+
+    <!-- Notification module -->
+    <string name="dialog_loading_generic_message">Lade &#8230;</string>
+    <string name="notification_module_dialog_yes">Ja</string>
+    <string name="notification_module_dialog_no">Gerade nicht</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">Du musst angemeldet sein</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">Die Anfrage war Ok</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">Es scheint als hättest du kein Internet. Kannst du dies bitte überprüfen?</string>
+    <string name="error_message_server_generic">Es ist ein Fehler in unserem Server aufgetreten. Bitte später erneut versuchen.</string>
+    <string name="error_message_script_error">Fehler bei der Ausführung des Skriptes im Cloud Code.</string>
+    <string name="error_message_validation_failed">Cloud Code Überprüfung fehlgeschlagen</string>
+    <string name="error_message_generic">Es ist ein Fehler aufgetreten. Bitte später erneut versuchen</string>
+    <string name="error_message_video_not_found">Das gesuchte Video existiert nicht.</string>
+    <string name="error_message_username_already_taken">Es existiert bereits ein Nutzer mit derselben E-Mail Adresse. Bitte verwende eine andere Adresse.</string>
+    <string name="error_message_login_with_facebook">Es ist ein Fehler bei der Anmeldung mit Facebook aufgetreten. Bitte spaeter erneut versuchen</string>
+    <string name="error_message_login_with_google"> Es ist ein Fehler bei der Anmeldung mit Google Plus aufgetreten. Bitte spaeter erneut versuchen </string>
+    <string name="error_message_login_with_parse">Benutzername und Passwort stimmen nicht überein. Bitte erneut versuchen.</string>
+    <string name="error_message_user_not_logged_in">Der Benutzer muss hierfür angemeldet sein. Bitte anmelden.</string>
+    <string name="error_message_adding_an_existing_video">Das Video ist bereits hinzufügt.</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">Das Öffnen der YouTube App ist fehlgeschlagen. Bitte überprüfe ob die App installiert ist.</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">Dieses Feld kann nicht leer sein</string>
+    <string name="error_message_string_too_short">Du musst mindestens %1$s Zeichen eingeben</string>
+    <string name="error_message_email_address_required">Du musst eine gültige E-Mail Adresse eingeben</string>
+
+</resources>
