@@ -56,7 +56,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
-    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="error_player">There was an error initializing the YouTube Player (%1$s)</string>
     <string name="action_bar_share">Share</string>
     <string name="share_title">Share it with &#8230;</string>
     <string name="share_subject">Check out this great video! %1$s</string>
@@ -94,8 +94,5 @@
     <string name="error_message_field_empty">This field canont be empty</string>
     <string name="error_message_string_too_short">You must enter at least %1$s characters</string>
     <string name="error_message_email_address_required">You must enter a valid email address</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
