@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">وُرلد سبوتلايت</string>
+
+    <!--  Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">يجب عليك تسجيل الدخول لهذا الإجراء. هل ترغب في الدخول الآن؟</string>
+
+    <!--  Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">تسجيل الدخول بإستخدام الفيسبوك</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">تسجيل الدخول بإستخدام جوجل</string>
+    <string name="sign_up_login_activity_sign_up">تسجيل الإشتراك</string>
+    <string name="sign_up_login_activity_log_in">تسجيل الدخول</string>
+    <string name="sign_up_login_activity_skip">خروج</string>
+
+    <!--  Sign up Activity -->
+    <string name="sign_up_activity_title">تسجيل الإشتراك بإستخدام البريد الخاص بك</string>
+    <string name="sign_up_activity_email_hint">إدخل بريدك الإلكتروني</string>
+    <string name="sign_up_activity_password_hint">إدخل كلمة المرور الخاصه بك</string>
+    <string name="sign_up_activity_verify_password_hint">التحقق من كلمة المرور الخاصة بك</string>
+    <string name="sign_up_activity_sign_up">تسجيل الإشتراك</string>
+    <string name="sign_up_activity_error_message_password_not_match">كلمات المرور غير متطابقة </string>
+
+    <!--  Login Activity -->
+    <string name="login_activity_title">تسجيل الدخول من خلال البريد الخاص بك </string>
+    <string name="login_activity_login">تسجيل الدخول</string>
+
+    <!--  Main Activity -->
+    <string name="main_activity_you_are_here">أنت هنا</string>
+    <string name="action_bar_search">بحث</string>
+    <string name="main_activity_show_fav_videos_list_title">مفضلات</string>
+
+    <!--     Drawer -->
+    <string name="drawer_login">تسجيل الدخول</string>
+    <string name="drawer_likes">المفضلات</string>
+    <string name="drawer_logout">تسجيل الخروج</string>
+    <string name="drawer_open">فتح الراسم</string>
+    <string name="drawer_close">غلق الراسم</string>
+
+    <!--  Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">إفتح اليوتيوب</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. اضغط على زر "فتح يوتيوب" في الجزء السفلي. \n\n سنقوم بفتح تطبيق اليوتيوب.</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. حدد الفيديو</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. اضغط على مشاركة</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. إختر التطبيق الخاص بنا</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. اختر المكان الذي تم تصوير الفيديو به</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. إضغط على تم</string>
+  <string name="add_a_video_tutorial_activity_not_show_message">أنت مزعج جدا. أنا أعرف ذلك بالفعل!
+  </string>
+
+    <!--  Add a video activity -->
+    <string name="action_bar_done">تم</string>
+    <string name="add_a_video_activity_error_location_not_found">لا يمكن العثور على الموقع. هل يمكن أن تحاول ذلك في وقت لاحق</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">ليس من الممكن رصد المدينة والدولة تلقائيا. هل يمكن إدخالها يدويا</string>
+    <string name="add_a_video_activity_video_added_correctly">تمت إضافة الفيديو بشكل صحيح</string>
+    <string name="add_a_video_activity_error_adding_video">كان هناك خطأ بإضافة الفيديو. يرجى المحاولة مرة أخرى</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">يجب عليك تسجيل الدخول لإضافة الفيديو. هل ترغب في الدخول الآن؟</string>
+
+    <!--  Video details activity -->
+    <string name="video_details_description_title">الوصف</string>
+    <string name="error_player">كان هناك خطأ في تهيئة YouTubePlayer (%1$s)</string>
+    <string name="action_bar_share">مشاركة</string>
+    <string name="share_title">شارك هذا مع...</string>
+    <string name="share_subject">تحقق من هذا الفيديو الرائع! %1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">يجب عليك تسجيل الدخول لمثل هذا الفيديو. هل ترغب في الدخول الآن؟</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">يجب عليك تسجيل الدخول للإبلاغ عن هذا الفيديو. هل ترغب في الدخول الآن؟</string>
+    <string name="video_details_activity_report_sent_correctly">بفضل الإبلاغ عن هذا الفيديو. سوف نتحقق منه في أقرب وقت ممكن</string>
+
+    <!--  Notification module -->
+    <string name="dialog_loading_generic_message">تحميل...</string>
+    <string name="notification_module_dialog_yes">نعم</string>
+    <string name="notification_module_dialog_no">لا ليس الآن</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">يجب عليك تسجيل الدخول</string>
+
+    <!--  Correctly request messages -->
+    <string name="correct_request_ok">تم إرسال الطلب </string>
+
+    <!--  Error messages -->
+    <string name="error_message_internet_connection">يبدو أنك لا تمتلك اتصال بالإنترنت. هل يمكنك التحقق ذلك؟</string>
+    <string name="error_message_server_generic">كانت هناك مشكلة مع الخادم الخاص بنا. هل يمكن أن تحاول في وقت لاحق؟</string>
+    <string name="error_message_script_error">خطأ في معالجة النص على كود السحابة</string>
+    <string name="error_message_validation_failed">فشل التحقق من كود السحابة </string>
+    <string name="error_message_generic">يبدو أن هناك مشكلة. هل يمكن أن تحاول في وقت لاحق؟</string>
+    <string name="error_message_video_not_found">الفيديو الذي تبحث عنه غير متواجد.</string>
+    <string name="error_message_username_already_taken">هناك بالفعل مستخدم يحمل نفس عنوان البريد الإلكتروني. هل يمكن اختيار واحد آخر؟</string>
+    <string name="error_message_login_with_facebook">كان هناك بعض الخطأ في محاولة الدخول على الفيسبوك. يرجى المحاولة مرة أخرى لاحقا</string>
+    <string name="error_message_login_with_google">كان هناك بعض الخطأ في محاولة تسجيل الدخول في جوجل بلس. يرجى المحاولة مرة أخرى لاحقا</string>
+    <string name="error_message_login_with_parse">أسم المستخدم وكلمة المرور غير متطابقان. هل يمكنك التحقق منهم؟</string>
+    <string name="error_message_user_not_logged_in">يجب على المستخدم تسجيل الدخول لهذا الغرض. هل يمكنك محاولة تسجيل الدخول؟</string>
+    <string name="error_message_adding_an_existing_video">الفيديو الذي تحاول إضافته موجود بالفعل</string>
+
+    <!--  Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">يبدو أنه من غير الممكن إطلاق تطبيق اليوتيوب. هل يمكنك التحقق من ما إذا كان تم تثبيته؟</string>
+
+    <!--  Generic error message for Edit Text -->
+    <string name="error_message_field_empty">لا يمكن ترك الحقل فارغا</string>
+    <string name="error_message_string_too_short">يجب عليك إدخال ما لا يقل عن%1$s من الحروف</string>
+    <string name="error_message_email_address_required">يجب إدخال عنوان بريد إلكتروني صالح</string>
+</resources>
