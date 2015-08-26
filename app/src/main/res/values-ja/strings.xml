@@ -1,0 +1,98 @@
+<resources>
+    <string name="app_name">ワールドスポットライト</string>
+
+    <!-- Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">これを行うにはログインが必要です。ログインしますか？</string>
+
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Facebookでサインイン</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Googleでサインイン</string>
+    <string name="sign_up_login_activity_sign_up">サインアップ</string>
+    <string name="sign_up_login_activity_log_in">ログイン</string>
+    <string name="sign_up_login_activity_skip">スキップ</string>
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Eメールでサインイン</string>
+    <string name="sign_up_activity_email_hint">Eメールを入力してください</string>
+    <string name="sign_up_activity_password_hint">パスワードを入力してください</string>
+    <string name="sign_up_activity_verify_password_hint">パスワードの確認</string>
+    <string name="sign_up_activity_sign_up">サインアップ</string>
+
+    <string name="sign_up_activity_error_message_password_not_match">パスワードが一致していません</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">Eメールでログイン</string>
+    <string name="login_activity_login">ログイン</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">ここにいます</string>
+    <string name="action_bar_search">検索</string>
+    <string name="main_activity_show_fav_videos_list_title">お気に入り</string>
+
+    <!--    Drawer -->
+    <string name="drawer_login">ログイン</string>
+    <string name="drawer_likes">お気に入り</string>
+    <string name="drawer_logout">ログアウト</string>
+    <string name="drawer_open">開いてる引き出し</string>
+    <string name="drawer_close">閉じてる引き出し</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">YouTubeを開く!</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1.下にある「YouTubeを開く」をクリックしてください。\n\nYouTubeアプリが開きます</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2.ビデオを選択してください</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3.シェアをクリックしてください</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4.我々のアプリを選択してください</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5.ビデオを撮った場所を選択してください</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6.終了をクリックしてください</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">もー、うるさいなぁ。全部知ってるよ！</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">終了</string>
+    <string name="add_a_video_activity_error_location_not_found">ロケーションが見つかりませんでした。後でもう一度試してください</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">国と都市を自動的に検出することができません。入力してください</string>
+    <string name="add_a_video_activity_video_added_correctly">ビデオが正確に追加されました</string>
+    <string name="add_a_video_activity_error_adding_video">ビデオ追加エラー。もう一度試してください</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">ビデオを追加するにはログインしなければなりません。今すぐログインしますか？</string>
+
+    <!-- Video details activity -->
+    <string name="video_details_description_title">詳細</string>
+    <string name="error_player">YouTubePlayerの起動でエラーが発生しました　(%1$s)</string>
+    <string name="action_bar_share">シェア</string>
+    <string name="share_title">&#8230;とシェア</string>
+    <string name="share_subject">このすごいビデオをチェックしてください! %1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">ビデオに「いいね」を付けるにはログインしなければなりません。今すぐログインしますか？</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">このビデオをレポートするにはログインしなければなりません。今すぐログインしますか？</string>
+    <string name="video_details_activity_report_sent_correctly">ビデオをレポートして下さってありがとうございます。すぐに確認致します</string>
+
+    <!-- Notification module -->
+    <string name="dialog_loading_generic_message">&#8230;をロード中</string>
+    <string name="notification_module_dialog_yes">はい</string>
+    <string name="notification_module_dialog_no">いいえ、まだです</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">ログインしなければなりません</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">リクエストはOKです</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">インターネット接続がありません。接続をご確認下さい。</string>
+    <string name="error_message_server_generic">サーバーで問題が発生しました。後ほど再度お試しください。</string>
+    <string name="error_message_script_error">クラウドコードでスクリプトの処理エラーが発生しました</string>
+    <string name="error_message_validation_failed">クラウドコードの確認失敗</string>
+    <string name="error_message_generic">エラーの可能性があります。後ほどお試しください。</string>
+    <string name="error_message_video_not_found">お探しのビデオはありません。</string>
+    <string name="error_message_username_already_taken">同じEメールアドレスのユーザーがすでにいます。別のEメールアドレスを選択してください。</string>
+    <string name="error_message_login_with_facebook">Facebookでのログインエラーが発生しました。後ほど再度お試しください。</string>
+    <string name="error_message_login_with_google">Googleでのログインエラーが発生しました。 後ほど再度お試しください。</string>
+    <string name="error_message_login_with_parse">ユーザー名またはパスワードが一致していません。ご確認ください。</string>
+    <string name="error_message_user_not_logged_in">これにはユーザーがログインしなければなりません。ログインしてください。</string>
+    <string name="error_message_adding_an_existing_video">追加しようとしているビデオは既にあります</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">YouTubeアプリを起動することができません。インストールされているかどうかを確認してください。</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">このフィールドは必須です</string>
+    <string name="error_message_string_too_short">少なくとも %1$s 文字入力してください</string>
+    <string name="error_message_email_address_required">有効なEメールアドレスを入力してください</string>
+
+</resources>
