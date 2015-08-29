@@ -39,6 +39,7 @@ import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseActivity;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
+import com.worldspotlightapp.android.ui.HashTagsActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -49,6 +50,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private static final String TAG = "VideoDetailsFragment";
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
+    private static final int HASH_TAGS_LIST_ACTIVITY_REQUEST = 2;
 
     private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
 
@@ -211,7 +213,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 case R.id.report_image_view:
                     reportThisVideo();
                 case R.id.hashtags_card_view:
-                    showHashTags();
+                    launchHashTagsListActivity();
             }
         }
     };
@@ -586,7 +588,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     }
 
     // Show the list of hash tags
-    private void showHashTags() {
-
+    private void launchHashTagsListActivity() {
+        Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsActivity.class);
+        startActivityForResult(startHashTagsListActivityIntent, HASH_TAGS_LIST_ACTIVITY_REQUEST);
     }
 }

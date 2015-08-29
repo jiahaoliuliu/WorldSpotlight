@@ -141,7 +141,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         mResponsesStack = new Stack<Object>();
         mVideosList = new ArrayList<Video>();
 
-        // Delete all the possible observers
+        // Delete all the possible instance of this observer
         mVideosModule.deleteObserver(this);
         mUserDataModule.deleteObserver(this);
 
