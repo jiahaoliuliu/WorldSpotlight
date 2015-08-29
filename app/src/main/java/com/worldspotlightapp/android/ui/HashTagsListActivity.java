@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
 
-public class HashTagsActivity extends AbstractBaseActivityObserver {
+public class HashTagsListActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "HashTagsActivity";
 
@@ -45,7 +45,7 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
         // Lock the screen orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        setContentView(R.layout.activity_hash_tags);
+        setContentView(R.layout.activity_hash_tags_list);
 
         mResponsesStack = new Stack<Object>();
 
@@ -156,7 +156,7 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        return o instanceof HashTagsActivity;
+        return o instanceof HashTagsListActivity;
     }
 
     @Override

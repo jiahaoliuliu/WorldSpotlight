@@ -6,17 +6,13 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,9 +34,8 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
-import com.worldspotlightapp.android.ui.AbstractBaseActivity;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
-import com.worldspotlightapp.android.ui.HashTagsActivity;
+import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -591,7 +586,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
     // Show the list of hash tags
     private void launchHashTagsListActivity() {
-        Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsActivity.class);
+        Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsListActivity.class);
         startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
     }
 
@@ -599,7 +594,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY) {
             if (resultCode == Activity.RESULT_OK) {
-                ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsActivity.INTENT_KEY_SELECTED_HASH_TAGS_List);
+                ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_List);
                 Log.v(TAG, "The list of hash selected received is " + selectedHashTagsList);
                 updateHashTagsList(selectedHashTagsList);
             }
