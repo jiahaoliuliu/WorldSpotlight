@@ -11,6 +11,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Report;
 import com.worldspotlightapp.android.model.UserData;
@@ -34,6 +35,7 @@ public class MainApplication extends Application {
         sInstance = this;
 
         // Initialize Parse
+        ParseObject.registerSubclass(HashTag.class);
         ParseObject.registerSubclass(Video.class);
         ParseObject.registerSubclass(UserData.class);
         ParseObject.registerSubclass(Like.class);
