@@ -6,8 +6,10 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="4dp"
+    card_view:cardCornerRadius="@dimen/card_view_card_corner_radius"
+    card_view:cardElevation="@dimen/card_view_card_elevation"
+    android:layout_marginTop="@dimen/video_details_group_margin_vertical"
+    android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
     >
 
     <CheckBox
@@ -16,5 +18,6 @@
         android:layout_height="wrap_content"
         style="?android:attr/textAppearanceMedium"
         android:padding="16dp"
+        android:paddingLeft="30dp"
         />
 </android.support.v7.widget.CardView>

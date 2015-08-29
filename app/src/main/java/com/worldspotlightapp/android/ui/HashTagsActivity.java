@@ -8,18 +8,11 @@ import android.util.Log;
 
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
-import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.HashTag;
-import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.videodetails.HashTagsListAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
@@ -60,11 +53,11 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
         // in content do not change the layout sie of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-
         // Use a linearLayoutManager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mNotificationModule.showLoadingDialog(mContext);
         mVideosModule.requestAllHashTags(this);
     }
 

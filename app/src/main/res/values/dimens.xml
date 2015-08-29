@@ -48,7 +48,7 @@
 
     <!-- Video details -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
-    <dimen name="video_details_group_margin_vertical">3dp</dimen>
+    <dimen name="video_details_group_margin_vertical">1dp</dimen>
     <!--     This margin applies only to the top. It is used when it is not possible to apply -->
     <dimen name="video_details_group_margin_vertical_absolute">6dp</dimen>
     <dimen name="video_details_view_pager_indicator_height">5dp</dimen>
