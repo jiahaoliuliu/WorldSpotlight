@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">World Spotlight</string>
+
+    <!-- Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">Tienes que loguarte. ¿Te gustaría hacerlo ahora?</string>
+
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Loguear con Facebook</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Loguear con Google</string>
+    <string name="sign_up_login_activity_sign_up">Registrar</string>
+    <string name="sign_up_login_activity_log_in">Loguear</string>
+    <string name="sign_up_login_activity_skip">Saltar esto</string>
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Registrar con tu correo</string>
+    <string name="sign_up_activity_email_hint">Escriba tu correo</string>
+    <string name="sign_up_activity_password_hint">Escriba tu contraseña</string>
+    <string name="sign_up_activity_verify_password_hint">Verifica tu contraseña</string>
+    <string name="sign_up_activity_sign_up">Registrar</string>
+    <string name="sign_up_activity_error_message_password_not_match">Tus contraseñas no coinciden</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">Loguera con el correo</string>
+    <string name="login_activity_login">Entrar</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">Estás aquí</string>
+    <string name="action_bar_search">Buscar</string>
+    <string name="main_activity_show_fav_videos_list_title">Favoritos</string>
+
+    <!--    Drawer -->
+    <string name="drawer_login">Loguar</string>
+    <string name="drawer_likes">Favoritos</string>
+    <string name="drawer_logout">Salir</string>
+    <string name="drawer_open">Cajón abierto</string>
+    <string name="drawer_close">Cajón cerrado</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">Abrir YouTube</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. Haz click en "Abrir YouTube" botón al final. \n\nAbriremos la aplicación YouTube</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. Selecciona un vídeo</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. Haz click aquí</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. Selecciona esta aplicación</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. Elige el lugar dónde se ha grabado el vídeo</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. Haz click en hecho</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">¡Esto ya me lo sé!</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">Hecho!</string>
+    <string name="add_a_video_activity_error_location_not_found">No hemos podido encontrar el lugar. ¿Podrías probar más tarde?</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">No es posible encontrar el lugar de forma automática podrías introducirlo manualmente.</string>
+    <string name="add_a_video_activity_video_added_correctly">El vídeo ha sido  añadido correctamente</string>
+    <string name="add_a_video_activity_error_adding_video">Hubo un error añadiendo el vídeo. ¿Podrías intentarlo más tarde?</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">Tienes que loguarte para añadir un vídeo. ¿Te gustaría hacerlo ahora?</string>
+
+    <!-- Video details activity -->
+    <string name="video_details_description_title">Descripción</string>
+    <string name="error_player">Hubo un problem initializando YouTube Player (%1$s)</string>
+    <string name="action_bar_share">Compartir</string>
+    <string name="share_title">Compartirlo con &#8230;</string>
+    <string name="share_subject">¡Mira este vídeo que he encontrado! %1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">Tienes que loguearte para gustar este vídeo. ¿Te gustaría hacerlo ahora?</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">Tienes que loguearte para reportar este vídeo. ¿Te gustaría hacerlo ahora?</string>
+    <string name="video_details_activity_report_sent_correctly">Gracias por reportar este vídeo. Vamos a comprobarlo lo antes posible</string>
+
+    <!-- Notification module -->
+    <string name="dialog_loading_generic_message">Cargando &#8230;</string>
+    <string name="notification_module_dialog_yes">Sí</string>
+    <string name="notification_module_dialog_no">No por ahora</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">Tiens que loguearte</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">La petición ha ido bien</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">Parece ser que no tienes conexión a internet. ¿Podrías comprobarlo?</string>
+    <string name="error_message_server_generic">Hubo un problema con el servidor. ¿Podrías probarlo más tarde?</string>
+    <string name="error_message_script_error">Error procesando el script</string>
+    <string name="error_message_validation_failed">Error validando cloud code.</string>
+    <string name="error_message_generic">Parece que hubo un problema. ¿Podrías probarlo más tarde?</string>
+    <string name="error_message_video_not_found">El vídeo que estás buscando no existe</string>
+    <string name="error_message_username_already_taken">Ya existe un usuario con ese correo electrónico. ¿Podrías probarlo con otro correo?</string>
+    <string name="error_message_login_with_facebook">Hubo algún problema logueando con Facebook. ¿Podrías intentarlo más tarde?</string>
+    <string name="error_message_login_with_google">Hubo algún problem logueando con Google Plus. ¿Podrías intentarlo más tarde?</string>
+    <string name="error_message_login_with_parse">El usuario no concuerda con la contraseña. ¿Podrías comprobarlo?</string>
+    <string name="error_message_user_not_logged_in">Tienes que loguarte para eso. ¿Quieres loguearte ahora?</string>
+    <string name="error_message_adding_an_existing_video">El vídeo que quieres añadir ya existe</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">Parece ser que no podemos abrir la aplicación de YouTube. ¿La tienes instalada?</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">Este campo no puede estar vacío.</string>
+    <string name="error_message_string_too_short">Tienes que introducir al menos %1$s letras.</string>
+    <string name="error_message_email_address_required">Necesitamos una cuenta de correo válida</string>
+
+</resources>
