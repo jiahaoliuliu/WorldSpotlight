@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,8 +66,12 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private ImageView mReportAVideoImageView;
     private ImageView mLikeImageView;
 
+    // Description
     private CardView mDescriptionCardView;
-    private TextView mDescriptionTextView;
+    private TextView mDescriptionContentTextView;
+
+    // HashTags
+    private CardView mHashTagsCardView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
     private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
@@ -121,25 +126,28 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Set the content of the view
-        RelativeLayout videoDetailsFragmentRelativeLayout = (RelativeLayout)inflater.inflate(R.layout.fragment_video_details, container,
+        ScrollView videoDetailsFragmentScrollView = (ScrollView)inflater.inflate(R.layout.fragment_video_details, container,
                 false);
 
-        // Link the views
-        mExtraInfoCardView = (CardView) videoDetailsFragmentRelativeLayout.findViewById(R.id.extra_info_card_view);
-        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.author_thumbnail_image_view);
-        mAuthorNameTextView = (TextView) videoDetailsFragmentRelativeLayout.findViewById(R.id.author_name_text_view);
-
-        mLikeImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.like_image_view);
-        mLikeImageView.setOnClickListener(onClickListener);
-
-        mReportAVideoImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.report_image_view);
-        mReportAVideoImageView.setOnClickListener(onClickListener);
-
-        mDescriptionCardView = (CardView) videoDetailsFragmentRelativeLayout.findViewById(R.id.description_card_view);
-        mDescriptionTextView = (TextView) videoDetailsFragmentRelativeLayout.findViewById(R.id.description_text_view);
         mDummyYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.dummy_youtube_fragment);
 
-        return videoDetailsFragmentRelativeLayout;
+        // Link the views
+        mExtraInfoCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.extra_info_card_view);
+        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.author_thumbnail_image_view);
+        mAuthorNameTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.author_name_text_view);
+
+        mLikeImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.like_image_view);
+        mLikeImageView.setOnClickListener(onClickListener);
+
+        mReportAVideoImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.report_image_view);
+        mReportAVideoImageView.setOnClickListener(onClickListener);
+
+        mDescriptionCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.description_card_view);
+        mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
+
+        mHashTagsCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_card_view);
+
+        return videoDetailsFragmentScrollView;
     }
 
     @Override
@@ -312,7 +320,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         }
 
         // Description
-        mDescriptionTextView.setText(mVideo.getDescription());
+        mDescriptionContentTextView.setText(mVideo.getDescription());
 
         // If the youtube player has been already initialized
         if (mYouTubePlayer != null) {
