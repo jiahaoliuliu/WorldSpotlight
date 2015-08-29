@@ -49,8 +49,10 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataM
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseActivityObserver;
@@ -76,6 +78,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private ClusterManager<Video> mClusterManager;
 
     private List<Video> mVideosList;
+
+    private List<HashTag> mHashTagsList;
 
     /**
      * The set of response retrieved from the modules
@@ -214,6 +218,9 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
         // Update data
         setupMapIfNeeded();
+
+        // Update the list of hash tags
+        mVideosModule.requestAllHashTags(this);
     }
 
     private boolean hasActivityStartedBySharingText() {
@@ -298,7 +305,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 Log.v(TAG, "This activity is in foreground. Processing data if exists");
                 processDataIfExists();
             } else {
-                Log.v(TAG, "This activity is not in foregorund. Not do anything");
+                Log.v(TAG, "This activity is not in foreground. Not do anything");
             }
 
             // The MainActivity will listen constantly to the changes on the list of videos
@@ -423,6 +430,16 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         }
                     }
                 });
+            } else if (response instanceof VideosModuleHashTagsListResponse) {
+                VideosModuleHashTagsListResponse videosModuleHashTagsListResponse = (VideosModuleHashTagsListResponse) response;
+                ParseResponse parseResponse = videosModuleHashTagsListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "hash tags list received. " + videosModuleHashTagsListResponse.getHashTagsList());
+                    mHashTagsList = videosModuleHashTagsListResponse.getHashTagsList();
+                } else {
+                    Log.w(TAG, "Error getting hash tags list", parseResponse.getCause());
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
             }
 
             Log.v(TAG, "Dismissing the loading dialog");

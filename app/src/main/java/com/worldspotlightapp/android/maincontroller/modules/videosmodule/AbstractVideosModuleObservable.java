@@ -75,4 +75,11 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The location of the video
      */
     public abstract void addAVideo(String videoId, LatLng videoLocation);
+
+    /**
+     * Request the list of all the hashtags
+     * @param observer
+     *      The observer to notify when the data is ready
+     */
+    public abstract void requestAllHashTags(Observer observer);
 }

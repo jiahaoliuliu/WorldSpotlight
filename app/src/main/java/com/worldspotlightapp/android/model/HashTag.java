@@ -13,7 +13,7 @@ import com.parse.ParseObject;
 public class HashTag extends ParseObject{
 
     // The name of the hash tag
-    private static final String PARSE_TABLE_COLUMN_HASH_TAG = "name";
+    public static final String PARSE_TABLE_COLUMN_HASH_TAG = "name";
 
     // Empty constructor for Parse
     public HashTag() {

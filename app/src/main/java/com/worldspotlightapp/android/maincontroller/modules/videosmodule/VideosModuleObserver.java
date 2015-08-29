@@ -26,10 +26,12 @@ import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
@@ -65,8 +67,15 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private static final int MAX_PARSE_QUERY_RESULT = 500;
 
+    /**
+     * The maximum number of results expected
+     */
+    private static final int MAX_PARSE_QUERY_RESULT_FOR_HASHTAG = 1000;
+
     // The list of all the videos
     private List<Video> mVideosList;
+    // The list of all the hashTags
+    private List<HashTag> mHashTagsList;
 
     private Context mContext;
     private ExecutorService mExecutorService;
@@ -333,6 +342,45 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 addAVideo(videoId, title, description, videoLocation);
             }
         }));
+    }
+
+    @Override
+    public void requestAllHashTags(Observer observer) {
+        // Register the observer
+        addObserver(observer);
+
+        // Return cached list if any
+        if (mHashTagsList != null) {
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
+                    new VideosModuleHashTagsListResponse(parseResponse, mHashTagsList);
+            setChanged();
+            notifyObservers(videosModuleHashTagsListResponse);
+            return;
+        }
+
+        //Retrieve element from background
+        ParseQuery<HashTag> query = ParseQuery.getQuery(HashTag.class);
+        query.orderByAscending(HashTag.PARSE_TABLE_COLUMN_HASH_TAG);
+        query.setLimit(MAX_PARSE_QUERY_RESULT_FOR_HASHTAG);
+        query.findInBackground(new FindCallback<HashTag>() {
+            @Override
+            public void done(List<HashTag> hashTagsList, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    mHashTagsList = hashTagsList;
+                    VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
+                            new VideosModuleHashTagsListResponse(parseResponse, mHashTagsList);
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListResponse);
+                } else {
+                    VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
+                            new VideosModuleHashTagsListResponse(parseResponse, null);
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListResponse);
+                }
+            }
+        });
     }
 
     /**
