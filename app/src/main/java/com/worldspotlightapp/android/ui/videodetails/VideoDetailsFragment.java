@@ -146,6 +146,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
 
         mHashTagsCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_card_view);
+        mHashTagsCardView.setOnClickListener(onClickListener);
 
         return videoDetailsFragmentScrollView;
     }
@@ -209,6 +210,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     break;
                 case R.id.report_image_view:
                     reportThisVideo();
+                case R.id.hashtags_card_view:
+                    showHashTags();
             }
         }
     };
@@ -580,5 +583,10 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                         mVideo.getVideoUrl();
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
+    }
+
+    // Show the list of hash tags
+    private void showHashTags() {
+
     }
 }
