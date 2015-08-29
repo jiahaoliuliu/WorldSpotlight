@@ -1,10 +1,12 @@
 package com.worldspotlightapp.android.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
@@ -21,8 +23,13 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "HashTagsActivity";
 
+    /**
+     * The content of the selected items to be send back to the previous activity
+     */
+    public static final String INTENT_KEY_SELECTED_HASH_TAGS_List = "com.worldspotlight.android.ui.HashTagsActivity.SelectedHashTagsList";
+
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private HashTagsListAdapter mHashTagsListAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private List<HashTag> mHashTagsList;
@@ -44,6 +51,9 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
 
         // Delete all the possible instance of this observer
         mVideosModule.deleteObserver(this);
+
+        // Set the action bar
+        mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the elements
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -101,8 +111,8 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "hash tags list received. " + videosModuleHashTagsListResponse.getHashTagsList());
                     mHashTagsList = videosModuleHashTagsListResponse.getHashTagsList();
-                    mAdapter = new HashTagsListAdapter(mHashTagsList);
-                    mRecyclerView.setAdapter(mAdapter);
+                    mHashTagsListAdapter = new HashTagsListAdapter(mHashTagsList);
+                    mRecyclerView.setAdapter(mHashTagsListAdapter);
                 } else {
                     Log.w(TAG, "Error getting hash tags list", parseResponse.getCause());
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
@@ -116,6 +126,29 @@ public class HashTagsActivity extends AbstractBaseActivityObserver {
             // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
             // there is not need to clean them
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "home button pressed");
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Send the data back to the Video details activity
+        Intent resultIntent = new Intent();
+        if (mHashTagsListAdapter != null) {
+            resultIntent.putStringArrayListExtra(INTENT_KEY_SELECTED_HASH_TAGS_List, mHashTagsListAdapter.getSelectedHashTagsList());
+        }
+        setResult(RESULT_OK, resultIntent);
+        super.onBackPressed();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.ui.videodetails;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import com.worldspotlightapp.android.ui.HashTagsActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
 
@@ -50,7 +52,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private static final String TAG = "VideoDetailsFragment";
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
-    private static final int HASH_TAGS_LIST_ACTIVITY_REQUEST = 2;
+    private static final int REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY = 2;
 
     private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
 
@@ -590,6 +592,31 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     // Show the list of hash tags
     private void launchHashTagsListActivity() {
         Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsActivity.class);
-        startActivityForResult(startHashTagsListActivityIntent, HASH_TAGS_LIST_ACTIVITY_REQUEST);
+        startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsActivity.INTENT_KEY_SELECTED_HASH_TAGS_List);
+                Log.v(TAG, "The list of hash selected received is " + selectedHashTagsList);
+                updateHashTagsList(selectedHashTagsList);
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Update the list of hashtags.
+     * @param hashTagsList
+     *      The new selected hashtags
+     */
+    private void updateHashTagsList(ArrayList<String> hashTagsList) {
+        // TODO: By saving an instance of it and compare the new list with the old one, it will
+        // optimize the process
+        // TODO: implement this
     }
 }

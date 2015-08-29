@@ -1,15 +1,17 @@
 package com.worldspotlightapp.android.ui.videodetails;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.TextView;
+import android.widget.CompoundButton;
 
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.HashTag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +19,12 @@ import java.util.List;
  */
 public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapter.ViewHolder> {
 
+    private static final String TAG = "HashTagsListAdapter";
+
     private List<HashTag> mHashTagsList;
+
+    // The list of the id of the selected tags
+    private ArrayList<String> mSelectedHashTagsList;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -27,7 +34,6 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
         public CheckBox mHashTagCheckBox;
         public ViewHolder(View view) {
             super(view);
-//            mTextView = (TextView)view.findViewById(R.id.titleTextView);
             mHashTagCheckBox = (CheckBox)view.findViewById(R.id.hash_tag_check_box);
         }
     }
@@ -35,6 +41,7 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
     //Simple constructor
     public HashTagsListAdapter(List<HashTag> hashTagsList) {
         mHashTagsList = hashTagsList;
+        mSelectedHashTagsList = new ArrayList<String>();
     }
 
     @Override
@@ -52,14 +59,41 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mHashTagCheckBox.setText(mHashTagsList.get(position).getName());
+        holder.mHashTagCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                HashTag hashTag = mHashTagsList.get(position);
+                Log.v(TAG, "The hashtag clicked is " + hashTag);
+                String hashTagId = hashTag.getObjectId();
+                // If the checkbox has been checked
+                if (isChecked) {
+                    // Only if it was not contained before
+                    if (!mSelectedHashTagsList.contains(hashTagId)) {
+                        mSelectedHashTagsList.add(hashTagId);
+                    }
+                // If the checkbox has been unchecked
+                } else {
+                    // Only if it was contained before
+                    if (mSelectedHashTagsList.contains(hashTagId)) {
+                        mSelectedHashTagsList.remove(hashTagId);
+                    }
+                }
+
+                Log.d(TAG, "The content of the selected items is " + mSelectedHashTagsList);
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mHashTagsList.size();
+    }
+
+    public ArrayList<String> getSelectedHashTagsList() {
+        return mSelectedHashTagsList;
     }
 
 }
