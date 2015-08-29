@@ -3,6 +3,8 @@ package com.worldspotlightapp.android.model;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.clustering.ClusterItem;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
@@ -12,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,11 +78,16 @@ public class Video extends ParseObject implements ClusterItem {
      */
     private String mVideoListThumbnailUrl;
 
+    // Others
+    private Gson gson;
+
     /**
      * The empty constructor
      */
     public Video(){
         super();
+        gson = new Gson();
+
     }
 
     /**
@@ -158,13 +166,17 @@ public class Video extends ParseObject implements ClusterItem {
 
         // Country
         String country = jsonObject.getString(PARSE_COLUMN_COUNTRY);
-
+        setCountry(country);
 
         // Location
         JSONObject location = jsonObject.getJSONObject(PARSE_COLUMN_LOCATION);
         double latitude = location.getDouble(PARSE_COLUMN_LOCATION_LATITUDE);
         double longitude = location.getDouble(PARSE_COLUMN_LOCATION_LONGITUDE);
         setPosition(latitude, longitude);
+
+        // HashTags
+        JSONArray hashTagsJsonArray = jsonObject.getJSONArray(PARSE_COLUMN_HASH_TAGS);
+        setHashTags(hashTagsJsonArray.toString());
     }
 
     private void setTitle(String title) {
@@ -313,6 +325,15 @@ public class Video extends ParseObject implements ClusterItem {
         return mHashTags;
     }
 
+    public String getHashTagsAsJsonArray() {
+        if (mHashTags == null) {
+            mHashTags = retrieveHashTags();
+        }
+
+        return gson.toJson(mHashTags);
+
+    }
+
     public void setHashTags(List<String> hashTags) {
         // Refresh the list of hashtags
         getHashTags();
@@ -327,22 +348,45 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     /**
+     * Set the hash tags list with a hash tags list as JSON Array
+     * @param jsonArrayHashTags
+     *      The String which is the json array of hash tags
+     */
+    public void setHashTags(String jsonArrayHashTags) {
+        // Refresh the list of hash tags
+        getHashTags();
+
+        // TODO: Check if it works for the list of items
+        // TODO: Check if it works for a empty list
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        mHashTags = gson.fromJson(jsonArrayHashTags, type);
+
+        put(PARSE_COLUMN_HASH_TAGS, mHashTags);
+    }
+
+    /**
      * Retrieve the list of hashtags, which is saved as json array
      */
     private List<String> retrieveHashTags() {
-        List<String> hashTagsList = new ArrayList<String>();
 
         JSONArray hashTagsJsonArray = getJSONArray(PARSE_COLUMN_HASH_TAGS);
 
-        String hashTag = null;
-        for (int i = 0; i < hashTagsJsonArray.length(); i++) {
-            try {
-                hashTag = hashTagsJsonArray.getString(i);
-                hashTagsList.add(hashTag);
-            } catch (JSONException e) {
-                Log.w(TAG, "Error getting the hash tag of the position " + i, e);
-            }
-        }
+        // TODO: Check if it works for the list of items
+        // TODO: Check if it works for a empty list
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        List<String> hashTagsList = gson.fromJson(hashTagsJsonArray.toString(), type);
+
+        Log.v(TAG, "The origina list of hash tags is " + hashTagsJsonArray + ", and the converted is " + hashTagsList);
+
+//        String hashTag = null;
+//        for (int i = 0; i < hashTagsJsonArray.length(); i++) {
+//            try {
+//                hashTag = hashTagsJsonArray.getString(i);
+//                hashTagsList.add(hashTag);
+//            } catch (JSONException e) {
+//                Log.w(TAG, "Error getting the hash tag of the position " + i, e);
+//            }
+//        }
 
         return hashTagsList;
     }

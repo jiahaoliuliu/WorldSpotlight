@@ -130,6 +130,11 @@ public class VideoDao {
         ParseGeoPoint parseGeoPoint = new ParseGeoPoint(latitude, longitude);
         video.put(Video.PARSE_COLUMN_LOCATION, parseGeoPoint);
 
+        // HashTags
+        String hashTagsJsonArray = cursor.getString(cursor.getColumnIndex(TableVideo.HASH_TAGS_LIST));
+        // TODO: Check what happens with empty list
+        video.setHashTags(hashTagsJsonArray);
+
         if (isLastData) {
             cursor.close();
         }
@@ -210,6 +215,9 @@ public class VideoDao {
         LatLng location = video.getPosition();
         contentValues.put(TableVideo.LATITUDE, location.latitude);
         contentValues.put(TableVideo.LONGITUDE, location.longitude);
+
+        // HashTags
+        contentValues.put(TableVideo.HASH_TAGS_LIST, video.getHashTagsAsJsonArray());
 
         return mDatabase.insert(TableVideo.TABLE_NAME, null, contentValues);
     }

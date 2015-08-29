@@ -620,6 +620,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
         List<Video> videosList = new ArrayList<Video>();
         String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
+
+        // TODO: Replace the follow code with gson
         try {
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray(JSON_FILE_RESULTS_KEY);
