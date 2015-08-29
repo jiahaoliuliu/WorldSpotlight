@@ -587,6 +587,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     // Show the list of hash tags
     private void launchHashTagsListActivity() {
         Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsListActivity.class);
+        startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
         startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
     }
 
@@ -594,9 +595,14 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY) {
             if (resultCode == Activity.RESULT_OK) {
+                String videoObjectId = data.getStringExtra(Video.INTENT_KEY_OBJECT_ID);
+                if (!mVideoObjectId.equals(videoObjectId)) {
+                    Log.w(TAG, "Wrong video object id received");
+                    return;
+                }
+
                 ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_List);
                 Log.v(TAG, "The list of hash selected received is " + selectedHashTagsList);
-                updateHashTagsList(selectedHashTagsList);
             }
             return;
         }
@@ -604,14 +610,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Update the list of hashtags.
-     * @param hashTagsList
-     *      The new selected hashtags
-     */
-    private void updateHashTagsList(ArrayList<String> hashTagsList) {
-        // TODO: By saving an instance of it and compare the new list with the old one, it will
-        // optimize the process
-        // TODO: implement this
+    private void updateHashTagsList(ArrayList<String> selectedHashTagsList) {
+        // TODO: Update ui
+        mVideosModule.updateHashTagsList(this, mVideoObjectId, selectedHashTagsList);
     }
 }

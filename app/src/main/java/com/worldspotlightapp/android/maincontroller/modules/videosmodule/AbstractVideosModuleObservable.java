@@ -5,6 +5,7 @@ import com.worldspotlightapp.android.maincontroller.AbstractBaseModuleObservable
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.UUID;
@@ -65,16 +66,18 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
 
     /**
      * Add a new video to the database.
-     * The video shoudln't already exists in the database.
+     * The video shouldn't already exists in the database.
      * This method is aim to be invoked by {@link com.worldspotlightapp.android.ui.AddAVideoActivity},
-     * which once the invokation is done, will be MainActivity the one which handle the notifications.
+     * which once the invocation is done, will be MainActivity the one which handle the notifications.
      * Since MainActivity is subscribed to this module, there is not need to call it here.
      * @param videoId
      *      The id of the video
      * @param videoLocation
      *      The location of the video
+     * @param hashTagsList
+     *      The list of hash tags
      */
-    public abstract void addAVideo(String videoId, LatLng videoLocation);
+    public abstract void addAVideo(String videoId, LatLng videoLocation, List<String> hashTagsList);
 
     /**
      * Request the list of all the hashtags
@@ -82,4 +85,15 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      *      The observer to notify when the data is ready
      */
     public abstract void requestAllHashTags(Observer observer);
+
+    /**
+     * Update the list of hash tags of a video
+     * @param observer
+     *      The observer to notify when the list of hash tags has been updated
+     * @param videoObjectId
+     *      The object id of the video to be updated
+     * @param hashTagsList
+     *      The list of the names of the hash tags to be updated
+     */
+    public abstract void updateHashTagsList(Observer observer, String videoObjectId, ArrayList<String> hashTagsList);
 }

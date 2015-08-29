@@ -306,7 +306,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void addAVideo(final String videoId, final LatLng videoLocation) {
+    public void addAVideo(final String videoId, final LatLng videoLocation, final List<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", location " + videoLocation);
 
         boolean videoAlreadyExists = false;
@@ -339,7 +339,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         mExecutorService.execute(new RetrieveTitleDescriptionRunnable(videoId, new RequestTitleAndDescriptionCallback() {
             @Override
             public void done(String title, String description) {
-                addAVideo(videoId, title, description, videoLocation);
+                addAVideo(videoId, title, description, videoLocation, hashTagsList);
             }
         }));
     }
@@ -383,6 +383,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         });
     }
 
+    @Override
+    public void updateHashTagsList(Observer observer, String videoObjectId, ArrayList<String> hashTagsList) {
+        // TODO: Implement this
+    }
+
     /**
      * Add a video into the backend. This method might not be running in the main thread
      * @param videoId
@@ -394,8 +399,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      *      all the information
      * @param videoLocation
      *      The location where the video was filmed
+     * @param hashTagsList
+     *      The list of hash tags
      */
-    private void addAVideo(String videoId, String title, String description, LatLng videoLocation) {
+    private void addAVideo(String videoId, String title, String description, LatLng videoLocation, List<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation);
 
@@ -434,7 +441,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 country = countryName;
             }
         }
-        addAVideo(videoId, title, description, videoLocation, city, country);
+        addAVideo(videoId, title, description, videoLocation, city, country, hashTagsList);
     }
 
     /**
@@ -451,11 +458,13 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      *      The city where the video was filmed
      * @param country
      *      The country where the video was filmed.
+     * @param hashTagsList
+     *      The list of hash tags
      */
-    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country) {
+    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country, List<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation + ", city " + city + ", country " + country);
-        final Video video = new Video(title, description, videoId, city, country, videoLocation);
+        final Video video = new Video(title, description, videoId, city, country, videoLocation, hashTagsList);
         video.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

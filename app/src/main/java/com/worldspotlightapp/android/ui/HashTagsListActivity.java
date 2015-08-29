@@ -13,6 +13,7 @@ import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.model.HashTag;
+import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.videodetails.HashTagsListAdapter;
 
 import java.util.List;
@@ -22,6 +23,11 @@ import java.util.Stack;
 public class HashTagsListActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "HashTagsActivity";
+
+    /**
+     * The object id of the video which all the hash tags belongs
+     */
+    private String mVideoObjectId;
 
     /**
      * The content of the selected items to be send back to the previous activity
@@ -46,6 +52,14 @@ public class HashTagsListActivity extends AbstractBaseActivityObserver {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setContentView(R.layout.activity_hash_tags_list);
+
+        // Get the video id
+        Bundle extras = getIntent().getExtras();
+        if (extras == null || !extras.containsKey(Video.INTENT_KEY_OBJECT_ID)) {
+            throw new IllegalArgumentException("You must pass the video object id");
+        }
+
+        mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
 
         mResponsesStack = new Stack<Object>();
 
@@ -147,6 +161,7 @@ public class HashTagsListActivity extends AbstractBaseActivityObserver {
         if (mHashTagsListAdapter != null) {
             resultIntent.putStringArrayListExtra(INTENT_KEY_SELECTED_HASH_TAGS_List, mHashTagsListAdapter.getSelectedHashTagsList());
         }
+        resultIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
         setResult(RESULT_OK, resultIntent);
         super.onBackPressed();
     }

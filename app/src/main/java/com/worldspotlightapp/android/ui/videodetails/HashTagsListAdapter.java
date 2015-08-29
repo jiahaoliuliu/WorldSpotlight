@@ -23,7 +23,7 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
 
     private List<HashTag> mHashTagsList;
 
-    // The list of the id of the selected tags
+    // The list of the name of the selected tags
     private ArrayList<String> mSelectedHashTagsList;
 
     // Provide a reference to the views for each data item
@@ -66,7 +66,7 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 HashTag hashTag = mHashTagsList.get(position);
                 Log.v(TAG, "The hashtag clicked is " + hashTag);
-                String hashTagId = hashTag.getObjectId();
+                String hashTagId = hashTag.getName();
                 // If the checkbox has been checked
                 if (isChecked) {
                     // Only if it was not contained before
@@ -92,6 +92,11 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
         return mHashTagsList.size();
     }
 
+    /**
+     * Get the name of the list of selected hash tags
+     * @return
+     *      The list of names o fhe hash tags
+     */
     public ArrayList<String> getSelectedHashTagsList() {
         return mSelectedHashTagsList;
     }

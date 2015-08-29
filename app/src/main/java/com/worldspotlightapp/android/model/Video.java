@@ -8,8 +8,13 @@ import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a class which contains the information of the table
@@ -26,28 +31,38 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_OBJECT_ID = "com.worldspotlightapp.android.model.video.objectid";
     public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
 
+    // Title
     public static final String INTENT_KEY_TITLE = "com.worldspotlightapp.android.model.video.title";
     public static final String PARSE_COLUMN_TITLE = "title";
 
+    // Description
     public static final String INTENT_KEY_DESCRIPTION = "com.worldspotlightapp.android.model.video.description";
     public static final String PARSE_COLUMN_DESCRIPTION = "description";
 
+    // Video id
     public static final String INTENT_KEY_VIDEO_ID = "com.worldspotlight.android.model.video.videoid";
     public static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
     private static final String VIDEO_URL_PREFIX = "http://www.worldspotlightapp.com/video/";
     private String mVideoUrl;
 
+    // City
     public static final String INTENT_KEY_CITY = "com.worldspotlightapp.android.model.video.city";
     public static final String PARSE_COLUMN_CITY = "city";
 
+    // Country
     public static final String INTENT_KEY_COUNTRY = "com.worldspotlightapp.android.model.video.country";
     public static final String PARSE_COLUMN_COUNTRY = "country";
 
+    // Location
     public static final String PARSE_COLUMN_LOCATION = "location";
     private LatLng mLocation;
     private static final String PARSE_COLUMN_LOCATION_LATITUDE= "latitude";
     private static final String PARSE_COLUMN_LOCATION_LONGITUDE= "longitude";
+
+    // HashTags
+    public static final String PARSE_COLUMN_HASH_TAGS = "hashTags";
+    public List<String> mHashTags;
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -96,7 +111,7 @@ public class Video extends ParseObject implements ClusterItem {
      * @param position
      *      The geoposition where the video was filmed
      */
-    public Video(String title, String description, String videoId, String city, String country, LatLng position) {
+    public Video(String title, String description, String videoId, String city, String country, LatLng position, List<String> hashTags) {
         this();
         setTitle(title);
         setDescription(description);
@@ -104,6 +119,7 @@ public class Video extends ParseObject implements ClusterItem {
         setCity(city);
         setCountry(country);
         setPosition(position.latitude, position.longitude);
+        setHashTags(hashTags);
     }
 
     /**
@@ -288,6 +304,49 @@ public class Video extends ParseObject implements ClusterItem {
         return mVideoUrl;
     }
 
+    // HashTag
+    public List<String> getHashTags() {
+        if (mHashTags == null) {
+            mHashTags = retrieveHashTags();
+        }
+
+        return mHashTags;
+    }
+
+    public void setHashTags(List<String> hashTags) {
+        // Refresh the list of hashtags
+        getHashTags();
+
+        for (String hashTag : hashTags) {
+            if (!mHashTags.contains(hashTag)) {
+                mHashTags.add(hashTag);
+            }
+        }
+
+        put(PARSE_COLUMN_HASH_TAGS, mHashTags);
+    }
+
+    /**
+     * Retrieve the list of hashtags, which is saved as json array
+     */
+    private List<String> retrieveHashTags() {
+        List<String> hashTagsList = new ArrayList<String>();
+
+        JSONArray hashTagsJsonArray = getJSONArray(PARSE_COLUMN_HASH_TAGS);
+
+        String hashTag = null;
+        for (int i = 0; i < hashTagsJsonArray.length(); i++) {
+            try {
+                hashTag = hashTagsJsonArray.getString(i);
+                hashTagsList.add(hashTag);
+            } catch (JSONException e) {
+                Log.w(TAG, "Error getting the hash tag of the position " + i, e);
+            }
+        }
+
+        return hashTagsList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -323,6 +382,7 @@ public class Video extends ParseObject implements ClusterItem {
                 "videoId='" + getVideoId() + '\'' +
                 "thumbnailUrl='" + getThumbnailUrl() + '\'' +
                 "location='" + getPosition() + '\'' +
+                "hashTags='" + getHashTags() + '\'' +
                 '}';
     }
 }
