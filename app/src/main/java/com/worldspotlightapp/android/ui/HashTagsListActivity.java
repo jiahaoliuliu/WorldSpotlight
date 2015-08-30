@@ -16,6 +16,7 @@ import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.videodetails.HashTagsListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
@@ -32,13 +33,14 @@ public class HashTagsListActivity extends AbstractBaseActivityObserver {
     /**
      * The content of the selected items to be send back to the previous activity
      */
-    public static final String INTENT_KEY_SELECTED_HASH_TAGS_List = "com.worldspotlight.android.ui.HashTagsActivity.SelectedHashTagsList";
+    public static final String INTENT_KEY_SELECTED_HASH_TAGS_LIST = "com.worldspotlight.android.ui.HashTagsActivity.SelectedHashTagsList";
 
     private RecyclerView mRecyclerView;
     private HashTagsListAdapter mHashTagsListAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private List<HashTag> mHashTagsList;
+    private ArrayList<String> mSelectedHashTagsNames;
 
     /**
      * The set of response retrieved from the modules
@@ -58,8 +60,13 @@ public class HashTagsListActivity extends AbstractBaseActivityObserver {
         if (extras == null || !extras.containsKey(Video.INTENT_KEY_OBJECT_ID)) {
             throw new IllegalArgumentException("You must pass the video object id");
         }
-
         mVideoObjectId = extras.getString(Video.INTENT_KEY_OBJECT_ID);
+
+        // Get the list of selected hash tags names previously
+        if (extras == null || !extras.containsKey(INTENT_KEY_SELECTED_HASH_TAGS_LIST)) {
+            throw new IllegalArgumentException("You must pass the selected hash tags names");
+        }
+        mSelectedHashTagsNames = extras.getStringArrayList(INTENT_KEY_SELECTED_HASH_TAGS_LIST);
 
         mResponsesStack = new Stack<Object>();
 
@@ -125,7 +132,7 @@ public class HashTagsListActivity extends AbstractBaseActivityObserver {
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "hash tags list received. " + videosModuleHashTagsListResponse.getHashTagsList());
                     mHashTagsList = videosModuleHashTagsListResponse.getHashTagsList();
-                    mHashTagsListAdapter = new HashTagsListAdapter(mHashTagsList);
+                    mHashTagsListAdapter = new HashTagsListAdapter(mHashTagsList, mSelectedHashTagsNames);
                     mRecyclerView.setAdapter(mHashTagsListAdapter);
                 } else {
                     Log.w(TAG, "Error getting hash tags list", parseResponse.getCause());
@@ -159,7 +166,7 @@ public class HashTagsListActivity extends AbstractBaseActivityObserver {
         // Send the data back to the Video details activity
         Intent resultIntent = new Intent();
         if (mHashTagsListAdapter != null) {
-            resultIntent.putStringArrayListExtra(INTENT_KEY_SELECTED_HASH_TAGS_List, mHashTagsListAdapter.getSelectedHashTagsList());
+            resultIntent.putStringArrayListExtra(INTENT_KEY_SELECTED_HASH_TAGS_LIST, mHashTagsListAdapter.getSelectedHashTagsList());
         }
         resultIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
         setResult(RESULT_OK, resultIntent);

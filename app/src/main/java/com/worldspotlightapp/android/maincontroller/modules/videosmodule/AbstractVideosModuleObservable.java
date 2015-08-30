@@ -77,7 +77,7 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
      * @param hashTagsList
      *      The list of hash tags
      */
-    public abstract void addAVideo(String videoId, LatLng videoLocation, List<String> hashTagsList);
+    public abstract void addAVideo(String videoId, LatLng videoLocation, ArrayList<String> hashTagsList);
 
     /**
      * Request the list of all the hashtags
@@ -87,7 +87,7 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
     public abstract void requestAllHashTags(Observer observer);
 
     /**
-     * Update the list of hash tags of a video
+     * Update the list of hash tags of a video.
      * @param observer
      *      The observer to notify when the list of hash tags has been updated
      * @param videoObjectId

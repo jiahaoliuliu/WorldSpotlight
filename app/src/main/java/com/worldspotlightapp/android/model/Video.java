@@ -65,7 +65,7 @@ public class Video extends ParseObject implements ClusterItem {
 
     // HashTags
     public static final String PARSE_COLUMN_HASH_TAGS = "hashTags";
-    public List<String> mHashTags;
+    public ArrayList<String> mHashTags;
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -119,7 +119,7 @@ public class Video extends ParseObject implements ClusterItem {
      * @param position
      *      The geoposition where the video was filmed
      */
-    public Video(String title, String description, String videoId, String city, String country, LatLng position, List<String> hashTags) {
+    public Video(String title, String description, String videoId, String city, String country, LatLng position, ArrayList<String> hashTags) {
         this();
         setTitle(title);
         setDescription(description);
@@ -319,7 +319,7 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     // HashTag
-    public List<String> getHashTags() {
+    public ArrayList<String> getHashTags() {
         if (mHashTags == null) {
             mHashTags = retrieveHashTags();
         }
@@ -336,7 +336,7 @@ public class Video extends ParseObject implements ClusterItem {
 
     }
 
-    public void setHashTags(List<String> hashTags) {
+    public void setHashTags(ArrayList<String> hashTags) {
         this.mHashTags = hashTags;
         put(PARSE_COLUMN_HASH_TAGS, mHashTags);
     }
@@ -359,14 +359,14 @@ public class Video extends ParseObject implements ClusterItem {
      *
      * If the hashtag does not exists, return an empty array of strings
      */
-    private List<String> retrieveHashTags() {
+    private ArrayList<String> retrieveHashTags() {
         JSONArray hashTagsJsonArray = getJSONArray(PARSE_COLUMN_HASH_TAGS);
         if (hashTagsJsonArray == null) {
             return new ArrayList<String>();
         }
 
         Type type = new TypeToken<ArrayList<String>>(){}.getType();
-        List<String> hashTagsList = gson.fromJson(hashTagsJsonArray.toString(), type);
+        ArrayList<String> hashTagsList = gson.fromJson(hashTagsJsonArray.toString(), type);
 
         return hashTagsList;
     }

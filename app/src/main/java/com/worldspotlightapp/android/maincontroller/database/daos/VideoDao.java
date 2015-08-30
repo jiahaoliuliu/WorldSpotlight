@@ -132,7 +132,6 @@ public class VideoDao {
 
         // HashTags
         String hashTagsJsonArray = cursor.getString(cursor.getColumnIndex(TableVideo.HASH_TAGS_LIST));
-        // TODO: Check what happens with empty list
         video.setHashTags(hashTagsJsonArray);
 
         if (isLastData) {

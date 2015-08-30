@@ -588,6 +588,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private void launchHashTagsListActivity() {
         Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsListActivity.class);
         startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
+        startHashTagsListActivityIntent.putStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST, mVideo.getHashTags());
         startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
     }
 
@@ -601,7 +602,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     return;
                 }
 
-                ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_List);
+                ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST);
                 Log.v(TAG, "The list of hash selected received is " + selectedHashTagsList);
             }
             return;

@@ -24,7 +24,7 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
     private List<HashTag> mHashTagsList;
 
     // The list of the name of the selected tags
-    private ArrayList<String> mSelectedHashTagsList;
+    private ArrayList<String> mSelectedHashTagsNameList;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -39,9 +39,9 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
     }
 
     //Simple constructor
-    public HashTagsListAdapter(List<HashTag> hashTagsList) {
+    public HashTagsListAdapter(List<HashTag> hashTagsList, ArrayList<String> selectedHashTagsNamesList) {
         mHashTagsList = hashTagsList;
-        mSelectedHashTagsList = new ArrayList<String>();
+        mSelectedHashTagsNameList = selectedHashTagsNamesList;
     }
 
     @Override
@@ -60,28 +60,31 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mHashTagCheckBox.setText(mHashTagsList.get(position).getName());
+        // Set text
+        String hashTagName = mHashTagsList.get(position).getName();
+        holder.mHashTagCheckBox.setText(hashTagName);
+        holder.mHashTagCheckBox.setChecked(mSelectedHashTagsNameList.contains(hashTagName));
         holder.mHashTagCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 HashTag hashTag = mHashTagsList.get(position);
-                Log.v(TAG, "The hashtag clicked is " + hashTag);
+                Log.v(TAG, "The hash tag clicked is " + hashTag);
                 String hashTagId = hashTag.getName();
                 // If the checkbox has been checked
                 if (isChecked) {
                     // Only if it was not contained before
-                    if (!mSelectedHashTagsList.contains(hashTagId)) {
-                        mSelectedHashTagsList.add(hashTagId);
+                    if (!mSelectedHashTagsNameList.contains(hashTagId)) {
+                        mSelectedHashTagsNameList.add(hashTagId);
                     }
                 // If the checkbox has been unchecked
                 } else {
                     // Only if it was contained before
-                    if (mSelectedHashTagsList.contains(hashTagId)) {
-                        mSelectedHashTagsList.remove(hashTagId);
+                    if (mSelectedHashTagsNameList.contains(hashTagId)) {
+                        mSelectedHashTagsNameList.remove(hashTagId);
                     }
                 }
 
-                Log.d(TAG, "The content of the selected items is " + mSelectedHashTagsList);
+                Log.d(TAG, "The content of the selected items is " + mSelectedHashTagsNameList);
             }
         });
     }
@@ -98,7 +101,7 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
      *      The list of names o fhe hash tags
      */
     public ArrayList<String> getSelectedHashTagsList() {
-        return mSelectedHashTagsList;
+        return mSelectedHashTagsNameList;
     }
 
 }
