@@ -617,7 +617,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     private List<Video> retrieveVideosListFromRawFile() {
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
+        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos_debug);
         List<Video> videosList = new ArrayList<Video>();
         String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
 

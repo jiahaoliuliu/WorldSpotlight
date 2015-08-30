@@ -138,7 +138,7 @@ public class Video extends ParseObject implements ClusterItem {
      *      The json object where to get all the fields
      */
     public Video(JSONObject jsonObject) throws JSONException {
-        super();
+        this();
 
         if (jsonObject == null) {
             throw new JSONException("The json object cannot be null");
@@ -174,9 +174,11 @@ public class Video extends ParseObject implements ClusterItem {
         double longitude = location.getDouble(PARSE_COLUMN_LOCATION_LONGITUDE);
         setPosition(latitude, longitude);
 
-        // HashTags
-        JSONArray hashTagsJsonArray = jsonObject.getJSONArray(PARSE_COLUMN_HASH_TAGS);
-        setHashTags(hashTagsJsonArray.toString());
+        // HashTags. This is optional
+        if (jsonObject.has(PARSE_COLUMN_HASH_TAGS)) {
+            JSONArray hashTagsJsonArray = jsonObject.getJSONArray(PARSE_COLUMN_HASH_TAGS);
+            setHashTags(hashTagsJsonArray.toString());
+        }
     }
 
     private void setTitle(String title) {
@@ -335,15 +337,7 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     public void setHashTags(List<String> hashTags) {
-        // Refresh the list of hashtags
-        getHashTags();
-
-        for (String hashTag : hashTags) {
-            if (!mHashTags.contains(hashTag)) {
-                mHashTags.add(hashTag);
-            }
-        }
-
+        this.mHashTags = hashTags;
         put(PARSE_COLUMN_HASH_TAGS, mHashTags);
     }
 
@@ -353,11 +347,7 @@ public class Video extends ParseObject implements ClusterItem {
      *      The String which is the json array of hash tags
      */
     public void setHashTags(String jsonArrayHashTags) {
-        // Refresh the list of hash tags
-        getHashTags();
 
-        // TODO: Check if it works for the list of items
-        // TODO: Check if it works for a empty list
         Type type = new TypeToken<ArrayList<String>>(){}.getType();
         mHashTags = gson.fromJson(jsonArrayHashTags, type);
 
@@ -365,11 +355,16 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     /**
-     * Retrieve the list of hashtags, which is saved as json array
+     * Retrieve the list of hashtags, which is saved as json arrays.
+     *
+     * If the hashtag does not exists, return an empty array of strings
      */
     private List<String> retrieveHashTags() {
 
         JSONArray hashTagsJsonArray = getJSONArray(PARSE_COLUMN_HASH_TAGS);
+        if (hashTagsJsonArray == null) {
+            return new ArrayList<String>();
+        }
 
         // TODO: Check if it works for the list of items
         // TODO: Check if it works for a empty list

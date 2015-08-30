@@ -1,0 +1,81 @@
+{ "results": [
+	{
+        "city": "Kathmandu",
+        "country": "Nepal",
+        "createdAt": "2015-06-23T16:05:13.517Z",
+        "description": "Enjoy this crazy driving video I made. A sped up long shot capturing the insane driving experience in Nepal. Footage that combines GoPro, a Jeep, and an ...",
+        "location": {
+            "__type": "GeoPoint",
+            "latitude": 27.716395,
+            "longitude": 85.427812
+        },
+        "objectId": "bLdGW30IwQ",
+        "title": "GoPro Movie Driving B.P. Highway, Nepal",
+        "updatedAt": "2015-06-23T16:05:13.517Z",
+        "videoId": "Z58HOwhMCSU"
+    },
+	{
+        "city": "",
+        "country": "Saudi Arabia",
+        "createdAt": "2015-08-20T15:28:24.502Z",
+        "description": "",
+        "hashTags": [
+            "a",
+            "b"
+        ],
+        "location": {
+            "__type": "GeoPoint",
+            "latitude": 28.089168022890505,
+            "longitude": 43.914631716907024
+        },
+        "objectId": "bMPs8foYdJ",
+        "title": "",
+        "updatedAt": "2015-08-29T16:57:22.839Z",
+        "videoId": "_m7LKFridwY"
+    },
+	{
+        "city": "Yamoussoukro",
+        "country": "Côte d'Ivoire",
+        "createdAt": "2015-06-30T11:47:16.966Z",
+        "description": "I took my GoPro to Côte d'Ivoire and tried to capture some nice moments. Thanks to everyone I got to meet and that you made my stay so memorable.",
+        "location": {
+            "__type": "GeoPoint",
+            "latitude": 6.809217,
+            "longitude": -5.298457
+        },
+        "objectId": "bN7fzF4aUK",
+        "title": "Gap Year in Côte d'Ivoire I GoPro Hero3",
+        "updatedAt": "2015-06-30T11:47:16.966Z",
+        "videoId": "df7YDDwxpgA"
+    },
+	{
+        "city": "St. Peter Port",
+        "country": "Guernsey",
+        "createdAt": "2015-06-30T11:44:42.028Z",
+        "description": "Nikko Vaporizr RC car with GoPro Hero 3 attached playing in sand and water.",
+        "location": {
+            "__type": "GeoPoint",
+            "latitude": 49.199541,
+            "longitude": -2.019231
+        },
+        "objectId": "bNX0l9FxYK",
+        "title": "Nikko Vaporizr with GoPro having fun",
+        "updatedAt": "2015-06-30T11:44:42.028Z",
+        "videoId": "_CpGVKBHVFQ"
+    },
+	{
+        "city": "Las Vegas",
+        "country": "United States",
+        "createdAt": "2015-06-22T21:34:58.811Z",
+        "description": "BRAND NEW VIDEO! NV JETS LEAR60 N21NV TAKEOFF AND LANDING.",
+        "location": {
+            "__type": "GeoPoint",
+            "latitude": 36.121174,
+            "longitude": -115.169653
+        },
+        "objectId": "bNiEc0O9ds",
+        "title": "N21NV DASH CAM [HD] [GOPRO]",
+        "updatedAt": "2015-06-23T15:49:41.233Z",
+        "videoId": "6xcyA8glTj0"
+    }
+] }
