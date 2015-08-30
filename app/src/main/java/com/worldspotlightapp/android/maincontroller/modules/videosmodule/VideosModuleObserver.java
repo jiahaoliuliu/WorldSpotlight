@@ -630,6 +630,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 try {
                     Video video = new Video(videoJsonObject);
                     videosList.add(video);
+                    Log.d(TAG, "The video saved is " + video.toString());
                 } catch (JSONException jsonException) {
                     Log.e(TAG, "Error create a vide from json object " + jsonObject, jsonException);
                 }

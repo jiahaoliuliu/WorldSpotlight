@@ -360,28 +360,13 @@ public class Video extends ParseObject implements ClusterItem {
      * If the hashtag does not exists, return an empty array of strings
      */
     private List<String> retrieveHashTags() {
-
         JSONArray hashTagsJsonArray = getJSONArray(PARSE_COLUMN_HASH_TAGS);
         if (hashTagsJsonArray == null) {
             return new ArrayList<String>();
         }
 
-        // TODO: Check if it works for the list of items
-        // TODO: Check if it works for a empty list
         Type type = new TypeToken<ArrayList<String>>(){}.getType();
         List<String> hashTagsList = gson.fromJson(hashTagsJsonArray.toString(), type);
-
-        Log.v(TAG, "The origina list of hash tags is " + hashTagsJsonArray + ", and the converted is " + hashTagsList);
-
-//        String hashTag = null;
-//        for (int i = 0; i < hashTagsJsonArray.length(); i++) {
-//            try {
-//                hashTag = hashTagsJsonArray.getString(i);
-//                hashTagsList.add(hashTag);
-//            } catch (JSONException e) {
-//                Log.w(TAG, "Error getting the hash tag of the position " + i, e);
-//            }
-//        }
 
         return hashTagsList;
     }
