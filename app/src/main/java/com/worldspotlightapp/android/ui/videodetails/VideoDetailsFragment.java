@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +36,7 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
@@ -71,6 +76,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
     // HashTags
     private CardView mHashTagsCardView;
+    private TextView mHashTagsTextView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
     private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
@@ -147,6 +153,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mHashTagsCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_card_view);
         mHashTagsCardView.setOnClickListener(onClickListener);
 
+        mHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_text_view);
+
         return videoDetailsFragmentScrollView;
     }
 
@@ -191,6 +199,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 updateVideoDetails();
                 mVideosModule.requestAuthorInfo(this, mVideo.getVideoId());
             }
+
+            // Update the list of hash tags
+            updateHashTagsView();
         }
     }
 
@@ -210,7 +221,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 case R.id.report_image_view:
                     reportThisVideo();
                 case R.id.hashtags_card_view:
-                    launchHashTagsListActivity();
+//                    launchHashTagsListActivity();
             }
         }
     };
@@ -604,6 +615,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
                 ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST);
                 Log.v(TAG, "The list of hash selected received is " + selectedHashTagsList);
+                updateHashTagsList(selectedHashTagsList);
             }
             return;
         }
@@ -612,7 +624,40 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     }
 
     private void updateHashTagsList(ArrayList<String> selectedHashTagsList) {
-        // TODO: Update ui
+        mVideo.setHashTags(selectedHashTagsList);
+        updateHashTagsView();
         mVideosModule.updateHashTagsList(this, mVideoObjectId, selectedHashTagsList);
+    }
+
+    private void updateHashTagsView() {
+        if (mVideo == null) {
+            Log.e(TAG, "Cannot update the hash tags view when the video is null");
+            return;
+        }
+
+        // Remove the previous hashtags
+        mHashTagsTextView.setText("");
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        for (String hashTag : mVideo.getHashTags()) {
+
+            Spannable span = Spannable.Factory.getInstance().newSpannable(hashTag);
+            span.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG, "Span clicked");
+                    Toast.makeText(mAttachedActivity, "link clicked", Toast.LENGTH_SHORT).show();
+                }
+            }, 0, hashTag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mHashTagsTextView.setText(span);
+//            mHashTagsTextView.setText(mHashTagsTextView.getText() +  " " + span);
+
+//            hashTagTextView.setText(hashTag);
+//            hashTagTextView.setPadding(20, 20, 20, 20);
+//            hashTagTextView.setLayoutParams(layoutParams);
+//            hashTagTextView.setBackgroundColor(mAttachedActivity.getResources().getColor(R.color.generic_background));
+//            mHashTagsLinearLayout.addView(hashTagTextView);
+        }
     }
 }
