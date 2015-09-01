@@ -3,10 +3,13 @@ package com.worldspotlightapp.android.ui.videodetails;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,11 +45,14 @@ import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
 
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VideoDetailsFragment extends AbstractBaseFragmentObserver implements YouTubePlayer.OnInitializedListener {
     private static final String TAG = "VideoDetailsFragment";
@@ -638,26 +644,45 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         // Remove the previous hashtags
         mHashTagsTextView.setText("");
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        for (String hashTag : mVideo.getHashTags()) {
-
-            Spannable span = Spannable.Factory.getInstance().newSpannable(hashTag);
-            span.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View v) {
-                    Log.v(TAG, "Span clicked");
-                    Toast.makeText(mAttachedActivity, "link clicked", Toast.LENGTH_SHORT).show();
-                }
-            }, 0, hashTag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            mHashTagsTextView.setText(span);
-//            mHashTagsTextView.setText(mHashTagsTextView.getText() +  " " + span);
-
-//            hashTagTextView.setText(hashTag);
-//            hashTagTextView.setPadding(20, 20, 20, 20);
-//            hashTagTextView.setLayoutParams(layoutParams);
-//            hashTagTextView.setBackgroundColor(mAttachedActivity.getResources().getColor(R.color.generic_background));
-//            mHashTagsLinearLayout.addView(hashTagTextView);
+        // Add # in front of all the words
+        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<String> hashTagsList = mVideo.getHashTags();
+        for (int i = 0; i < hashTagsList.size(); i++) {
+            // TODO: Remove the white space at the beginning of the first
+            // word
+            stringBuilder.append(" #" + hashTagsList.get(i));
         }
+
+        String hashTagsListStrings = stringBuilder.toString();
+        SpannableString spannableString = new SpannableString(hashTagsListStrings);
+
+        String[] hashtagsArray = stringBuilder.toString().split(" #");
+
+        // The initial position is 0
+        int position = 0;
+        for (final String hashTag : hashtagsArray) {
+            spannableString.setSpan(
+                    new HashTagView(mAttachedActivity) {
+                        @Override
+                        public void onClick(View widget) {
+                            String originalWord = hashTag.replaceFirst(" #", "");
+                            Toast.makeText(mAttachedActivity, originalWord, Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    // Position - 1 to include the hash
+                    position == 0 ? position : position - 1 ,
+                    position + hashTag.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+
+            // Update position
+            position += hashTag.length();
+            // The position has to increase 2 because the separator is " #"
+            position += 2;
+        }
+
+        mHashTagsTextView.setText(spannableString);
+        mHashTagsTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        mHashTagsTextView.setHighlightColor(Color.TRANSPARENT);
     }
 }

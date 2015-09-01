@@ -150,6 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:padding="@dimen/card_view_inside_padding"
+                style="?android:attr/textAppearanceMedium"
                 >
 
                 <!--<TextView-->
