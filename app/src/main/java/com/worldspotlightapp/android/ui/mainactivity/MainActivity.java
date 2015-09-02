@@ -758,14 +758,18 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     }
 
     private void searchByKeyword() {
+        searchByKeyword(null);
+    }
+
+    private void searchByKeyword(String keyword) {
         final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
         searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.v(TAG, "Searching the videos with the keyword " + query);
-                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, query);
+            public boolean onQueryTextSubmit(String keyword) {
+                Log.v(TAG, "Searching the videos with the keyword " + keyword);
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, keyword);
                 mNotificationModule.showLoadingDialog(mContext);
-                mVideosModule.searchByKeyword(MainActivity.this, query);
+                mVideosModule.searchByKeyword(MainActivity.this, keyword);
                 searchActionView.clearFocus();
                 return true;
             }
@@ -809,6 +813,15 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 return true;
             }
         });
+
+        // If the keyword was set, search by keyword
+        if (keyword != null) {
+            searchActionView.setQuery(keyword, true);
+        }
+
+//        EditText searchText = (EditText) searchActionView.findViewById(R.id.search_src_text);
+//        searchText.setText("dubai");
+        // TODO: show the defined keyword in the edit text
     }
 
     @Override
@@ -975,6 +988,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                     if (isShowingVideosPreview()) {
                         hideVideosPreview();
                     }
+
+                    searchByKeyword(keyword);
                 }
             }
             return;
