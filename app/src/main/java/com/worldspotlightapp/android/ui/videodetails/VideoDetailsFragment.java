@@ -38,6 +38,7 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListByVideoResponse;
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
@@ -49,6 +50,7 @@ import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -212,6 +214,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
             // Update the list of hash tags
             updateHashTagsView();
+
+            // Update the hash tags from the backend
+            mVideosModule.requestHashTagsListForAVideo(this, mVideoObjectId);
         }
     }
 
@@ -271,7 +276,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             // the same time.
             getChildFragmentManager().beginTransaction().remove(mYoutubePlayerFragment).commit();
             mYoutubePlayerFragment = null;
-
         }
     }
 
@@ -503,6 +507,31 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     mNotificationModule.showToast(R.string.video_details_activity_report_sent_correctly, true);
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mAttachedActivity), true);
+                }
+            } else if (response instanceof VideosModuleHashTagsListByVideoResponse) {
+                Log.v(TAG, "Hash tags list by video response received");
+                VideosModuleHashTagsListByVideoResponse videosModuleHashTagsListByVideoResponse =
+                        (VideosModuleHashTagsListByVideoResponse) response;
+                ParseResponse parseResponse = videosModuleHashTagsListByVideoResponse.getParseResponse();
+
+                // Update the data if there is not error, the object ids are equal and
+                // the video is not null
+                if (!parseResponse.isError()
+                        && mVideoObjectId.equals(videosModuleHashTagsListByVideoResponse.getVideoObjectId())
+                        && mVideo != null) {
+                    Log.v(TAG, "Hash list retrieved correctly from the backend");
+                    Collection<String> oldHashTagsList = new ArrayList<String>(mVideo.getHashTags());
+                    Log.v(TAG, "The old hash tags list is " + oldHashTagsList);
+                    Collection<String> newHashTagsList = new ArrayList<String>(videosModuleHashTagsListByVideoResponse.getHashTagsList());
+                    Log.v(TAG, "The new hash tags list is " + newHashTagsList);
+                    oldHashTagsList.removeAll(newHashTagsList);
+                    newHashTagsList.removeAll(oldHashTagsList);
+
+                    if (!oldHashTagsList.isEmpty() || !newHashTagsList.isEmpty()) {
+                        Log.v(TAG, "The hash tags list has been changed. Updating the views");
+                        mVideo.setHashTags(videosModuleHashTagsListByVideoResponse.getHashTagsList());
+                        updateHashTagsView();
+                    }
                 }
             }
         }

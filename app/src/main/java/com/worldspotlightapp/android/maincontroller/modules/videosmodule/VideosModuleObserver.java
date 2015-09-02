@@ -16,6 +16,7 @@ import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -26,6 +27,7 @@ import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListByVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
@@ -124,6 +126,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     "in the local file");
             mVideosList = retrieveVideosListFromRawFile();
             videosListToBeAddedToTheDatabase.addAll(mVideosList);
+            // TODO: Remove this
+            Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
+            saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
         }
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
@@ -345,6 +350,37 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
+    public void requestHashTagsListForAVideo(Observer observer, final String videoObjectId) {
+        Log.v(TAG, "Requesting the hash tags list for the video " + videoObjectId);
+        // Add the observer
+        addObserver(observer);
+
+        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+        query.getInBackground(videoObjectId, new GetCallback<Video>() {
+            @Override
+            public void done(Video video, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                Log.v(TAG, "Parse response received " + parseResponse);
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Object correctly retrieved " + video);
+                    VideosModuleHashTagsListByVideoResponse videosModuleHashTagsListByVideoResponse =
+                            new VideosModuleHashTagsListByVideoResponse(parseResponse, video.getHashTags(), videoObjectId);
+
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListByVideoResponse);
+                } else {
+                    Log.e(TAG, "Error retrieving the video details");
+                    VideosModuleHashTagsListByVideoResponse videosModuleHashTagsListByVideoResponse =
+                            new VideosModuleHashTagsListByVideoResponse(parseResponse, null, videoObjectId);
+
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListByVideoResponse);
+                }
+            }
+        });
+    }
+
+    @Override
     public void requestAllHashTags(Observer observer) {
         // Register the observer
         addObserver(observer);
@@ -384,8 +420,31 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void updateHashTagsList(Observer observer, String videoObjectId, ArrayList<String> hashTagsList) {
-        // TODO: Implement this
+    public void updateHashTagsList(Observer observer, final String videoObjectId, ArrayList<String> hashTagsList) {
+        // Update the hashtag for the database
+        final Video video = mVideoDataLayer.getVideoDetails(videoObjectId);
+
+        // The video shouldn't be null
+        if (video == null) {
+            Log.e(TAG, "The video with id " + videoObjectId + " does not exists in the databse.");
+            return;
+        }
+
+        video.setHashTags(hashTagsList);
+        mVideoDataLayer.updateVideo(video);
+
+        // Update the hashtag for the backend
+        video.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Video " + video + " saved correctly");
+                } else {
+                    Log.e(TAG, "Error saving the video " + video);
+                }
+            }
+        });
     }
 
     /**

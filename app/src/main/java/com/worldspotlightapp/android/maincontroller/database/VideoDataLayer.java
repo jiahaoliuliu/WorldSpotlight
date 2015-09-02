@@ -89,6 +89,14 @@ public class VideoDataLayer {
         }
     }
 
+    public void updateVideo(Video video) {
+        try {
+            mVideoDao.updateVideo(video);
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Error updating the video", e);
+        }
+    }
+
     public long getVideoCounts() {
         return mVideoDao.getVideosCount();
     }

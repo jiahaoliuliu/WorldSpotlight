@@ -181,6 +181,51 @@ public class VideoDao {
             return -1;
         }
 
+        return mDatabase.insert(TableVideo.TABLE_NAME, null, createContentValue(video));
+    }
+
+    /**
+     * Insert a list of data to database
+     * @param listVideos
+     * @return
+     */
+    public boolean insertListDataToDatabase(List<Video> listVideos) {
+        boolean result = true;
+
+        for (Video video: listVideos) {
+            result &= (insertDataToDatabase(video) != -1L);
+        }
+
+        return result;
+    }
+
+    public int updateVideo(Video video) {
+        if (video == null) {
+            Log.e(TAG, "Error updating data into the database. The video cannot be null");
+            return -1;
+        }
+
+        String selection = TableVideo._ID + " LIKE ?";
+        String[] selectionArgs = {String.valueOf(video.getObjectId())};
+
+        return mDatabase.update(
+                TableVideo.TABLE_NAME,
+                createContentValue(video),
+                selection,
+                selectionArgs
+                );
+    }
+
+    /**
+     * Get the total number of videos in the database
+     * @return
+     *  The number of videos in the database
+     */
+    public long getVideosCount() {
+        return DatabaseUtils.queryNumEntries(mDatabase, TableVideo.TABLE_NAME);
+    }
+
+    private ContentValues createContentValue(Video video) {
         ContentValues contentValues = new ContentValues();
 
         // ID. The primary key
@@ -218,30 +263,6 @@ public class VideoDao {
         // HashTags
         contentValues.put(TableVideo.HASH_TAGS_LIST, video.getHashTagsAsJsonArray());
 
-        return mDatabase.insert(TableVideo.TABLE_NAME, null, contentValues);
-    }
-
-    /**
-     * Insert a list of data to database
-     * @param listVideos
-     * @return
-     */
-    public boolean insertListDataToDatabase(List<Video> listVideos) {
-        boolean result = true;
-
-        for (Video video: listVideos) {
-            result &= (insertDataToDatabase(video) != -1L);
-        }
-
-        return result;
-    }
-
-    /**
-     * Get the total number of videos in the database
-     * @return
-     *  The number of videos in the database
-     */
-    public long getVideosCount() {
-        return DatabaseUtils.queryNumEntries(mDatabase, TableVideo.TABLE_NAME);
+        return contentValues;
     }
 }
