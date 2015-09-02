@@ -271,6 +271,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             String description = video.getDescription();
             String city = video.getCity();
             String country = video.getCountry();
+            ArrayList<String> hashTagsList = video.getHashTags();
+
             if (title != null && (title.toLowerCase().contains(keyword) || keyword.contains(title))) {
                 resultVideosList.add(video);
             } else if (description != null && (description.toLowerCase().contains(keyword) || keyword.contains(description))) {
@@ -278,6 +280,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             } else if (city != null && (city.toLowerCase().contains(keyword) || keyword.contains(city))) {
                 resultVideosList.add(video);
             } else if (country != null && (country.toLowerCase().contains(keyword) || keyword.contains(country))) {
+                resultVideosList.add(video);
+            } else if (hashTagsList.contains(keyword)) {
                 resultVideosList.add(video);
             }
         }
