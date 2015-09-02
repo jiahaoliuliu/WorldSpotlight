@@ -618,7 +618,25 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         // Set the view pager in the view pager indicator
         mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
         mVideosPreviewViewPagerIndicator.setFades(false);
+    }
 
+    /**
+     * Check if the videos preview is being shown.
+     * @return
+     *     True if the videos preview is being shown
+     *     False otherwise
+     */
+    private boolean isShowingVideosPreview() {
+        return (mVideosPreviewViewPager != null &&
+                mVideosPreviewViewPager.getVisibility() == View.VISIBLE);
+    }
+
+    private void hideVideosPreview() {
+        mVideosPreviewViewPager.setVisibility(View.GONE);
+
+        if (mVideosPreviewViewPagerIndicator != null) {
+            mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -654,12 +672,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     @Override
     public void onBackPressed() {
         // If the user clicks on back and the viewpager is visible, then hide it
-        if (mVideosPreviewViewPager != null && mVideosPreviewViewPager.getVisibility() == View.VISIBLE) {
-            mVideosPreviewViewPager.setVisibility(View.GONE);
-
-            if (mVideosPreviewViewPagerIndicator != null) {
-                mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
-            }
+        if (isShowingVideosPreview()) {
+            hideVideosPreview();
             return;
         }
         super.onBackPressed();
@@ -956,6 +970,11 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 if (!TextUtils.isEmpty(keyword)) {
                     Log.v(TAG, "Keyword retrieved from details activity is " + keyword);
                     // TODO: Implement search
+
+                    // Hide the video preview
+                    if (isShowingVideosPreview()) {
+                        hideVideosPreview();
+                    }
                 }
             }
             return;
