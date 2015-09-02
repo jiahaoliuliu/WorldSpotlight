@@ -81,8 +81,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private TextView mDescriptionContentTextView;
 
     // HashTags
-    private CardView mHashTagsCardView;
     private TextView mHashTagsTextView;
+    private ImageView mChangeHashTagsImageView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
     private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
@@ -156,10 +156,10 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mDescriptionCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.description_card_view);
         mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
 
-        mHashTagsCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_card_view);
-        mHashTagsCardView.setOnClickListener(onClickListener);
-
         mHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_text_view);
+
+        mChangeHashTagsImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.change_hashtag_image_view);
+        mChangeHashTagsImageView.setOnClickListener(onClickListener);
 
         return videoDetailsFragmentScrollView;
     }
@@ -226,8 +226,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     break;
                 case R.id.report_image_view:
                     reportThisVideo();
+                    break;
                 case R.id.hashtags_card_view:
-//                    launchHashTagsListActivity();
+                case R.id.change_hashtag_image_view:
+                    launchHashTagsListActivity();
+                    break;
             }
         }
     };
