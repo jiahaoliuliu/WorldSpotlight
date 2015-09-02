@@ -73,6 +73,14 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private static final String TAG = "MainActivity";
     private static final int MENU_ITEM_SEARCH_ID = 1000;
 
+    private static final int REQUEST_CODE_VIDEO_DETAILS_ACTIVITY = 1;
+
+    /**
+     * The key for the keyword to be search. This data is returned by
+     * {@link VideoDetailsActivity}
+     */
+    public static final String INTENT_KEY_KEYWORD = "com.worldspotlightapp.android.ui.MainActivity.keyword";
+
     // Internal structured data
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
@@ -628,7 +636,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, objectId);
 
         // Start the activity
-        startActivity(startVideoDetailsActivityIntent);
+        startActivityForResult(startVideoDetailsActivityIntent, REQUEST_CODE_VIDEO_DETAILS_ACTIVITY);
     }
 
     private class VideosRenderer extends DefaultClusterRenderer<Video> {
@@ -938,5 +946,21 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         }
 
         return (youTubeLink.startsWith("youtu.be") || youTubeLink.startsWith("youtube."));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_VIDEO_DETAILS_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                String keyword = data.getStringExtra(INTENT_KEY_KEYWORD);
+                if (!TextUtils.isEmpty(keyword)) {
+                    Log.v(TAG, "Keyword retrieved from details activity is " + keyword);
+                    // TODO: Implement search
+                }
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

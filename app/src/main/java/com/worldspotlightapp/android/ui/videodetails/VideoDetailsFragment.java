@@ -46,6 +46,7 @@ import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.ui.mainactivity.MainActivity;
 import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -693,8 +694,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         // Add # in front of all the words
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < hashTagsList.size(); i++) {
-            // TODO: Remove the white space at the beginning of the first
-            // word
+            // TODO: Remove the white space at the beginning of the first word
             stringBuilder.append(" #" + hashTagsList.get(i));
         }
 
@@ -712,6 +712,12 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                         public void onClick(View widget) {
                             String originalWord = hashTag.replaceFirst(" #", "");
                             Toast.makeText(mAttachedActivity, originalWord, Toast.LENGTH_SHORT).show();
+
+                            // Return the keyword to the main activity
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra(MainActivity.INTENT_KEY_KEYWORD, originalWord);
+                            mAttachedActivity.setResult(Activity.RESULT_OK, resultIntent);
+                            mAttachedActivity.finish();
                         }
                     },
                     // Position - 1 to include the hash
