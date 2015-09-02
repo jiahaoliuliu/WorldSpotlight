@@ -151,6 +151,18 @@
                 android:padding="@dimen/card_view_inside_padding"
                 >
 
+                <!-- Text to show when there is not hashtags -->
+                <TextView
+                    android:id="@+id/empty_hash_tag_text_view"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_toLeftOf="@+id/change_hashtag_image_view"
+                    android:layout_centerVertical="true"
+                    android:text="@string/video_details_activity_empty_hash_tag"
+                    android:visibility="gone"
+                    style="?android:attr/textAppearanceMedium"
+                    />
+
                 <!-- This linear layout is needed to have the text
                 using the whole space on the left of the icon, but
                 left some white space for text view below to not be

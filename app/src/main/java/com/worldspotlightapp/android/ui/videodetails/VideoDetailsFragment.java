@@ -82,6 +82,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
     // HashTags
     private TextView mHashTagsTextView;
+    private TextView mEmptyHashTagsTextView;
     private ImageView mChangeHashTagsImageView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
@@ -156,6 +157,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mDescriptionCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.description_card_view);
         mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
 
+        mEmptyHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.empty_hash_tag_text_view);
+        mEmptyHashTagsTextView.setOnClickListener(onClickListener);
+
         mHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_text_view);
 
         mChangeHashTagsImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.change_hashtag_image_view);
@@ -227,7 +231,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 case R.id.report_image_view:
                     reportThisVideo();
                     break;
-                case R.id.hashtags_card_view:
+                case R.id.empty_hash_tag_text_view:
                 case R.id.change_hashtag_image_view:
                     launchHashTagsListActivity();
                     break;
@@ -644,12 +648,21 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             return;
         }
 
+        ArrayList<String> hashTagsList = mVideo.getHashTags();
+        if (hashTagsList.isEmpty()) {
+            mEmptyHashTagsTextView.setVisibility(View.VISIBLE);
+            mHashTagsTextView.setVisibility(View.GONE);
+            return;
+        } else {
+            mEmptyHashTagsTextView.setVisibility(View.GONE);
+            mHashTagsTextView.setVisibility(View.VISIBLE);
+        }
+
         // Remove the previous hashtags
         mHashTagsTextView.setText("");
 
         // Add # in front of all the words
         StringBuilder stringBuilder = new StringBuilder();
-        ArrayList<String> hashTagsList = mVideo.getHashTags();
         for (int i = 0; i < hashTagsList.size(); i++) {
             // TODO: Remove the white space at the beginning of the first
             // word
