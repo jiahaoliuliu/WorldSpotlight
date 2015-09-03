@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="app_name">World Spotlight</string>
+
+    <!-- Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">Для осуществления этого действия необходимо выполнить вход. Хотите войти сейчас?</string>
+
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Войти с помощью Facebook</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Войти с помощью Google</string>
+    <string name="sign_up_login_activity_sign_up">Зарегистрироваться</string>
+    <string name="sign_up_login_activity_log_in">Войти</string>
+    <string name="sign_up_login_activity_skip">Пропустить</string>
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Зарегистрироваться с помощью почты</string>
+    <string name="sign_up_activity_email_hint">Введите свой адрес электронной почты</string>
+    <string name="sign_up_activity_password_hint">Введите пароль</string>
+    <string name="sign_up_activity_verify_password_hint">Подтвердите пароль</string>
+    <string name="sign_up_activity_sign_up">Зарегистрироваться</string>
+    <string name="sign_up_activity_error_message_password_not_match">Пароли не совпадают</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">Войти с помощью почты</string>
+    <string name="login_activity_login">Войти</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">Вы здесь</string>
+    <string name="action_bar_search">Поиск</string>
+    <string name="main_activity_show_fav_videos_list_title">Избранное</string>
+
+    <!--    Drawer -->
+    <string name="drawer_login">Войти</string>
+    <string name="drawer_likes">Избранное</string>
+    <string name="drawer_logout">Выйти</string>
+    <string name="drawer_open">Ящик открыт</string>
+    <string name="drawer_close">Ящик закрыт</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">Открыть YouTube!</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. Нажмите кнопку "Открыть YouTube" в нижней части. \n\nМы откроем приложение YouTube </string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. Выберите видео</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. Нажмите «Поделиться»</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. Выберите наше приложение</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. Выберите место, где было снято видео</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. Нажмите «Готово»</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">Вы – такой надоедливый. Мне это уже известно!</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">Готово</string>
+    <string name="add_a_video_activity_error_location_not_found">Расположение не найдено. Попробуйте позже</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">Невозможно автоматически определить город и страну. Пожалуйста, введите их вручную</string>
+    <string name="add_a_video_activity_video_added_correctly">Видео было успешно добавлено</string>
+    <string name="add_a_video_activity_error_adding_video">Произошла ошибка при добавлении этого видео. Пожалуйста, попробуйте еще раз</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">Для добавления видео необходимо выполнить вход. Хотите войти сейчас?</string>
+
+    <!-- Video details activity -->
+    <string name="video_details_description_title">Описание</string>
+    <string name="error_player">Произошла ошибка при запуске YouTubePlayer (%1$s)</string>
+    <string name="action_bar_share">Поделиться</string>
+    <string name="share_title">Поделиться с …</string>
+    <string name="share_subject">Ознакомьтесь с этим великолепным видео! %1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">Чтобы поставить лайк этому видео, необходимо выполнить вход. Хотите войти сейчас?</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">Чтобы пожаловаться на это видео, необходимо выполнить вход. Хотите войти сейчас?</string>
+    <string name="video_details_activity_report_sent_correctly">Благодарим за отправку жалобы на это видео. Мы рассмотрим ее в кратчайшие сроки</string>
+
+    <!-- Notification module -->
+    <string name="dialog_loading_generic_message">Идет загрузка …</string>
+    <string name="notification_module_dialog_yes">Да</string>
+    <string name="notification_module_dialog_no">Пока что нет</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">Необходимо выполнить вход</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">Запрос прошел успешно</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">Похоже, у вас отсутствует подключение к интернету. Проверьте, пожалуйста</string>
+    <string name="error_message_server_generic">Возникла проблема с нашим сервером. Попробуйте, пожалуйста, позже</string>
+    <string name="error_message_script_error">Ошибка выполнения сценария на облачном коде</string>
+    <string name="error_message_validation_failed">Проверка облачного кода не удалась</string>
+    <string name="error_message_generic">Похоже, возникла проблема. Попробуйте, пожалуйста, позже</string>
+    <string name="error_message_video_not_found">Видео, которое вы ищете, не существует.</string>
+    <string name="error_message_username_already_taken">Пользователь с таким адресом электронной почты уже существует. Пожалуйста, выберите другой адрес</string>
+    <string name="error_message_login_with_facebook">Произошла ошибка при попытке войти с помощью Facebook. Попробуйте, пожалуйста, позже</string>
+    <string name="error_message_login_with_google">Произошла ошибка при попытке войти с помощью Google Plus. Попробуйте, пожалуйста, позже</string>
+    <string name="error_message_login_with_parse">Неверное имя пользователя или пароль. Пожалуйста, проверьте</string>
+    <string name="error_message_user_not_logged_in">Для этого пользователю необходимо выполнить вход. Попробуйте войти</string>
+    <string name="error_message_adding_an_existing_video">Видео, которое вы пытаетесь добавить, уже существует</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">Похоже, не удается запустить приложение YouTube. Проверьте, пожалуйста, установлено ли оно</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">Это поле не может быть пустым</string>
+    <string name="error_message_string_too_short">Необходимо ввести не менее %1$s символов</string>
+    <string name="error_message_email_address_required">Необходимо ввести действительный адрес электронной почты</string>
+</resources>

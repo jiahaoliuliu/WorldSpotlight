@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">世界焦点</string>
+
+    <!-- Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">您必须登陆才能进行操作，您希望现在登陆吗？</string>
+
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">用Facebook账号登陆</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">用谷歌账号登陆</string>
+    <string name="sign_up_login_activity_sign_up">注册</string>
+    <string name="sign_up_login_activity_log_in">登陆</string>
+    <string name="sign_up_login_activity_skip">跳过</string>
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">用您的电子邮箱注册</string>
+    <string name="sign_up_activity_email_hint">请输入您地电子邮箱</string>
+    <string name="sign_up_activity_password_hint">请输入您地密码</string>
+    <string name="sign_up_activity_verify_password_hint">请重新输入您地密码</string>
+    <string name="sign_up_activity_sign_up">注册</string>
+    <string name="sign_up_activity_error_message_password_not_match">您的密码不匹配</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">用您的邮件登陆</string>
+    <string name="login_activity_login">登陆</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">您在这里</string>
+    <string name="action_bar_search">搜索</string>
+    <string name="main_activity_show_fav_videos_list_title">我喜欢</string>
+
+    <!--    Drawer -->
+    <string name="drawer_login">登陆</string>
+    <string name="drawer_likes">最喜欢</string>
+    <string name="drawer_logout">登出</string>
+    <string name="drawer_open">抽屉打开</string>
+    <string name="drawer_close">抽屉关闭</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">打开YouTube!</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. 点击底部的“打开YouTube" 按钮\n\n我们将打开YouTube应用程序。</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. 选择一段视频</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. 点击分享</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. 选择我们的应用程序</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. 选择视频拍摄地点</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. 点击完成</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">你真烦人。我已经知道啦！</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">完成</string>
+    <string name="add_a_video_activity_error_location_not_found">我们无法找到您地位置。您可以稍后重试吗？</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">我们无法自动检测到城市和国家。您可以手工输入吗？</string>
+    <string name="add_a_video_activity_video_added_correctly">该视频已经被正确地添加</string>
+    <string name="add_a_video_activity_error_adding_video">在添加视频的时候发生错误。请重试。</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">您必须登陆才能添加视频。您希望现在登陆吗？</string>
+
+    <!-- Video details activity -->
+    <string name="video_details_description_title">描述</string>
+    <string name="error_player">在初始化YouTube视频播放器的时候发生了错误 (%1$s)</string>
+    <string name="action_bar_share">分享</string>
+    <string name="share_title">分享&#8230;</string>
+    <string name="share_subject">看看这个优秀的视频吧！%1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">您必须登陆才能追随此视频。您希望现在登陆吗？</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">您必须登陆才能举报该视频。您希望现在登陆吗？</string>
+    <string name="video_details_activity_report_sent_correctly">感谢您举报该视频。我们将尽快核查</string>
+
+    <!-- Notification module -->
+    <string name="dialog_loading_generic_message">正在载入&#8230;</string>
+    <string name="notification_module_dialog_yes">是的</string>
+    <string name="notification_module_dialog_no">不是现在</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">您必须登陆</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">要求获准</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">似乎您没有联网。您可以查看一下吗？</string>
+    <string name="error_message_server_generic">我们的服务器出了故障。您可以稍后重试吗？</string>
+    <string name="error_message_script_error">云代码出现脚本处理错误</string>
+    <string name="error_message_validation_failed">云代码确认失败</string>
+    <string name="error_message_generic">似乎出了问题。您可以稍后重试吗？</string>
+    <string name="error_message_video_not_found">您正在寻找的视频不存在。</string>
+    <string name="error_message_username_already_taken">已经有其它用户使用该电子邮件了。您可以选择另一个吗？</string>
+    <string name="error_message_login_with_facebook">在尝试用Facebook登陆的时候发生了一些错误。请稍后重试</string>
+    <string name="error_message_login_with_google">T在尝试用Google Plus登陆的时候发生了一些错误。请稍后重试</string>
+    <string name="error_message_login_with_parse">用户名或者密码不匹配。您可以查看一下吗？</string>
+    <string name="error_message_user_not_logged_in">用户必须登陆才行。您可以尝试登陆吗？</string>
+    <string name="error_message_adding_an_existing_video">您正在尝试添加的视频已经存在</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">似乎无法发布YouTube应用程序。您可以查看一下，它是否安装好了吗？</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">此区域不能为空</string>
+    <string name="error_message_string_too_short">您必须输入至少%1$s个字符 </string>
+    <string name="error_message_email_address_required">您必须输入一个有效的电子邮箱地址</string>
+
+</resources>

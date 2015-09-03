@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">세계 스포트라이트</string>
+
+    <!--  Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">이 작업을 위해 로그인해야 합니다. 지금 로그인 하시겠습니까?</string>
+
+    <!--  Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">페이스북으로 로그인</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">구글로 로그인</string>
+    <string name="sign_up_login_activity_sign_up">가입</string>
+    <string name="sign_up_login_activity_log_in">로그인</string>
+    <string name="sign_up_login_activity_skip">건너뛰기</string>
+
+    <!--  Sign up Activity -->
+    <string name="sign_up_activity_title">이메일로 가입</string>
+    <string name="sign_up_activity_email_hint">이메일을 입력해주세요</string>
+    <string name="sign_up_activity_password_hint">비밀번호를 입력해주세요</string>
+    <string name="sign_up_activity_verify_password_hint">비밀번호를 확인해주세요</string>
+    <string name="sign_up_activity_sign_up">가입</string>
+    <string name="sign_up_activity_error_message_password_not_match">비밀번호가 일치하지 않습니다</string>
+
+    <!--  Login Activity -->
+    <string name="login_activity_title">이메일로 로그인</string>
+    <string name="login_activity_login">로그인</string>
+
+    <!--  Main Activity -->
+    <string name="main_activity_you_are_here">당신은 여기에 있습니다</string>
+    <string name="action_bar_search">검색</string>
+    <string name="main_activity_show_fav_videos_list_title">즐겨찾기</string>
+
+    <!--     Drawer -->
+    <string name="drawer_login">로그인</string>
+    <string name="drawer_likes">즐겨찾기</string>
+    <string name="drawer_logout">로그아웃</string>
+    <string name="drawer_open">서랍 열기</string>
+    <string name="drawer_close">서랍 닫기</string>
+
+    <!--  Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">유튜브 열기!</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. 아래에 있는 "유튜브 열기" 버튼을 눌러주세요. \n\n유튜브 앱을 엽니다.</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. 동영상을 선택하세요</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3. 공유를 클릭하세요</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. 우리의 앱을 선택하세요</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5. 동영상이 촬영된 곳을 선택하세요</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. 완료를 클릭하세요</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">너무 거슬려요. 이미 알고 있어요!</string>
+
+    <!--  Add a video activity -->
+    <string name="action_bar_done">완료</string>
+    <string name="add_a_video_activity_error_location_not_found">위치를 찾지 못했습니다. 나중에 시도해주세요.</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">자동으로 도시와 국가를 감지 할 수 없습니다. 수동으로 입력해주시기 바랍니다.</string>
+    <string name="add_a_video_activity_video_added_correctly">동영상이 성공적으로 추가되었습니다.</string>
+    <string name="add_a_video_activity_error_adding_video">동영상을 추가하는 데 오류가 발생했습니다. 다시 시도해주세요.</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">동영상을 추가하려면 로그인을 해야 합니다. 지금 로그인하시겠습니까?</string>
+
+    <!--  Video details activity -->
+    <string name="video_details_description_title">내용</string>
+    <string name="error_player">YouTube Player를 초기화하는 중에 오류가 발생했습니다 (%1$s)</string>
+    <string name="action_bar_share">공유</string>
+    <string name="share_title">공유 방법을 선택해주세요…</string>
+    <string name="share_subject">이 멋진 동영상 한 번 보세요! %1$s</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">이 동영상을 좋아요 누르려면 로그인해야 합니다. 지금 로그인하시겠습니까?</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">이 동영상을 신고하려면 로그인해야 합니다. 지금 로그인하시겠니까?</string>
+    <string name="video_details_activity_report_sent_correctly">이 동영상을 신고해주셔서 감사합니다. 최대한 빨리 확인해보도록 하겠습니다.</string>
+
+    <!--  Notification module -->
+    <string name="dialog_loading_generic_message">로딩 중…</string>
+    <string name="notification_module_dialog_yes">예</string>
+    <string name="notification_module_dialog_no">나중에</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">로그인해야 합니다</string>
+
+    <!--  Correctly request messages -->
+    <string name="correct_request_ok">요청이 완료되었습니다</string>
+
+    <!--  Error messages -->
+    <string name="error_message_internet_connection">인터넷 연결이 되지 않았습니다. 지금 확인하시겠습니까?</string>
+    <string name="error_message_server_generic">서버에 오류가 발생했습니다. 나중에 다시 시도하시겠습니까?</string>
+    <string name="error_message_script_error">클라우드 코드에 스크립트를 처리하는 데 오류가 발생했습니다</string>
+    <string name="error_message_validation_failed">구름 코드 검증이 실패했습니다</string>
+    <string name="error_message_generic">오류가 발생한 것 같습니다. 나중에 다시 시도하시겠습니까?</string>
+    <string name="error_message_video_not_found">찾고 있는 동영상은 존재하지 않습니다.</string>
+    <string name="error_message_username_already_taken">이 이메일은 이미 사용 중입니다. 다른 이메일 주소를 선택하겠습니까?</string>
+    <string name="error_message_login_with_facebook">페이스북으로 로그인하는 데 오류가 발생했습니다. 나중에 다시 시도해주세요.</string>
+    <string name="error_message_login_with_google">구글 플러스로 로그인하는 데 오류가 발생했습니다. 나중에 다시 시도해주세요</string>
+    <string name="error_message_login_with_parse">사용자 이름과 비밀번호가 일치하지 않습니다. 다시 확인하시겠습니까?</string>
+    <string name="error_message_user_not_logged_in">진행하려면 로그인해야 합니다. 지금 로그인하시겠습니까?</string>
+    <string name="error_message_adding_an_existing_video">추가하려는 동영상이 이미 존재합니다</string>
+
+    <!--  Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">유튜브 앱을 실행할 수 없습니다. 설치되어 있는지 확인하시겠습니까?</string>
+
+    <!--  Generic error message for Edit Text -->
+    <string name="error_message_field_empty">이 필드는 비워 둘 수 없습니다</string>
+    <string name="error_message_string_too_short">최소한 %1$의 문자를 입력해야 합니다</string>
+    <string name="error_message_email_address_required">유효한 이메일 주소를 입력해야 합니다</string>
+</resources>
