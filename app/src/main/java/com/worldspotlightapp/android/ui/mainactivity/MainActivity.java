@@ -106,6 +106,10 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private MenuItem mDrawerItemFavourites;
     private MenuItem mDrawerItemLogout;
 
+    // Search view
+    private SearchView mSearchView;
+    private SearchView.SearchAutoComplete mSearchAutoCompleteTextView;
+
     // By default drawer is not open
     private boolean mIsDrawerOpen;
 
@@ -721,6 +725,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                     .setIcon(R.drawable.ic_action_search)
                     .setActionView(R.layout.search_layout);
             mMenuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+            setUpSearchView();
         }
     }
 
@@ -750,27 +755,33 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 }
             case MENU_ITEM_SEARCH_ID:
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
-                searchByKeyword();
+                mMenuItemSearch.expandActionView();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void searchByKeyword() {
-        searchByKeyword(null);
-    }
+    private void setUpSearchView() {
 
-    private void searchByKeyword(String keyword) {
-        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
-        searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        // The precondition
+        if (mMenuItemSearch == null) {
+            Log.e(TAG, "Error setting up the search view. The menu item search cannot be null");
+            return;
+        }
+
+        mSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
+        mSearchAutoCompleteTextView = (SearchView.SearchAutoComplete)mSearchView.findViewById(R.id.search_src_text);
+        ImageView closeButton = (ImageView) mSearchView.findViewById(R.id.search_close_btn);
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String keyword) {
                 Log.v(TAG, "Searching the videos with the keyword " + keyword);
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, keyword);
                 mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.searchByKeyword(MainActivity.this, keyword);
-                searchActionView.clearFocus();
+                mSearchView.clearFocus();
                 return true;
             }
 
@@ -780,7 +791,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
             }
         });
 
-        ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -789,10 +799,9 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 mNotificationModule.showLoadingDialog(mContext);
                 // Retrieve the list of all the videos
                 mVideosModule.requestAllVideos(MainActivity.this);
-                EditText et = (EditText) findViewById(R.id.search_src_text);
-                et.setText("");
-                searchActionView.setQuery("", false);
-                searchActionView.onActionViewCollapsed();
+                mSearchAutoCompleteTextView.setText("");
+                mSearchView.setQuery("", false);
+                mSearchView.onActionViewCollapsed();
                 mMenuItemSearch.collapseActionView();
             }
         });
@@ -808,20 +817,11 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_FINISHED);
                 mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.requestAllVideos(MainActivity.this);
-                searchActionView.setQuery("", false);
-                searchActionView.onActionViewCollapsed();
+                mSearchView.setQuery("", false);
+                mSearchView.onActionViewCollapsed();
                 return true;
             }
         });
-
-        // If the keyword was set, search by keyword
-        if (keyword != null) {
-            searchActionView.setQuery(keyword, true);
-        }
-
-//        EditText searchText = (EditText) searchActionView.findViewById(R.id.search_src_text);
-//        searchText.setText("dubai");
-        // TODO: show the defined keyword in the edit text
     }
 
     @Override
@@ -982,7 +982,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 String keyword = data.getStringExtra(INTENT_KEY_KEYWORD);
                 if (!TextUtils.isEmpty(keyword)) {
                     Log.v(TAG, "Keyword retrieved from details activity is " + keyword);
-                    // TODO: Implement search
 
                     // Hide the video preview
                     if (isShowingVideosPreview()) {
@@ -996,5 +995,16 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Force the search by a keyword
+     * @param keyword
+     *      The key word to looking for
+     */
+    private void searchByKeyword(String keyword) {
+        mMenuItemSearch.expandActionView();
+        mSearchAutoCompleteTextView.setText(keyword);
+        mSearchView.setQuery(keyword, true);
     }
 }
