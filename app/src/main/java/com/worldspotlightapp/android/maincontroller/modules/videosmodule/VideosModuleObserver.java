@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -273,16 +274,23 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             String country = video.getCountry();
             ArrayList<String> hashTagsList = video.getHashTags();
 
-            if (title != null && (title.toLowerCase().contains(keyword) || keyword.contains(title))) {
+            if (!TextUtils.isEmpty(title) && (title.toLowerCase().contains(keyword) || keyword.contains(title))) {
                 resultVideosList.add(video);
-            } else if (description != null && (description.toLowerCase().contains(keyword) || keyword.contains(description))) {
+            } else if (!TextUtils.isEmpty(description) && (description.toLowerCase().contains(keyword) || keyword.contains(description))) {
                 resultVideosList.add(video);
-            } else if (city != null && (city.toLowerCase().contains(keyword) || keyword.contains(city))) {
+            } else if (!TextUtils.isEmpty(city)&& (city.toLowerCase().contains(keyword) || keyword.contains(city))) {
                 resultVideosList.add(video);
-            } else if (country != null && (country.toLowerCase().contains(keyword) || keyword.contains(country))) {
+            } else if (!TextUtils.isEmpty(country) && (country.toLowerCase().contains(keyword) || keyword.contains(country))) {
                 resultVideosList.add(video);
-            } else if (hashTagsList.contains(keyword)) {
-                resultVideosList.add(video);
+            // For other fields
+            } else {
+                // HashTags
+                for (String hashTag : hashTagsList) {
+                    if (hashTag.toLowerCase().contains(keyword) || keyword.contains(hashTag.toLowerCase())) {
+                        resultVideosList.add(video);
+                        break;
+                    }
+                }
             }
         }
 
