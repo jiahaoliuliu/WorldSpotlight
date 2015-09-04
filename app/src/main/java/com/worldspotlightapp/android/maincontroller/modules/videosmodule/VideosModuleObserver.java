@@ -128,8 +128,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             mVideosList = retrieveVideosListFromRawFile();
             videosListToBeAddedToTheDatabase.addAll(mVideosList);
             // TODO: Remove this
-            Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
-            saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+//            Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
+//            saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+            // Remove the list of videos to be added to the database since they are already
+            // added
+//            videosListToBeAddedToTheDatabase.clear();
         }
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
@@ -139,47 +142,47 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         setChanged();
         notifyObservers(videosModuleVideosListResponse);
 
-//        // 2. Retrieve the rest of the videos from the parse server
-//        // Callback prepared to retrieve all the videos from the parse server
-//        final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
-//            @Override
-//            public void done(List<Video> videosList, ParseException e) {
-//                boolean areExtraVideos = true;
-//                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-//                Log.v(TAG, "List of videos received from the parse server");
-//                if (!parseResponse.isError()) {
-//                    Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
-//                    // Add all the content to the general videos list so it will be available next time
-//                    mVideosList.addAll(videosList);
-//
-//                    // Save the list to be added to the database later
-//                    videosListToBeAddedToTheDatabase.addAll(videosList);
-//
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, videosList, areExtraVideos);
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//
-//                    // If parse has returned the max number of results, that means there are more
-//                    // video available. So, request more videos
-//                    if (videosList.size() == MAX_PARSE_QUERY_RESULT) {
-//                        Log.v(TAG, MAX_PARSE_QUERY_RESULT + " videos retrieved. Requesting for more");
-//                        requestVideoToParse(mVideosList.size(), this);
-//                    } else {
-//                        Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
-//                        saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
-//                    }
-//                } else {
-//                    Log.e(TAG, "Error retrieving data from backend");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                }
-//            }
-//        };
-//        requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback);
+        // 2. Retrieve the rest of the videos from the parse server
+        // Callback prepared to retrieve all the videos from the parse server
+        final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
+            @Override
+            public void done(List<Video> videosList, ParseException e) {
+                boolean areExtraVideos = true;
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                Log.v(TAG, "List of videos received from the parse server");
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
+                    // Add all the content to the general videos list so it will be available next time
+                    mVideosList.addAll(videosList);
+
+                    // Save the list to be added to the database later
+                    videosListToBeAddedToTheDatabase.addAll(videosList);
+
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, videosList, areExtraVideos);
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+
+                    // If parse has returned the max number of results, that means there are more
+                    // video available. So, request more videos
+                    if (videosList.size() == MAX_PARSE_QUERY_RESULT) {
+                        Log.v(TAG, MAX_PARSE_QUERY_RESULT + " videos retrieved. Requesting for more");
+                        requestVideoToParse(mVideosList.size(), this);
+                    } else {
+                        Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
+                        saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+                    }
+                } else {
+                    Log.e(TAG, "Error retrieving data from backend");
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
+
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+                }
+            }
+        };
+        requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback);
     }
 
     @Override
@@ -199,10 +202,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback) {
-        //Retrive element from background
+        Log.v(TAG, "Requesting videos to parse. The initial position is " + initialPosition);
+        //Retrieve element from background
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
         query.setSkip(initialPosition);
-        query.orderByAscending("updateAt");
+        query.orderByAscending("createdAt");
         query.setLimit(MAX_PARSE_QUERY_RESULT);
         query.findInBackground(findCallback);
     }
@@ -688,7 +692,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     private List<Video> retrieveVideosListFromRawFile() {
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos_debug);
+        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
         List<Video> videosList = new ArrayList<Video>();
         String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
 
