@@ -63,7 +63,6 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
         // Set text
         String hashTagName = mHashTagsList.get(position).getName();
         holder.mHashTagCheckBox.setText(hashTagName);
-        holder.mHashTagCheckBox.setChecked(mSelectedHashTagsNameList.contains(hashTagName));
         holder.mHashTagCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -76,7 +75,7 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
                     if (!mSelectedHashTagsNameList.contains(hashTagId)) {
                         mSelectedHashTagsNameList.add(hashTagId);
                     }
-                // If the checkbox has been unchecked
+                    // If the checkbox has been unchecked
                 } else {
                     // Only if it was contained before
                     if (mSelectedHashTagsNameList.contains(hashTagId)) {
@@ -87,6 +86,9 @@ public class HashTagsListAdapter extends RecyclerView.Adapter<HashTagsListAdapte
                 Log.d(TAG, "The content of the selected items is " + mSelectedHashTagsNameList);
             }
         });
+
+        holder.mHashTagCheckBox.setChecked(mSelectedHashTagsNameList.contains(hashTagName));
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
