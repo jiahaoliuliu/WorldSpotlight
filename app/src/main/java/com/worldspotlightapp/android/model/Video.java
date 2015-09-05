@@ -181,6 +181,35 @@ public class Video extends ParseObject implements ClusterItem {
         }
     }
 
+    // Update the information about this video from the information of other video
+    public void update(Video anotherVideo) {
+        if (anotherVideo == null) {
+            Log.e(TAG, "Error updating the video. The another video cannot be null");
+            return;
+        }
+
+        // Title
+        setTitle(anotherVideo.getTitle());
+
+        // Description
+        setDescription(anotherVideo.getDescription());
+
+        // Video Id
+        setVideoId(anotherVideo.getVideoId());
+
+        // City
+        setCity(anotherVideo.getCity());
+
+        // Country
+        setCountry(anotherVideo.getCountry());
+
+        // Location
+        setPosition(anotherVideo.getPosition());
+
+        // HashTags. This is optional
+        setHashTags(anotherVideo.getHashTags());
+    }
+
     private void setTitle(String title) {
         if (title == null) {
             return;
@@ -295,6 +324,14 @@ public class Video extends ParseObject implements ClusterItem {
         return "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg";
     }
 
+    private void setPosition(LatLng position)  {
+        if (position == null) {
+            return;
+        }
+
+        setPosition(position.latitude, position.longitude);
+    }
+
     private void setPosition(double latitude, double longitude) {
         ParseGeoPoint parseGeoPoint = new ParseGeoPoint(latitude, longitude);
         put(PARSE_COLUMN_LOCATION, parseGeoPoint);
@@ -337,6 +374,10 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     public void setHashTags(ArrayList<String> hashTags) {
+        if (hashTags == null) {
+            return;
+        }
+
         this.mHashTags = hashTags;
         put(PARSE_COLUMN_HASH_TAGS, mHashTags);
     }
