@@ -56,7 +56,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
-    <string name="video_details_hashtags_title">HashTags</string>    <!-- TODO: Translate -->
+    <string name="video_details_hashtags_title">HashTags</string>    <!-- TODO: Check translation -->
     <string name="error_player">Si è verificato un errore durante l\'inizializzazione dello YouTubePlayer (%1$s)</string>
     <string name="action_bar_share">Condividi</string>
     <string name="share_title">Condividilo con &#8230;</string>
@@ -64,10 +64,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">Devi effettuare l\'accesso per mettere mi piace a questo video. Desideri effettuare l\'accesso ora?</string>
     <string name="video_details_activity_user_must_logged_in_to_report">Devi effettuare l\'accesso per segnalare questo video. Desideri effettuare l\'accesso ora?</string>
     <string name="video_details_activity_report_sent_correctly">Grazie per aver segnalato questo video. Lo controlleremo il prima possibile</string>
-    <string name="video_details_activity_empty_hash_tag">Add Hashtag</string> <!-- TODO: Translate -->
+    <string name="video_details_activity_empty_hash_tag">Aggiungere HashTags</string> <!-- TODO: Check translation -->
 
     <!-- Hash tags list activity -->
-    <string name="title_activity_hash_tags">HashTags</string>    <!-- TODO: Translate -->
+    <string name="title_activity_hash_tags">HashTags</string>    <!-- TODO: Check translation -->
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Caricamento &#8230;</string>
