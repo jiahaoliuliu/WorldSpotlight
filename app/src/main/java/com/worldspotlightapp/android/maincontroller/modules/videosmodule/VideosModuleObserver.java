@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -16,20 +17,27 @@ import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.Preferences;
+import com.worldspotlightapp.android.maincontroller.Preferences.LongId;
 import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListByVideoResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleUpdateVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.utils.Secret;
@@ -41,6 +49,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observer;
@@ -65,22 +74,42 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private static final int MAX_PARSE_QUERY_RESULT = 500;
 
+    /**
+     * The last time the videos list is updated. The value of this variable
+     * matches with the last time the videos.json was updated.
+     *
+     */
+    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1441411200000L;
+
+    //Some keys for the Parse Object
+    private static final String PARSE_COLUMN_CREATED_AT = "createdAt";
+    private static final String PARSE_COLUMN_UPDATED_AT = "updatedAt";
+
+    /**
+     * The maximum number of results expected
+     */
+    private static final int MAX_PARSE_QUERY_RESULT_FOR_HASHTAG = 1000;
+
     // The list of all the videos
     private List<Video> mVideosList;
+    // The list of all the hashTags
+    private List<HashTag> mHashTagsList;
 
     private Context mContext;
     private ExecutorService mExecutorService;
     private VideoDataLayer mVideoDataLayer;
+    private Preferences mPreferences;
 
     public VideosModuleObserver(Context context, ExecutorService executorService,
-                                VideoDataLayer videoDataLayer) {
+                                VideoDataLayer videoDataLayer, Preferences preferences) {
         mContext = context;
         mExecutorService = executorService;
         mVideoDataLayer = videoDataLayer;
+        mPreferences = preferences;
     }
 
     @Override
-    public void requestAllVideos(Observer observer) {
+    public void requestAllVideos(final Observer observer) {
 
         Log.v(TAG, "All the videos requested from the observer " + observer);
 
@@ -111,10 +140,16 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         // If the list of videos is empty, retrieve the list of elements from row file
         // and save them into the database
         if (mVideosList.isEmpty()) {
-            Log.v(TAG, "The list of the video in the database is empty. Retrive the one saved" +
+            Log.v(TAG, "The list of the video in the database is empty. Retrieve the ones saved" +
                     "in the local file");
             mVideosList = retrieveVideosListFromRawFile();
             videosListToBeAddedToTheDatabase.addAll(mVideosList);
+            // TODO: Remove this
+//            Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
+//            saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+            // Remove the list of videos to be added to the database since they are already
+            // added
+//            videosListToBeAddedToTheDatabase.clear();
         }
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
@@ -126,7 +161,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         // 2. Retrieve the rest of the videos from the parse server
         // Callback prepared to retrieve all the videos from the parse server
-        final FindCallback<Video> findDataFromParseServerCallback = new FindCallback<Video>() {
+        final FindCallback<Video> updateVideoIndexFromParseServerCallback = new FindCallback<Video>() {
             @Override
             public void done(List<Video> videosList, ParseException e) {
                 boolean areExtraVideos = true;
@@ -153,6 +188,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     } else {
                         Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
                         saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+
+                        // Ask parse to update the list of videos
+                        SyncVideoInfo(observer);
                     }
                 } else {
                     Log.e(TAG, "Error retrieving data from backend");
@@ -164,7 +202,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 }
             }
         };
-        requestVideoToParse(mVideosList.size(), findDataFromParseServerCallback);
+        requestVideoToParse(mVideosList.size(), updateVideoIndexFromParseServerCallback);
     }
 
     @Override
@@ -184,12 +222,65 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     private void requestVideoToParse(int initialPosition, FindCallback<Video> findCallback) {
-        //Retrive element from background
+        Log.v(TAG, "Requesting videos to parse. The initial position is " + initialPosition);
+        //Retrieve element from background
         ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
         query.setSkip(initialPosition);
-        query.orderByAscending("updateAt");
+        query.orderByAscending(PARSE_COLUMN_CREATED_AT);
         query.setLimit(MAX_PARSE_QUERY_RESULT);
         query.findInBackground(findCallback);
+    }
+
+    /**
+     * Request a list of video udpated since the last time
+     */
+    @Override
+    public void SyncVideoInfo(Observer observer) {
+        addObserver(observer);
+
+        // Check the last updated time
+        final Long lastUpdatedTime =
+                mPreferences.contains(LongId.VIDEOS_LIST_LAST_UPDATE_TIME) ?
+                    mPreferences.get(LongId.VIDEOS_LIST_LAST_UPDATE_TIME) :
+                    LAST_VIDEOS_LIST_UPDATED_TIME;
+
+        ParseQuery<Video> requestVideosUpdatedSinceLastTimeQuery = ParseQuery.getQuery(Video.class);
+        requestVideosUpdatedSinceLastTimeQuery.whereGreaterThan(PARSE_COLUMN_UPDATED_AT, new Date(lastUpdatedTime));
+        requestVideosUpdatedSinceLastTimeQuery.setLimit(MAX_PARSE_QUERY_RESULT);
+        requestVideosUpdatedSinceLastTimeQuery.findInBackground(new FindCallback<Video>() {
+            @Override
+            public void done(List<Video> videosListToBeUpdated, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "List of video to be updated received " + videosListToBeUpdated.size());
+                    // Update the last updated time
+                    mPreferences.set(LongId.VIDEOS_LIST_LAST_UPDATE_TIME, new Date().getTime());
+
+                    // Update the internal list
+                    for (Video video : videosListToBeUpdated) {
+                        // Only do it if the video list contains it
+                        if (mVideosList.contains(video)) {
+                            Video videoToBeUpdated = mVideosList.get(mVideosList.indexOf(video));
+                            videoToBeUpdated.update(video);
+                        }
+
+                        // Update the database
+                        mVideoDataLayer.updateVideo(video);
+                    }
+
+                    // Notify only if the list of updated
+                    if (videosListToBeUpdated.size() > 0) {
+                        VideosModuleUpdateVideosListResponse videosModuleUpdateVideosListResponse =
+                                new VideosModuleUpdateVideosListResponse(parseResponse, videosListToBeUpdated);
+                        setChanged();
+                        notifyObservers(videosModuleUpdateVideosListResponse);
+                    }
+                } else {
+                    Log.v(TAG, "Error retrieving the list of videos updated");
+                    // TODO: create retry policy
+                }
+            }
+        });
     }
 
     @Override
@@ -257,14 +348,25 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             String description = video.getDescription();
             String city = video.getCity();
             String country = video.getCountry();
-            if (title != null && (title.toLowerCase().contains(keyword) || keyword.contains(title))) {
+            ArrayList<String> hashTagsList = video.getHashTags();
+
+            if (!TextUtils.isEmpty(title) && (title.toLowerCase().contains(keyword) || keyword.contains(title))) {
                 resultVideosList.add(video);
-            } else if (description != null && (description.toLowerCase().contains(keyword) || keyword.contains(description))) {
+            } else if (!TextUtils.isEmpty(description) && (description.toLowerCase().contains(keyword) || keyword.contains(description))) {
                 resultVideosList.add(video);
-            } else if (city != null && (city.toLowerCase().contains(keyword) || keyword.contains(city))) {
+            } else if (!TextUtils.isEmpty(city)&& (city.toLowerCase().contains(keyword) || keyword.contains(city))) {
                 resultVideosList.add(video);
-            } else if (country != null && (country.toLowerCase().contains(keyword) || keyword.contains(country))) {
+            } else if (!TextUtils.isEmpty(country) && (country.toLowerCase().contains(keyword) || keyword.contains(country))) {
                 resultVideosList.add(video);
+            // For other fields
+            } else {
+                // HashTags
+                for (String hashTag : hashTagsList) {
+                    if (hashTag.toLowerCase().contains(keyword) || keyword.contains(hashTag.toLowerCase())) {
+                        resultVideosList.add(video);
+                        break;
+                    }
+                }
             }
         }
 
@@ -297,7 +399,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void addAVideo(final String videoId, final LatLng videoLocation) {
+    public void addAVideo(final String videoId, final LatLng videoLocation, final ArrayList<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", location " + videoLocation);
 
         boolean videoAlreadyExists = false;
@@ -330,9 +432,107 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         mExecutorService.execute(new RetrieveTitleDescriptionRunnable(videoId, new RequestTitleAndDescriptionCallback() {
             @Override
             public void done(String title, String description) {
-                addAVideo(videoId, title, description, videoLocation);
+                addAVideo(videoId, title, description, videoLocation, hashTagsList);
             }
         }));
+    }
+
+    @Override
+    public void requestHashTagsListForAVideo(Observer observer, final String videoObjectId) {
+        Log.v(TAG, "Requesting the hash tags list for the video " + videoObjectId);
+        // Add the observer
+        addObserver(observer);
+
+        ParseQuery<Video> query = ParseQuery.getQuery(Video.class);
+        query.getInBackground(videoObjectId, new GetCallback<Video>() {
+            @Override
+            public void done(Video video, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                Log.v(TAG, "Parse response received " + parseResponse);
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Object correctly retrieved " + video);
+                    VideosModuleHashTagsListByVideoResponse videosModuleHashTagsListByVideoResponse =
+                            new VideosModuleHashTagsListByVideoResponse(parseResponse, video.getHashTags(), videoObjectId);
+
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListByVideoResponse);
+                } else {
+                    Log.e(TAG, "Error retrieving the video details");
+                    VideosModuleHashTagsListByVideoResponse videosModuleHashTagsListByVideoResponse =
+                            new VideosModuleHashTagsListByVideoResponse(parseResponse, null, videoObjectId);
+
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListByVideoResponse);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void requestAllHashTags(Observer observer) {
+        // Register the observer
+        addObserver(observer);
+
+        // Return cached list if any
+        if (mHashTagsList != null) {
+            ParseResponse parseResponse = new ParseResponse.Builder(null).build();
+            VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
+                    new VideosModuleHashTagsListResponse(parseResponse, mHashTagsList);
+            setChanged();
+            notifyObservers(videosModuleHashTagsListResponse);
+            return;
+        }
+
+        //Retrieve element from background
+        ParseQuery<HashTag> query = ParseQuery.getQuery(HashTag.class);
+        query.orderByAscending(HashTag.PARSE_TABLE_COLUMN_HASH_TAG);
+        query.setLimit(MAX_PARSE_QUERY_RESULT_FOR_HASHTAG);
+        query.findInBackground(new FindCallback<HashTag>() {
+            @Override
+            public void done(List<HashTag> hashTagsList, ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    mHashTagsList = hashTagsList;
+                    VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
+                            new VideosModuleHashTagsListResponse(parseResponse, mHashTagsList);
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListResponse);
+                } else {
+                    VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
+                            new VideosModuleHashTagsListResponse(parseResponse, null);
+                    setChanged();
+                    notifyObservers(videosModuleHashTagsListResponse);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updateHashTagsList(Observer observer, final String videoObjectId, ArrayList<String> hashTagsList) {
+        // Update the hashtag for the database
+        final Video video = mVideoDataLayer.getVideoDetails(videoObjectId);
+
+        // The video shouldn't be null
+        if (video == null) {
+            Log.e(TAG, "The video with id " + videoObjectId + " does not exists in the databse.");
+            return;
+        }
+
+        video.setHashTags(hashTagsList);
+        mVideoDataLayer.updateVideo(video);
+
+        // Update the hashtag for the backend
+        video.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Video " + video + " saved correctly");
+                } else {
+                    Log.e(TAG, "Error saving the video " + video);
+                }
+            }
+        });
     }
 
     /**
@@ -346,8 +546,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      *      all the information
      * @param videoLocation
      *      The location where the video was filmed
+     * @param hashTagsList
+     *      The list of hash tags
      */
-    private void addAVideo(String videoId, String title, String description, LatLng videoLocation) {
+    private void addAVideo(String videoId, String title, String description, LatLng videoLocation, ArrayList<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation);
 
@@ -386,7 +588,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 country = countryName;
             }
         }
-        addAVideo(videoId, title, description, videoLocation, city, country);
+        addAVideo(videoId, title, description, videoLocation, city, country, hashTagsList);
     }
 
     /**
@@ -403,11 +605,13 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      *      The city where the video was filmed
      * @param country
      *      The country where the video was filmed.
+     * @param hashTagsList
+     *      The list of hash tags
      */
-    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country) {
+    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country, ArrayList<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation + ", city " + city + ", country " + country);
-        final Video video = new Video(title, description, videoId, city, country, videoLocation);
+        final Video video = new Video(title, description, videoId, city, country, videoLocation, hashTagsList);
         video.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -563,6 +767,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
         List<Video> videosList = new ArrayList<Video>();
         String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
+
+        // TODO: Replace the follow code with gson
         try {
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray(JSON_FILE_RESULTS_KEY);
@@ -571,6 +777,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 try {
                     Video video = new Video(videoJsonObject);
                     videosList.add(video);
+                    Log.d(TAG, "The video saved is " + video.toString());
                 } catch (JSONException jsonException) {
                     Log.e(TAG, "Error create a vide from json object " + jsonObject, jsonException);
                 }

@@ -56,6 +56,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Описание</string>
+    <string name="video_details_hashtags_title">хэштеги</string>    <!-- TODO: Check the translation -->
     <string name="error_player">Произошла ошибка при запуске YouTubePlayer (%1$s)</string>
     <string name="action_bar_share">Поделиться</string>
     <string name="share_title">Поделиться с …</string>
@@ -63,6 +64,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">Чтобы поставить лайк этому видео, необходимо выполнить вход. Хотите войти сейчас?</string>
     <string name="video_details_activity_user_must_logged_in_to_report">Чтобы пожаловаться на это видео, необходимо выполнить вход. Хотите войти сейчас?</string>
     <string name="video_details_activity_report_sent_correctly">Благодарим за отправку жалобы на это видео. Мы рассмотрим ее в кратчайшие сроки</string>
+    <string name="video_details_activity_empty_hash_tag">добавить хэштеги</string> <!-- TODO: Check the translations -->
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">хэштеги</string>    <!-- TODO: Check the translations -->
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Идет загрузка …</string>

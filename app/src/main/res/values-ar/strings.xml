@@ -56,6 +56,7 @@
 
     <!--  Video details activity -->
     <string name="video_details_description_title">الوصف</string>
+    <string name="video_details_hashtags_title">HashTags</string>    <!-- TODO: Translate -->
     <string name="error_player">كان هناك خطأ في تهيئة YouTubePlayer (%1$s)</string>
     <string name="action_bar_share">مشاركة</string>
     <string name="share_title">شارك هذا مع...</string>
@@ -63,6 +64,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">يجب عليك تسجيل الدخول لمثل هذا الفيديو. هل ترغب في الدخول الآن؟</string>
     <string name="video_details_activity_user_must_logged_in_to_report">يجب عليك تسجيل الدخول للإبلاغ عن هذا الفيديو. هل ترغب في الدخول الآن؟</string>
     <string name="video_details_activity_report_sent_correctly">بفضل الإبلاغ عن هذا الفيديو. سوف نتحقق منه في أقرب وقت ممكن</string>
+    <string name="video_details_activity_empty_hash_tag">Add Hashtag</string> <!-- TODO: Translate -->
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">HashTags</string>    <!-- TODO: Translate -->
 
     <!--  Notification module -->
     <string name="dialog_loading_generic_message">تحميل...</string>

@@ -1,21 +1,26 @@
 package com.worldspotlightapp.android.ui.videodetails;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,21 +38,30 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListByVideoResponse;
 import com.worldspotlightapp.android.model.Author;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
-import com.worldspotlightapp.android.ui.AbstractBaseActivity;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
+import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.ui.mainactivity.MainActivity;
+import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VideoDetailsFragment extends AbstractBaseFragmentObserver implements YouTubePlayer.OnInitializedListener {
     private static final String TAG = "VideoDetailsFragment";
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
+    private static final int REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY = 2;
 
     private static final int MENU_ITEM_SHARE_VIDEO_ID = 1000;
 
@@ -65,8 +79,14 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private ImageView mReportAVideoImageView;
     private ImageView mLikeImageView;
 
+    // Description
     private CardView mDescriptionCardView;
-    private TextView mDescriptionTextView;
+    private TextView mDescriptionContentTextView;
+
+    // HashTags
+    private TextView mHashTagsTextView;
+    private TextView mEmptyHashTagsTextView;
+    private ImageView mChangeHashTagsImageView;
 
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
     private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
@@ -121,25 +141,34 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Set the content of the view
-        RelativeLayout videoDetailsFragmentRelativeLayout = (RelativeLayout)inflater.inflate(R.layout.fragment_video_details, container,
+        ScrollView videoDetailsFragmentScrollView = (ScrollView)inflater.inflate(R.layout.fragment_video_details, container,
                 false);
 
-        // Link the views
-        mExtraInfoCardView = (CardView) videoDetailsFragmentRelativeLayout.findViewById(R.id.extra_info_card_view);
-        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.author_thumbnail_image_view);
-        mAuthorNameTextView = (TextView) videoDetailsFragmentRelativeLayout.findViewById(R.id.author_name_text_view);
-
-        mLikeImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.like_image_view);
-        mLikeImageView.setOnClickListener(onClickListener);
-
-        mReportAVideoImageView = (ImageView) videoDetailsFragmentRelativeLayout.findViewById(R.id.report_image_view);
-        mReportAVideoImageView.setOnClickListener(onClickListener);
-
-        mDescriptionCardView = (CardView) videoDetailsFragmentRelativeLayout.findViewById(R.id.description_card_view);
-        mDescriptionTextView = (TextView) videoDetailsFragmentRelativeLayout.findViewById(R.id.description_text_view);
         mDummyYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.dummy_youtube_fragment);
 
-        return videoDetailsFragmentRelativeLayout;
+        // Link the views
+        mExtraInfoCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.extra_info_card_view);
+        mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.author_thumbnail_image_view);
+        mAuthorNameTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.author_name_text_view);
+
+        mLikeImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.like_image_view);
+        mLikeImageView.setOnClickListener(onClickListener);
+
+        mReportAVideoImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.report_image_view);
+        mReportAVideoImageView.setOnClickListener(onClickListener);
+
+        mDescriptionCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.description_card_view);
+        mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
+
+        mEmptyHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.empty_hash_tag_text_view);
+        mEmptyHashTagsTextView.setOnClickListener(onClickListener);
+
+        mHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.hashtags_text_view);
+
+        mChangeHashTagsImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.change_hashtag_image_view);
+        mChangeHashTagsImageView.setOnClickListener(onClickListener);
+
+        return videoDetailsFragmentScrollView;
     }
 
     @Override
@@ -183,6 +212,12 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 updateVideoDetails();
                 mVideosModule.requestAuthorInfo(this, mVideo.getVideoId());
             }
+
+            // Update the list of hash tags
+            updateHashTagsView();
+
+            // Update the hash tags from the backend
+            mVideosModule.requestHashTagsListForAVideo(this, mVideoObjectId);
         }
     }
 
@@ -201,6 +236,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     break;
                 case R.id.report_image_view:
                     reportThisVideo();
+                    break;
+                case R.id.empty_hash_tag_text_view:
+                case R.id.change_hashtag_image_view:
+                    launchHashTagsListActivity();
+                    break;
             }
         }
     };
@@ -237,7 +277,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             // the same time.
             getChildFragmentManager().beginTransaction().remove(mYoutubePlayerFragment).commit();
             mYoutubePlayerFragment = null;
-
         }
     }
 
@@ -312,7 +351,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         }
 
         // Description
-        mDescriptionTextView.setText(mVideo.getDescription());
+        mDescriptionContentTextView.setText(mVideo.getDescription());
 
         // If the youtube player has been already initialized
         if (mYouTubePlayer != null) {
@@ -470,6 +509,31 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 } else {
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mAttachedActivity), true);
                 }
+            } else if (response instanceof VideosModuleHashTagsListByVideoResponse) {
+                Log.v(TAG, "Hash tags list by video response received");
+                VideosModuleHashTagsListByVideoResponse videosModuleHashTagsListByVideoResponse =
+                        (VideosModuleHashTagsListByVideoResponse) response;
+                ParseResponse parseResponse = videosModuleHashTagsListByVideoResponse.getParseResponse();
+
+                // Update the data if there is not error, the object ids are equal and
+                // the video is not null
+                if (!parseResponse.isError()
+                        && mVideoObjectId.equals(videosModuleHashTagsListByVideoResponse.getVideoObjectId())
+                        && mVideo != null) {
+                    Log.v(TAG, "Hash list retrieved correctly from the backend");
+                    Collection<String> oldHashTagsList = new ArrayList<String>(mVideo.getHashTags());
+                    Log.v(TAG, "The old hash tags list is " + oldHashTagsList);
+                    Collection<String> newHashTagsList = new ArrayList<String>(videosModuleHashTagsListByVideoResponse.getHashTagsList());
+                    Log.v(TAG, "The new hash tags list is " + newHashTagsList);
+                    oldHashTagsList.removeAll(newHashTagsList);
+                    newHashTagsList.removeAll(oldHashTagsList);
+
+                    if (!oldHashTagsList.isEmpty() || !newHashTagsList.isEmpty()) {
+                        Log.v(TAG, "The hash tags list has been changed. Updating the views");
+                        mVideo.setHashTags(videosModuleHashTagsListByVideoResponse.getHashTagsList());
+                        updateHashTagsView();
+                    }
+                }
             }
         }
 
@@ -572,5 +636,104 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                         mVideo.getVideoUrl();
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_title)));
+    }
+
+    // Show the list of hash tags
+    private void launchHashTagsListActivity() {
+        Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, HashTagsListActivity.class);
+        startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
+        startHashTagsListActivityIntent.putStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST, mVideo.getHashTags());
+        startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                String videoObjectId = data.getStringExtra(Video.INTENT_KEY_OBJECT_ID);
+                if (!mVideoObjectId.equals(videoObjectId)) {
+                    Log.w(TAG, "Wrong video object id received");
+                    return;
+                }
+
+                ArrayList<String> selectedHashTagsList = data.getStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST);
+                Log.v(TAG, "The list of hash selected received is " + selectedHashTagsList);
+                updateHashTagsList(selectedHashTagsList);
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void updateHashTagsList(ArrayList<String> selectedHashTagsList) {
+        mVideo.setHashTags(selectedHashTagsList);
+        updateHashTagsView();
+        mVideosModule.updateHashTagsList(this, mVideoObjectId, selectedHashTagsList);
+    }
+
+    private void updateHashTagsView() {
+        if (mVideo == null) {
+            Log.e(TAG, "Cannot update the hash tags view when the video is null");
+            return;
+        }
+
+        ArrayList<String> hashTagsList = mVideo.getHashTags();
+        if (hashTagsList.isEmpty()) {
+            mEmptyHashTagsTextView.setVisibility(View.VISIBLE);
+            mHashTagsTextView.setVisibility(View.GONE);
+            return;
+        } else {
+            mEmptyHashTagsTextView.setVisibility(View.GONE);
+            mHashTagsTextView.setVisibility(View.VISIBLE);
+        }
+
+        // Remove the previous hashtags
+        mHashTagsTextView.setText("");
+
+        // Add # in front of all the words
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < hashTagsList.size(); i++) {
+            // TODO: Remove the white space at the beginning of the first word
+            stringBuilder.append(" #" + hashTagsList.get(i));
+        }
+
+        String hashTagsListStrings = stringBuilder.toString();
+        SpannableString spannableString = new SpannableString(hashTagsListStrings);
+
+        String[] hashtagsArray = stringBuilder.toString().split(" #");
+
+        // The initial position is 0
+        int position = 0;
+        for (final String hashTag : hashtagsArray) {
+            spannableString.setSpan(
+                    new HashTagView(mAttachedActivity) {
+                        @Override
+                        public void onClick(View widget) {
+                            String originalWord = hashTag.replaceFirst(" #", "");
+                            Toast.makeText(mAttachedActivity, originalWord, Toast.LENGTH_SHORT).show();
+
+                            // Return the keyword to the main activity
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra(MainActivity.INTENT_KEY_KEYWORD, originalWord);
+                            mAttachedActivity.setResult(Activity.RESULT_OK, resultIntent);
+                            mAttachedActivity.finish();
+                        }
+                    },
+                    // Position - 1 to include the hash
+                    position == 0 ? position : position - 1 ,
+                    position + hashTag.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+
+            // Update position
+            position += hashTag.length();
+            // The position has to increase 2 because the separator is " #"
+            position += 2;
+        }
+
+        mHashTagsTextView.setText(spannableString);
+        mHashTagsTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        mHashTagsTextView.setHighlightColor(Color.TRANSPARENT);
     }
 }

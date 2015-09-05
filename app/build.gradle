@@ -86,4 +86,7 @@ dependencies {
     //Ripple Effect
     compile "com.github.snuffix.android.material.rippleeffect:library:1.0"
 
+    // Gson
+    compile 'com.google.code.gson:gson:2.3.1'
+
 }

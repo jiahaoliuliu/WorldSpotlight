@@ -15,6 +15,7 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.model.Video;
 
+import java.util.ArrayList;
 import java.util.Observable;
 
 public class AddAVideoActivity extends AbstractBaseActivity {
@@ -109,7 +110,8 @@ public class AddAVideoActivity extends AbstractBaseActivity {
             return;
         }
 
-        mVideosModule.addAVideo(mVideoId, mVideoLocation);
+        // Ask the module to add a video. The list of hashTags is empty
+        mVideosModule.addAVideo(mVideoId, mVideoLocation, new ArrayList<String>());
         finish();
     }
 

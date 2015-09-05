@@ -104,7 +104,7 @@ public final class MainController {
         newMainController.mNotificationModule = new NotificationModule(context);
         newMainController.mGpsLocalizationModule = new GpsLocalizationModule(context, preferences);
         newMainController.mVideosModuleObservable = new VideosModuleObserver(context,
-                newMainController.mExecutorServiceHolder.createExecutorService(), new VideoDataLayer());
+                newMainController.mExecutorServiceHolder.createExecutorService(), new VideoDataLayer(), preferences);
         newMainController.mEventTrackingModule = new EventsTrackingModule(context, uuid);
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
 

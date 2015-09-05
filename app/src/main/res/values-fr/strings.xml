@@ -56,6 +56,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Description</string>
+    <string name="video_details_hashtags_title">HashTags</string>    <!-- TODO: Check the translation -->
     <string name="error_player">Une erreur s\'est produite lors du démarrage de YouTube Player (%1$s)</string>
     <string name="action_bar_share">Partager</string>
     <string name="share_title">Partager avec …</string>
@@ -63,6 +64,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">Vous devez être connecté pour aimer cette vidéo. Souhaitez- vous vous connecter maintenant?</string>
     <string name="video_details_activity_user_must_logged_in_to_report">Vous devez être connecté pour dénoncer cette vidéo. Souhaitez-vous vous connecter maintenant?</string>
     <string name="video_details_activity_report_sent_correctly">Merci d\'avoir dénoncé cette vidéo. Nous l\'examinerons dès que possible</string>
+    <string name="video_details_activity_empty_hash_tag">Ajouter HashTags</string> <!-- TODO: Check the translation -->
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">HashTags</string>    <!-- TODO: Check the translation -->
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Chargement…</string>

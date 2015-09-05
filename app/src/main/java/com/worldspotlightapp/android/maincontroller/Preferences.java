@@ -84,6 +84,8 @@ public class Preferences {
     // The id of the long
     // It is used mainly to store the date
     public enum LongId {
+        VIDEOS_LIST_LAST_UPDATE_TIME,
+
         // The default value of the boolean id
         DEFAULT_LONG_ID;
 

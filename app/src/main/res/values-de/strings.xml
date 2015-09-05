@@ -56,6 +56,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">Beschreibung</string>
+    <string name="video_details_hashtags_title">HashTags</string>
     <string name="error_player">Fehler bei der Initialisierung des YouTube Player (%1$s)</string>
     <string name="action_bar_share">Teilen</string>
     <string name="share_title">Teilen mit &#8230;</string>
@@ -63,6 +64,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">Du musst angemeldet sein um dieses Video sehen zu können. Jetzt anmelden?</string>
     <string name="video_details_activity_user_must_logged_in_to_report">Du musst angemeldet sein um dieses Video melden zu können. Jetzt anmelden?</string>
     <string name="video_details_activity_report_sent_correctly">Danke dass du das Video gemeldet hast. Wir werden uns dies so schnell wie möglich genauer ansehen.</string>
+    <string name="video_details_activity_empty_hash_tag">Fügen hashtags</string> <!-- TODO: Check translation -->
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">HashTags</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Lade &#8230;</string>

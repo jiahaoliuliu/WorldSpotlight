@@ -55,6 +55,7 @@
 
     <!--  Video details activity -->
     <string name="video_details_description_title">내용</string>
+    <string name="video_details_hashtags_title">해시 태그</string>    <!-- TODO: Check translation -->
     <string name="error_player">YouTube Player를 초기화하는 중에 오류가 발생했습니다 (%1$s)</string>
     <string name="action_bar_share">공유</string>
     <string name="share_title">공유 방법을 선택해주세요…</string>
@@ -62,6 +63,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">이 동영상을 좋아요 누르려면 로그인해야 합니다. 지금 로그인하시겠습니까?</string>
     <string name="video_details_activity_user_must_logged_in_to_report">이 동영상을 신고하려면 로그인해야 합니다. 지금 로그인하시겠니까?</string>
     <string name="video_details_activity_report_sent_correctly">이 동영상을 신고해주셔서 감사합니다. 최대한 빨리 확인해보도록 하겠습니다.</string>
+    <string name="video_details_activity_empty_hash_tag">해시 태그를 추가</string> <!-- TODO: Check translation -->
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">해시 태그</string>    <!-- TODO: Check translation -->
 
     <!--  Notification module -->
     <string name="dialog_loading_generic_message">로딩 중…</string>

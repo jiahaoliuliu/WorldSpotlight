@@ -3,13 +3,21 @@ package com.worldspotlightapp.android.model;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.clustering.ClusterItem;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a class which contains the information of the table
@@ -26,28 +34,38 @@ public class Video extends ParseObject implements ClusterItem {
     public static final String INTENT_KEY_OBJECT_ID = "com.worldspotlightapp.android.model.video.objectid";
     public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
 
+    // Title
     public static final String INTENT_KEY_TITLE = "com.worldspotlightapp.android.model.video.title";
     public static final String PARSE_COLUMN_TITLE = "title";
 
+    // Description
     public static final String INTENT_KEY_DESCRIPTION = "com.worldspotlightapp.android.model.video.description";
     public static final String PARSE_COLUMN_DESCRIPTION = "description";
 
+    // Video id
     public static final String INTENT_KEY_VIDEO_ID = "com.worldspotlight.android.model.video.videoid";
     public static final String PARSE_COLUMN_VIDEO_ID = "videoId";
 
     private static final String VIDEO_URL_PREFIX = "http://www.worldspotlightapp.com/video/";
     private String mVideoUrl;
 
+    // City
     public static final String INTENT_KEY_CITY = "com.worldspotlightapp.android.model.video.city";
     public static final String PARSE_COLUMN_CITY = "city";
 
+    // Country
     public static final String INTENT_KEY_COUNTRY = "com.worldspotlightapp.android.model.video.country";
     public static final String PARSE_COLUMN_COUNTRY = "country";
 
+    // Location
     public static final String PARSE_COLUMN_LOCATION = "location";
     private LatLng mLocation;
     private static final String PARSE_COLUMN_LOCATION_LATITUDE= "latitude";
     private static final String PARSE_COLUMN_LOCATION_LONGITUDE= "longitude";
+
+    // HashTags
+    public static final String PARSE_COLUMN_HASH_TAGS = "hashTags";
+    public ArrayList<String> mHashTags;
 
     /**
      * The thumbnail url of the video. This is generated based on the video id
@@ -60,11 +78,16 @@ public class Video extends ParseObject implements ClusterItem {
      */
     private String mVideoListThumbnailUrl;
 
+    // Others
+    private Gson gson;
+
     /**
      * The empty constructor
      */
     public Video(){
         super();
+        gson = new Gson();
+
     }
 
     /**
@@ -96,7 +119,7 @@ public class Video extends ParseObject implements ClusterItem {
      * @param position
      *      The geoposition where the video was filmed
      */
-    public Video(String title, String description, String videoId, String city, String country, LatLng position) {
+    public Video(String title, String description, String videoId, String city, String country, LatLng position, ArrayList<String> hashTags) {
         this();
         setTitle(title);
         setDescription(description);
@@ -104,6 +127,7 @@ public class Video extends ParseObject implements ClusterItem {
         setCity(city);
         setCountry(country);
         setPosition(position.latitude, position.longitude);
+        setHashTags(hashTags);
     }
 
     /**
@@ -114,7 +138,7 @@ public class Video extends ParseObject implements ClusterItem {
      *      The json object where to get all the fields
      */
     public Video(JSONObject jsonObject) throws JSONException {
-        super();
+        this();
 
         if (jsonObject == null) {
             throw new JSONException("The json object cannot be null");
@@ -142,13 +166,48 @@ public class Video extends ParseObject implements ClusterItem {
 
         // Country
         String country = jsonObject.getString(PARSE_COLUMN_COUNTRY);
-
+        setCountry(country);
 
         // Location
         JSONObject location = jsonObject.getJSONObject(PARSE_COLUMN_LOCATION);
         double latitude = location.getDouble(PARSE_COLUMN_LOCATION_LATITUDE);
         double longitude = location.getDouble(PARSE_COLUMN_LOCATION_LONGITUDE);
         setPosition(latitude, longitude);
+
+        // HashTags. This is optional
+        if (jsonObject.has(PARSE_COLUMN_HASH_TAGS)) {
+            JSONArray hashTagsJsonArray = jsonObject.getJSONArray(PARSE_COLUMN_HASH_TAGS);
+            setHashTags(hashTagsJsonArray.toString());
+        }
+    }
+
+    // Update the information about this video from the information of other video
+    public void update(Video anotherVideo) {
+        if (anotherVideo == null) {
+            Log.e(TAG, "Error updating the video. The another video cannot be null");
+            return;
+        }
+
+        // Title
+        setTitle(anotherVideo.getTitle());
+
+        // Description
+        setDescription(anotherVideo.getDescription());
+
+        // Video Id
+        setVideoId(anotherVideo.getVideoId());
+
+        // City
+        setCity(anotherVideo.getCity());
+
+        // Country
+        setCountry(anotherVideo.getCountry());
+
+        // Location
+        setPosition(anotherVideo.getPosition());
+
+        // HashTags. This is optional
+        setHashTags(anotherVideo.getHashTags());
     }
 
     private void setTitle(String title) {
@@ -265,6 +324,14 @@ public class Video extends ParseObject implements ClusterItem {
         return "https://i.ytimg.com/vi/" + videoId + "/maxresdefault.jpg";
     }
 
+    private void setPosition(LatLng position)  {
+        if (position == null) {
+            return;
+        }
+
+        setPosition(position.latitude, position.longitude);
+    }
+
     private void setPosition(double latitude, double longitude) {
         ParseGeoPoint parseGeoPoint = new ParseGeoPoint(latitude, longitude);
         put(PARSE_COLUMN_LOCATION, parseGeoPoint);
@@ -286,6 +353,63 @@ public class Video extends ParseObject implements ClusterItem {
         }
 
         return mVideoUrl;
+    }
+
+    // HashTag
+    public ArrayList<String> getHashTags() {
+        if (mHashTags == null) {
+            mHashTags = retrieveHashTags();
+        }
+
+        return mHashTags;
+    }
+
+    public String getHashTagsAsJsonArray() {
+        if (mHashTags == null) {
+            mHashTags = retrieveHashTags();
+        }
+
+        return gson.toJson(mHashTags);
+
+    }
+
+    public void setHashTags(ArrayList<String> hashTags) {
+        if (hashTags == null) {
+            return;
+        }
+
+        this.mHashTags = hashTags;
+        put(PARSE_COLUMN_HASH_TAGS, mHashTags);
+    }
+
+    /**
+     * Set the hash tags list with a hash tags list as JSON Array
+     * @param jsonArrayHashTags
+     *      The String which is the json array of hash tags
+     */
+    public void setHashTags(String jsonArrayHashTags) {
+
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        mHashTags = gson.fromJson(jsonArrayHashTags, type);
+
+        put(PARSE_COLUMN_HASH_TAGS, mHashTags);
+    }
+
+    /**
+     * Retrieve the list of hashtags, which is saved as json arrays.
+     *
+     * If the hashtag does not exists, return an empty array of strings
+     */
+    private ArrayList<String> retrieveHashTags() {
+        JSONArray hashTagsJsonArray = getJSONArray(PARSE_COLUMN_HASH_TAGS);
+        if (hashTagsJsonArray == null) {
+            return new ArrayList<String>();
+        }
+
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        ArrayList<String> hashTagsList = gson.fromJson(hashTagsJsonArray.toString(), type);
+
+        return hashTagsList;
     }
 
     @Override
@@ -323,6 +447,7 @@ public class Video extends ParseObject implements ClusterItem {
                 "videoId='" + getVideoId() + '\'' +
                 "thumbnailUrl='" + getThumbnailUrl() + '\'' +
                 "location='" + getPosition() + '\'' +
+                "hashTags='" + getHashTags() + '\'' +
                 '}';
     }
 }

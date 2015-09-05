@@ -23,8 +23,10 @@ public class MainDatabase {
 
     /**
      * Current version of the database.
+     * 1. Simple video format
+     * 2. Added the column hashTagsList into Video table
      */
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     /**
      * The table of Videos
@@ -75,6 +77,11 @@ public class MainDatabase {
          */
         public static final String LONGITUDE = "longitude";
 
+        /**
+         * The list of hashtags stored as json array
+         */
+        public static final String HASH_TAGS_LIST = "hashTagsList";
+
         public static final String CREATE = "CREATE TABLE IF NOT EXISTS "  + TABLE_NAME + " (" +
             _ID + " TEXT PRIMARY KEY NOT NULL" +
             ", " + TITLE + " TEXT NOT NULL" +
@@ -84,10 +91,11 @@ public class MainDatabase {
             ", " + COUNTRY + " TEXT" +
             ", " + LATITUDE + " DOUBLE" +
             ", " + LONGITUDE + " DOUBLE" +
+            ", " + HASH_TAGS_LIST + " TEXT" +
             ");";
 
         public static final String[] COLUMNS = {
-                _ID, TITLE, DESCRIPTION, VIDEO_ID, CITY, COUNTRY, LATITUDE, LONGITUDE
+                _ID, TITLE, DESCRIPTION, VIDEO_ID, CITY, COUNTRY, LATITUDE, LONGITUDE, HASH_TAGS_LIST
         };
 
         // TODO: Initialize database with some videos
@@ -148,6 +156,7 @@ public class MainDatabase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            // TODO: Update the database
             // Drop the actual table
             db.execSQL(TableVideo.DROP);
             // Create all the data again

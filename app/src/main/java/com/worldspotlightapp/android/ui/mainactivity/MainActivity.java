@@ -49,8 +49,11 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataM
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleLikesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleUpdateVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
+import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseActivityObserver;
@@ -71,11 +74,21 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private static final String TAG = "MainActivity";
     private static final int MENU_ITEM_SEARCH_ID = 1000;
 
+    private static final int REQUEST_CODE_VIDEO_DETAILS_ACTIVITY = 1;
+
+    /**
+     * The key for the keyword to be search. This data is returned by
+     * {@link VideoDetailsActivity}
+     */
+    public static final String INTENT_KEY_KEYWORD = "com.worldspotlightapp.android.ui.MainActivity.keyword";
+
     // Internal structured data
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
 
     private List<Video> mVideosList;
+
+    private List<HashTag> mHashTagsList;
 
     /**
      * The set of response retrieved from the modules
@@ -93,6 +106,10 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private MenuItem mDrawerItemLogin;
     private MenuItem mDrawerItemFavourites;
     private MenuItem mDrawerItemLogout;
+
+    // Search view
+    private SearchView mSearchView;
+    private SearchView.SearchAutoComplete mSearchAutoCompleteTextView;
 
     // By default drawer is not open
     private boolean mIsDrawerOpen;
@@ -137,7 +154,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         mResponsesStack = new Stack<Object>();
         mVideosList = new ArrayList<Video>();
 
-        // Delete all the possible observers
+        // Delete all the possible instance of this observer
         mVideosModule.deleteObserver(this);
         mUserDataModule.deleteObserver(this);
 
@@ -214,6 +231,9 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
         // Update data
         setupMapIfNeeded();
+
+        // Update the list of hash tags
+        mVideosModule.requestAllHashTags(this);
     }
 
     private boolean hasActivityStartedBySharingText() {
@@ -298,7 +318,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 Log.v(TAG, "This activity is in foreground. Processing data if exists");
                 processDataIfExists();
             } else {
-                Log.v(TAG, "This activity is not in foregorund. Not do anything");
+                Log.v(TAG, "This activity is not in foreground. Not do anything");
             }
 
             // The MainActivity will listen constantly to the changes on the list of videos
@@ -423,6 +443,37 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         }
                     }
                 });
+            } else if (response instanceof VideosModuleHashTagsListResponse) {
+                VideosModuleHashTagsListResponse videosModuleHashTagsListResponse = (VideosModuleHashTagsListResponse) response;
+                ParseResponse parseResponse = videosModuleHashTagsListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "hash tags list received. " + videosModuleHashTagsListResponse.getHashTagsList());
+                    mHashTagsList = videosModuleHashTagsListResponse.getHashTagsList();
+                } else {
+                    Log.w(TAG, "Error getting hash tags list", parseResponse.getCause());
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            } else if (response instanceof VideosModuleUpdateVideosListResponse) {
+                Log.v(TAG, "Videos module update videos list response received");
+                VideosModuleUpdateVideosListResponse videosModuleUpdateVideosListResponse = (VideosModuleUpdateVideosListResponse) response;
+                ParseResponse parseResponse = videosModuleUpdateVideosListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    // if the video list is null, not do anything
+                    if (mVideosList != null) {
+                        List<Video> videosListToBeUpdated = videosModuleUpdateVideosListResponse.getVideosList();
+                        Log.v(TAG, "The list of videos that should be updated has " + videosListToBeUpdated.size() + " videos.");
+                        Log.v(TAG, videosListToBeUpdated + "");
+                        for (Video videoUpdate : videosListToBeUpdated) {
+                            // If the video to be updated is not part of the video list, not do anything
+                            if (mVideosList.contains(videoUpdate)) {
+                                Video existentVideo = mVideosList.get(mVideosList.indexOf(videoUpdate));
+                                existentVideo.update(videoUpdate);
+                            }
+                        }
+                    }
+                } else {
+                    // Not do anything
+                }
             }
 
             Log.v(TAG, "Dismissing the loading dialog");
@@ -463,6 +514,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
         updateUserProfileIfPossibleAndNeeded();
         updateDrawerItems();
+        mVideosModule.SyncVideoInfo(this);
     }
 
     /**
@@ -593,7 +645,25 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         // Set the view pager in the view pager indicator
         mVideosPreviewViewPagerIndicator.setViewPager(mVideosPreviewViewPager);
         mVideosPreviewViewPagerIndicator.setFades(false);
+    }
 
+    /**
+     * Check if the videos preview is being shown.
+     * @return
+     *     True if the videos preview is being shown
+     *     False otherwise
+     */
+    private boolean isShowingVideosPreview() {
+        return (mVideosPreviewViewPager != null &&
+                mVideosPreviewViewPager.getVisibility() == View.VISIBLE);
+    }
+
+    private void hideVideosPreview() {
+        mVideosPreviewViewPager.setVisibility(View.GONE);
+
+        if (mVideosPreviewViewPagerIndicator != null) {
+            mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -611,7 +681,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, objectId);
 
         // Start the activity
-        startActivity(startVideoDetailsActivityIntent);
+        startActivityForResult(startVideoDetailsActivityIntent, REQUEST_CODE_VIDEO_DETAILS_ACTIVITY);
     }
 
     private class VideosRenderer extends DefaultClusterRenderer<Video> {
@@ -629,12 +699,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     @Override
     public void onBackPressed() {
         // If the user clicks on back and the viewpager is visible, then hide it
-        if (mVideosPreviewViewPager != null && mVideosPreviewViewPager.getVisibility() == View.VISIBLE) {
-            mVideosPreviewViewPager.setVisibility(View.GONE);
-
-            if (mVideosPreviewViewPagerIndicator != null) {
-                mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
-            }
+        if (isShowingVideosPreview()) {
+            hideVideosPreview();
             return;
         }
         super.onBackPressed();
@@ -682,6 +748,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                     .setIcon(R.drawable.ic_action_search)
                     .setActionView(R.layout.search_layout);
             mMenuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+            setUpSearchView();
         }
     }
 
@@ -711,23 +778,33 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 }
             case MENU_ITEM_SEARCH_ID:
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
-                searchByKeyword();
+                mMenuItemSearch.expandActionView();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void searchByKeyword() {
-        final SearchView searchActionView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
-        searchActionView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    private void setUpSearchView() {
+
+        // The precondition
+        if (mMenuItemSearch == null) {
+            Log.e(TAG, "Error setting up the search view. The menu item search cannot be null");
+            return;
+        }
+
+        mSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemSearch);
+        mSearchAutoCompleteTextView = (SearchView.SearchAutoComplete)mSearchView.findViewById(R.id.search_src_text);
+        ImageView closeButton = (ImageView) mSearchView.findViewById(R.id.search_close_btn);
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.v(TAG, "Searching the videos with the keyword " + query);
-                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, query);
+            public boolean onQueryTextSubmit(String keyword) {
+                Log.v(TAG, "Searching the videos with the keyword " + keyword);
+                mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_BY_KEYWORD, keyword);
                 mNotificationModule.showLoadingDialog(mContext);
-                mVideosModule.searchByKeyword(MainActivity.this, query);
-                searchActionView.clearFocus();
+                mVideosModule.searchByKeyword(MainActivity.this, keyword);
+                mSearchView.clearFocus();
                 return true;
             }
 
@@ -737,7 +814,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
             }
         });
 
-        ImageView closeButton = (ImageView) searchActionView.findViewById(R.id.search_close_btn);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -746,10 +822,9 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 mNotificationModule.showLoadingDialog(mContext);
                 // Retrieve the list of all the videos
                 mVideosModule.requestAllVideos(MainActivity.this);
-                EditText et = (EditText) findViewById(R.id.search_src_text);
-                et.setText("");
-                searchActionView.setQuery("", false);
-                searchActionView.onActionViewCollapsed();
+                mSearchAutoCompleteTextView.setText("");
+                mSearchView.setQuery("", false);
+                mSearchView.onActionViewCollapsed();
                 mMenuItemSearch.collapseActionView();
             }
         });
@@ -765,8 +840,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_FINISHED);
                 mNotificationModule.showLoadingDialog(mContext);
                 mVideosModule.requestAllVideos(MainActivity.this);
-                searchActionView.setQuery("", false);
-                searchActionView.onActionViewCollapsed();
+                mSearchView.setQuery("", false);
+                mSearchView.onActionViewCollapsed();
                 return true;
             }
         });
@@ -921,5 +996,38 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         }
 
         return (youTubeLink.startsWith("youtu.be") || youTubeLink.startsWith("youtube."));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_VIDEO_DETAILS_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                String keyword = data.getStringExtra(INTENT_KEY_KEYWORD);
+                if (!TextUtils.isEmpty(keyword)) {
+                    Log.v(TAG, "Keyword retrieved from details activity is " + keyword);
+
+                    // Hide the video preview
+                    if (isShowingVideosPreview()) {
+                        hideVideosPreview();
+                    }
+
+                    searchByKeyword(keyword);
+                }
+            }
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Force the search by a keyword
+     * @param keyword
+     *      The key word to looking for
+     */
+    private void searchByKeyword(String keyword) {
+        mMenuItemSearch.expandActionView();
+        mSearchAutoCompleteTextView.setText(keyword);
+        mSearchView.setQuery(keyword, true);
     }
 }

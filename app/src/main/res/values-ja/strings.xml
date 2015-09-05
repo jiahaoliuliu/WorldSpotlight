@@ -56,6 +56,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">詳細</string>
+    <string name="video_details_hashtags_title">ハッシュタグ</string>    <!-- TODO: Check the translation -->
     <string name="error_player">YouTubePlayerの起動でエラーが発生しました　(%1$s)</string>
     <string name="action_bar_share">シェア</string>
     <string name="share_title">&#8230;とシェア</string>
@@ -63,6 +64,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">ビデオに「いいね」を付けるにはログインしなければなりません。今すぐログインしますか？</string>
     <string name="video_details_activity_user_must_logged_in_to_report">このビデオをレポートするにはログインしなければなりません。今すぐログインしますか？</string>
     <string name="video_details_activity_report_sent_correctly">ビデオをレポートして下さってありがとうございます。すぐに確認致します</string>
+    <string name="video_details_activity_empty_hash_tag">ハッシュタグを追加します</string> <!-- TODO: Check the translation -->
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">ハッシュタグ</string>    <!-- TODO: Check the translation -->
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">&#8230;をロード中</string>
