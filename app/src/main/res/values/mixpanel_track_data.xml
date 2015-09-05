@@ -3,71 +3,71 @@
     <!-- Mix panel event tracker. mp = MixPanel-->
 
     <!-- Login -->
-    <string name="mp_app_initialized">App initialized</string>
+    <string name="mp_app_initialized" translatable="false">App initialized</string>
 
     <!-- Logout -->
-    <string name="mp_app_finished">App finished</string>
+    <string name="mp_app_finished" translatable="false">App finished</string>
 
     <!-- Sign Up Login Activity -->
-    <string name="mp_login_activity_prefix">Sign Up Login</string>
-    <string name="mp_login_activity_facebook_login">Facebook login</string>
-    <string name="mp_login_activity_google_plus_login">Google Plus login</string>
-    <string name="mp_login_activity_parse_sign_up">Parse signup</string>
-    <string name="mp_login_activity_parse_login">Parse login</string>
-    <string name="mp_login_activity_skip_login">Skip login</string>
+    <string name="mp_login_activity_prefix" translatable="false">Sign Up Login</string>
+    <string name="mp_login_activity_facebook_login" translatable="false">Facebook login</string>
+    <string name="mp_login_activity_google_plus_login" translatable="false">Google Plus login</string>
+    <string name="mp_login_activity_parse_sign_up" translatable="false">Parse signup</string>
+    <string name="mp_login_activity_parse_login" translatable="false">Parse login</string>
+    <string name="mp_login_activity_skip_login" translatable="false">Skip login</string>
 
     <!-- Main Activity -->
-    <string name="mp_main_activity_prefix">Main activity</string>
+    <string name="mp_main_activity_prefix" translatable="false">Main activity</string>
 
     <!--    Search -->
-    <string name="mp_main_activity_search_started">Search started</string>
-    <string name="mp_main_activity_search_by_keyword_event">Search by keyword</string>
-    <string name="mp_main_activity_search_by_keyword_keyword">Keyword</string>
-    <string name="mp_main_activity_search_finished">Search finished</string>
+    <string name="mp_main_activity_search_started" translatable="false">Search started</string>
+    <string name="mp_main_activity_search_by_keyword_event" translatable="false">Search by keyword</string>
+    <string name="mp_main_activity_search_by_keyword_keyword" translatable="false">Keyword</string>
+    <string name="mp_main_activity_search_finished" translatable="false">Search finished</string>
 
     <!--    Video preview -->
-    <string name="mp_main_activity_videos_preview_event">Videos Preview</string>
-    <string name="mp_main_activity_videos_preview_videos_id">Videos id</string>
-    <string name="mp_main_activity_videos_preview_position_latitude">Latitude</string>
-    <string name="mp_main_activity_videos_preview_position_longitude">Longitude</string>
-    <string name="mp_main_activity_videos_preview_click_event">Video Preview click</string>
-    <string name="mp_main_activity_videos_preview_click_video_id">Video id</string>
+    <string name="mp_main_activity_videos_preview_event" translatable="false">Videos Preview</string>
+    <string name="mp_main_activity_videos_preview_videos_id" translatable="false">Videos id</string>
+    <string name="mp_main_activity_videos_preview_position_latitude" translatable="false">Latitude</string>
+    <string name="mp_main_activity_videos_preview_position_longitude" translatable="false">Longitude</string>
+    <string name="mp_main_activity_videos_preview_click_event" translatable="false">Video Preview click</string>
+    <string name="mp_main_activity_videos_preview_click_video_id" translatable="false">Video id</string>
 
     <!--    Drawer -->
-    <string name="mp_main_activity_login">Login</string>
-    <string name="mp_main_activity_favourites">Favourites</string>
-    <string name="mp_main_activity_logout">Logout</string>
+    <string name="mp_main_activity_login" translatable="false">Login</string>
+    <string name="mp_main_activity_favourites" translatable="false">Favourites</string>
+    <string name="mp_main_activity_logout" translatable="false">Logout</string>
 
     <!--    Others -->
-    <string name="mp_main_activity_add_a_video">Add a video</string>
+    <string name="mp_main_activity_add_a_video" translatable="false">Add a video</string>
 
     <!-- Add a video activity -->
-    <string name="mp_add_a_video_activity_prefix">Add a video</string>
-    <string name="mp_add_a_video_activity_cancel">Cancel</string>
-    <string name="mp_add_a_video_activity_done">Done</string>
+    <string name="mp_add_a_video_activity_prefix" translatable="false">Add a video</string>
+    <string name="mp_add_a_video_activity_cancel" translatable="false">Cancel</string>
+    <string name="mp_add_a_video_activity_done" translatable="false">Done</string>
 
     <!-- Add a video tutorial activity -->
-    <string name="mp_add_a_video_tutorial_activity_prefix">Add a video tutorial</string>
-    <string name="mp_add_a_video_tutorial_activity_open_youtube">Open youtube</string>
+    <string name="mp_add_a_video_tutorial_activity_prefix" translatable="false">Add a video tutorial</string>
+    <string name="mp_add_a_video_tutorial_activity_open_youtube" translatable="false">Open youtube</string>
 
     <!-- Video details Activity -->
-    <string name="mp_video_details_activity_prefix">Video details</string>
+    <string name="mp_video_details_activity_prefix" translatable="false">Video details</string>
 
     <!--    REPORT a video -->
-    <string name="mp_video_details_activity_report_video_event">Report</string>
-    <string name="mp_video_details_activity_report_video_id">Video id</string>
+    <string name="mp_video_details_activity_report_video_event" translatable="false">Report</string>
+    <string name="mp_video_details_activity_report_video_id" translatable="false">Video id</string>
 
     <!--    Like a video -->
-    <string name="mp_video_details_activity_like_video_event">Like</string>
-    <string name="mp_video_details_activity_like_video_id">Video id</string>
-    <string name="mp_video_details_activity_like_it">Like it</string>
+    <string name="mp_video_details_activity_like_video_event" translatable="false">Like</string>
+    <string name="mp_video_details_activity_like_video_id" translatable="false">Video id</string>
+    <string name="mp_video_details_activity_like_it" translatable="false">Like it</string>
 
     <!--    Share -->
-    <string name="mp_video_details_activity_share_event">Share</string>
-    <string name="mp_video_details_activity_share_video_id">Video id</string>
+    <string name="mp_video_details_activity_share_event" translatable="false">Share</string>
+    <string name="mp_video_details_activity_share_video_id" translatable="false">Video id</string>
 
     <!--    Full screen -->
-    <string name="mp_video_details_activity_full_screen_event">Full screen</string>
-    <string name="mp_video_details_activity_full_screen_video_id">Video id</string>
+    <string name="mp_video_details_activity_full_screen_event" translatable="false">Full screen</string>
+    <string name="mp_video_details_activity_full_screen_video_id" translatable="false">Video id</string>
 
 </resources>
