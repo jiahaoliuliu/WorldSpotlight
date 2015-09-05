@@ -55,6 +55,7 @@
 
     <!-- Video details activity -->
     <string name="video_details_description_title">描述</string>
+    <string name="video_details_hashtags_title">标签</string>
     <string name="error_player">在初始化YouTube视频播放器的时候发生了错误 (%1$s)</string>
     <string name="action_bar_share">分享</string>
     <string name="share_title">分享&#8230;</string>
@@ -62,6 +63,10 @@
     <string name="video_details_activity_user_must_logged_in_to_like">您必须登陆才能追随此视频。您希望现在登陆吗？</string>
     <string name="video_details_activity_user_must_logged_in_to_report">您必须登陆才能举报该视频。您希望现在登陆吗？</string>
     <string name="video_details_activity_report_sent_correctly">感谢您举报该视频。我们将尽快核查</string>
+    <string name="video_details_activity_empty_hash_tag">添加标签</string>
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">标签</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">正在载入&#8230;</string>
