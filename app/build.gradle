@@ -29,8 +29,8 @@ android {
         applicationId "com.worldspotlightapp.android"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 9
-        versionName "1.08"
+        versionCode 10
+        versionName "1.09"
     }
     buildTypes {
         release {
