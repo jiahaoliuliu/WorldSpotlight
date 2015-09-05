@@ -109,7 +109,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     @Override
-    public void requestAllVideos(Observer observer) {
+    public void requestAllVideos(final Observer observer) {
 
         Log.v(TAG, "All the videos requested from the observer " + observer);
 
@@ -161,51 +161,48 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
         // 2. Retrieve the rest of the videos from the parse server
         // Callback prepared to retrieve all the videos from the parse server
-//        final FindCallback<Video> updateVideoIndexFromParseServerCallback = new FindCallback<Video>() {
-//            @Override
-//            public void done(List<Video> videosList, ParseException e) {
-//                boolean areExtraVideos = true;
-//                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
-//                Log.v(TAG, "List of videos received from the parse server");
-//                if (!parseResponse.isError()) {
-//                    Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
-//                    // Add all the content to the general videos list so it will be available next time
-//                    mVideosList.addAll(videosList);
-//
-//                    // Save the list to be added to the database later
-//                    videosListToBeAddedToTheDatabase.addAll(videosList);
-//
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, videosList, areExtraVideos);
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//
-//                    // If parse has returned the max number of results, that means there are more
-//                    // video available. So, request more videos
-//                    if (videosList.size() == MAX_PARSE_QUERY_RESULT) {
-//                        Log.v(TAG, MAX_PARSE_QUERY_RESULT + " videos retrieved. Requesting for more");
-//                        requestVideoToParse(mVideosList.size(), this);
-//                    } else {
-//                        Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
-//                        saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
-//
-//                        // Ask parse to update the list of videos
-//                        requestVideosUpdatedSinceLastTime();
-//                    }
-//                } else {
-//                    Log.e(TAG, "Error retrieving data from backend");
-//                    VideosModuleVideosListResponse videosModuleVideosListResponse =
-//                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
-//
-//                    setChanged();
-//                    notifyObservers(videosModuleVideosListResponse);
-//                }
-//            }
-//        };
-//        requestVideoToParse(mVideosList.size(), updateVideoIndexFromParseServerCallback);
+        final FindCallback<Video> updateVideoIndexFromParseServerCallback = new FindCallback<Video>() {
+            @Override
+            public void done(List<Video> videosList, ParseException e) {
+                boolean areExtraVideos = true;
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                Log.v(TAG, "List of videos received from the parse server");
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "The list of videos has been correctly retrieved " + videosList.size());
+                    // Add all the content to the general videos list so it will be available next time
+                    mVideosList.addAll(videosList);
 
-        // TODO: Remove this
-        requestVideosUpdatedSinceLastTime(observer);
+                    // Save the list to be added to the database later
+                    videosListToBeAddedToTheDatabase.addAll(videosList);
+
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, videosList, areExtraVideos);
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+
+                    // If parse has returned the max number of results, that means there are more
+                    // video available. So, request more videos
+                    if (videosList.size() == MAX_PARSE_QUERY_RESULT) {
+                        Log.v(TAG, MAX_PARSE_QUERY_RESULT + " videos retrieved. Requesting for more");
+                        requestVideoToParse(mVideosList.size(), this);
+                    } else {
+                        Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
+                        saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+
+                        // Ask parse to update the list of videos
+                        SyncVideoInfo(observer);
+                    }
+                } else {
+                    Log.e(TAG, "Error retrieving data from backend");
+                    VideosModuleVideosListResponse videosModuleVideosListResponse =
+                            new VideosModuleVideosListResponse(parseResponse, null, areExtraVideos);
+
+                    setChanged();
+                    notifyObservers(videosModuleVideosListResponse);
+                }
+            }
+        };
+        requestVideoToParse(mVideosList.size(), updateVideoIndexFromParseServerCallback);
     }
 
     @Override
@@ -237,7 +234,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     /**
      * Request a list of video udpated since the last time
      */
-    private void requestVideosUpdatedSinceLastTime(Observer observer) {
+    @Override
+    public void SyncVideoInfo(Observer observer) {
         addObserver(observer);
 
         // Check the last updated time
@@ -251,28 +249,32 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         requestVideosUpdatedSinceLastTimeQuery.setLimit(MAX_PARSE_QUERY_RESULT);
         requestVideosUpdatedSinceLastTimeQuery.findInBackground(new FindCallback<Video>() {
             @Override
-            public void done(List<Video> list, ParseException e) {
+            public void done(List<Video> videosListToBeUpdated, ParseException e) {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
-                    Log.v(TAG, "List of video to be updated received " + list.size());
+                    Log.v(TAG, "List of video to be updated received " + videosListToBeUpdated.size());
                     // Update the last updated time
-                    mPreferences.set(LongId.VIDEOS_LIST_LAST_UPDATE_TIME, lastUpdatedTime);
+                    mPreferences.set(LongId.VIDEOS_LIST_LAST_UPDATE_TIME, new Date().getTime());
 
                     // Update the internal list
-                    for (Video video : list) {
+                    for (Video video : videosListToBeUpdated) {
                         // Only do it if the video list contains it
                         if (mVideosList.contains(video)) {
                             Video videoToBeUpdated = mVideosList.get(mVideosList.indexOf(video));
                             videoToBeUpdated.update(video);
                         }
 
-                        // TODO: Update the database
+                        // Update the database
+                        mVideoDataLayer.updateVideo(video);
                     }
 
-                    VideosModuleUpdateVideosListResponse videosModuleUpdateVideosListResponse =
-                            new VideosModuleUpdateVideosListResponse(parseResponse, list);
-                    setChanged();
-                    notifyObservers(videosModuleUpdateVideosListResponse);
+                    // Notify only if the list of updated
+                    if (videosListToBeUpdated.size() > 0) {
+                        VideosModuleUpdateVideosListResponse videosModuleUpdateVideosListResponse =
+                                new VideosModuleUpdateVideosListResponse(parseResponse, videosListToBeUpdated);
+                        setChanged();
+                        notifyObservers(videosModuleUpdateVideosListResponse);
+                    }
                 } else {
                     Log.v(TAG, "Error retrieving the list of videos updated");
                     // TODO: create retry policy

@@ -379,6 +379,11 @@
         "country": "Australia",
         "createdAt": "2015-08-14T10:34:58.595Z",
         "description": "https://www.facebook.com/pictadrone https://instagram.com/pictadrone Whales humpback on the Sunshine Coast (Queensland) filmed using a drone Filmed on ...",
+        "hashTags": [
+            "Drone",
+            "Wild animal",
+            "Whale"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -28.721672799098375,
@@ -386,7 +391,7 @@
         },
         "objectId": "0VfApeFoUc",
         "title": "Whales humpback in Australia from a Drone: Pictadrone",
-        "updatedAt": "2015-08-14T10:34:58.595Z",
+        "updatedAt": "2015-09-04T11:37:07.680Z",
         "videoId": "HPZWplHtIy8"
     },
 	{
@@ -409,6 +414,11 @@
         "country": "Åland Islands",
         "createdAt": "2015-06-30T13:02:29.939Z",
         "description": "I take no credit for the music: Red Hot Chili Peppers - Otherside (Third Party Remix) Calm sailing outside Söderöra, Stockholm Archipelago. Top speed about ...",
+        "hashTags": [
+            "Boat",
+            "Time lapse",
+            "Water sport"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 60.086196,
@@ -416,7 +426,7 @@
         },
         "objectId": "0Vssdv3Pmz",
         "title": "Cirrus F18 Catamaran - FastForward [GoPro]",
-        "updatedAt": "2015-06-30T13:02:29.939Z",
+        "updatedAt": "2015-09-04T11:26:07.057Z",
         "videoId": "rfIonAtdu0w"
     },
 	{
@@ -484,6 +494,9 @@
         "country": "Macedonia (FYROM)",
         "createdAt": "2015-06-30T11:40:05.607Z",
         "description": "Daily driving with Frontera wearing cooper discoverer at3 tyres. Recorded with GoPro. Don't forget to watch in HD!",
+        "hashTags": [
+            "Cars"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 41.550736,
@@ -491,7 +504,7 @@
         },
         "objectId": "0cZROa9Lgb",
         "title": "GoPro:Opel Frontera offroad on rocky hill",
-        "updatedAt": "2015-06-30T11:40:05.607Z",
+        "updatedAt": "2015-09-04T11:59:57.522Z",
         "videoId": "xhPMRwz9r1Q"
     },
 	{
@@ -739,6 +752,10 @@
         "country": "Indonesia",
         "createdAt": "2015-06-22T20:34:51.641Z",
         "description": "Cause we cool lik dat. Music: Indian Summer - Shiner ft Ginger The Ghost (Akouo Remix) Bloom - ODESZA Shot with the GoPro Hero 3+ Black edition, edited ...",
+        "hashTags": [
+            "Roller coaster",
+            "Paintball"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -6.176402,
@@ -746,7 +763,7 @@
         },
         "objectId": "0xnDdGAx2s",
         "title": "GoPro Travels: Indonesia - #AVTgoesJKT",
-        "updatedAt": "2015-06-23T15:48:32.644Z",
+        "updatedAt": "2015-09-04T11:42:45.341Z",
         "videoId": "PbFa1MWD7AA"
     },
 	{
@@ -820,8 +837,8 @@
             "longitude": 101.66378136724234
         },
         "objectId": "12oNlYRrPF",
-        "title": "",
-        "updatedAt": "2015-08-14T11:05:51.045Z",
+        "title": "Palm FINAL",
+        "updatedAt": "2015-09-04T12:26:57.686Z",
         "videoId": "Gdli3Ixh-CU"
     },
 	{
@@ -904,6 +921,13 @@
         "country": "France",
         "createdAt": "2015-06-30T12:27:24.185Z",
         "description": "Time-lapse réaliser au Cap D'agde en plusieurs jours, avec plusieurs prises de vues. Logiciel de Montage: Gopro Studio Caméra: Gopro Hero 4 Silver Edition ...",
+        "hashTags": [
+            "Boat",
+            "Beach",
+            "Fishing",
+            "Port",
+            "Time lapse"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 43.622857,
@@ -911,7 +935,7 @@
         },
         "objectId": "1Mail8ms1g",
         "title": "[Time-Lapse #2] \"The streams of the Cap d'Agde\"",
-        "updatedAt": "2015-06-30T12:27:24.185Z",
+        "updatedAt": "2015-09-04T11:23:58.242Z",
         "videoId": "5uyfeNNnFV0"
     },
 	{
@@ -1039,6 +1063,11 @@
         "country": "Romania",
         "createdAt": "2015-06-23T06:21:56.107Z",
         "description": "Traseul turei: http://www.bikemap.net/en/route/2866282-bicicleala-de-luni-tura-22.",
+        "hashTags": [
+            "Cycling",
+            "Nightlife",
+            "10 min+"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 44.475845,
@@ -1046,7 +1075,7 @@
         },
         "objectId": "1VZ9jyclmj",
         "title": "Bicicleala de luni - tura 33 GOPRO",
-        "updatedAt": "2015-06-23T15:50:09.965Z",
+        "updatedAt": "2015-09-04T11:50:44.037Z",
         "videoId": "W6WFbLputvU"
     },
 	{
@@ -1279,6 +1308,10 @@
         "country": "Romania",
         "createdAt": "2015-06-23T06:21:56.106Z",
         "description": "Detalii și comentarii pe http://www.buhnici.ro/?p=13100.",
+        "hashTags": [
+            "Monument",
+            "Salina Turda"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 44.435498,
@@ -1286,7 +1319,7 @@
         },
         "objectId": "1sc7jw9oA4",
         "title": "GoPro Hero 4 Silver la Salina Turda (www.buhnici.ro)",
-        "updatedAt": "2015-06-23T15:50:09.960Z",
+        "updatedAt": "2015-09-04T11:50:37.234Z",
         "videoId": "ekxgNF8nMrw"
     },
 	{
@@ -1729,6 +1762,10 @@
         "country": "Monaco",
         "createdAt": "2015-06-30T12:10:28.987Z",
         "description": "8:00 for some action! gopro hero3 location: west alps mud, rain and rocks... wtf you wants more??? :D partenza vignolo, arrivo demonte.",
+        "hashTags": [
+            "Forest",
+            "Quad"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 43.73912,
@@ -1736,7 +1773,7 @@
         },
         "objectId": "2g0JRRMObZ",
         "title": "quad a cuneo con target 400 \u0026 mxu 500, da vignolo al colle ortiga! gopro hero3 white",
-        "updatedAt": "2015-06-30T12:10:28.987Z",
+        "updatedAt": "2015-09-04T11:52:33.389Z",
         "videoId": "gkpuLSjUfsg"
     },
 	{
@@ -2284,6 +2321,10 @@
         "country": "Russia",
         "createdAt": "2015-06-22T20:32:39.499Z",
         "description": "Наш первый мувик, снятый на GoPro Hero 4 Black.",
+        "hashTags": [
+            "10 min+",
+            "Cycling"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 55.752523,
@@ -2291,7 +2332,7 @@
         },
         "objectId": "3OV2tFrBeh",
         "title": "Ride-4-Life GoPro Movie 1 HD",
-        "updatedAt": "2015-06-23T15:48:21.436Z",
+        "updatedAt": "2015-09-04T12:40:56.359Z",
         "videoId": "u4-GXYwzkG4"
     },
 	{
@@ -2359,6 +2400,9 @@
         "country": "Ukraine",
         "createdAt": "2015-06-30T11:35:46.215Z",
         "description": "",
+        "hashTags": [
+            "Boat"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 50.447334,
@@ -2366,7 +2410,7 @@
         },
         "objectId": "3Rln3tppKe",
         "title": "Осещина рыбалка Весна 2015 GoPro",
-        "updatedAt": "2015-06-30T11:35:46.215Z",
+        "updatedAt": "2015-09-04T11:47:01.558Z",
         "videoId": "vjLt2-u5GnM"
     },
 	{
@@ -2569,7 +2613,11 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-30T05:50:52.610Z",
         "description": "It was sunset time when we went top of the Burj Khalifa, 148th floor. to see the Amazing view from at the top. it was incredible.",
-        "hashTags": [],
+        "hashTags": [
+            "Dubai",
+            "Monument",
+            "Burj Khalifa"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.615856,
@@ -2577,7 +2625,7 @@
         },
         "objectId": "3gZtBf9Wky",
         "title": "Burj Khalifa Breathtaking View from 148th Floor by GoPro HER0 4",
-        "updatedAt": "2015-09-04T10:22:33.798Z",
+        "updatedAt": "2015-09-04T10:53:41.095Z",
         "videoId": "QpyMI6G4mAc"
     },
 	{
@@ -2705,6 +2753,10 @@
         "country": "Algeria",
         "createdAt": "2015-06-30T12:47:04.851Z",
         "description": "",
+        "hashTags": [
+            "Diving",
+            "Spearfishing"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 36.759728,
@@ -2712,7 +2764,7 @@
         },
         "objectId": "3oGt3cYdcG",
         "title": "chasse sous marine de hakim filmé par gopro",
-        "updatedAt": "2015-06-30T12:47:04.851Z",
+        "updatedAt": "2015-09-04T12:03:00.757Z",
         "videoId": "sVbjKOTee8k"
     },
 	{
@@ -2840,6 +2892,11 @@
         "country": "Turkey",
         "createdAt": "2015-06-22T20:30:29.198Z",
         "description": "",
+        "hashTags": [
+            "Istanbul",
+            "Time lapse",
+            "Nightlife"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 41.028093,
@@ -2847,7 +2904,7 @@
         },
         "objectId": "465yUx0KG1",
         "title": "Gopro Hero4 Black Edition Nightlapse Istanbul Turkey",
-        "updatedAt": "2015-06-23T15:48:16.351Z",
+        "updatedAt": "2015-09-04T11:27:27.614Z",
         "videoId": "XGvCZ2isYuM"
     },
 	{
@@ -3061,7 +3118,7 @@
         "videoId": "KW-TvUW2l04"
     },
 	{
-        "city": "",
+        "city": "Portugal",
         "country": "Portugal",
         "createdAt": "2015-08-13T19:38:11.787Z",
         "description": "DJI Phantom 2 + Zenmuse H4-3D Gimbal.",
@@ -3072,7 +3129,7 @@
         },
         "objectId": "4Pn7tHzW63",
         "title": "Showreel 3",
-        "updatedAt": "2015-08-13T19:38:11.787Z",
+        "updatedAt": "2015-09-04T12:36:30.216Z",
         "videoId": "e7Pse_g1ljU"
     },
 	{
@@ -3290,6 +3347,11 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.750Z",
         "description": "Video made in 720p resolution with 120 frames per second.",
+        "hashTags": [
+            "Fountain",
+            "Dubai",
+            "Surf"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.2048493,
@@ -3297,7 +3359,7 @@
         },
         "objectId": "4dbuzkU9wg",
         "title": "Gopro hero 4 silver 120fps Jumps from the trampoline in to the sea",
-        "updatedAt": "2015-06-23T15:48:58.338Z",
+        "updatedAt": "2015-09-04T10:49:33.468Z",
         "videoId": "7Dpn0CrV9sQ"
     },
 	{
@@ -4340,6 +4402,11 @@
         "country": "India",
         "createdAt": "2015-06-22T20:35:30.288Z",
         "description": "The night before a group ride, just testing out different experimental mounting positions/accessories for stability. Ended up discarding both these options seen in ...",
+        "hashTags": [
+            "Motorcycle",
+            "Driving",
+            "Nightlife"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 12.978832,
@@ -4347,7 +4414,7 @@
         },
         "objectId": "672AiwoY5L",
         "title": "CBR250R GoPro HD night experiment stability test - Bangalore",
-        "updatedAt": "2015-06-23T15:48:32.644Z",
+        "updatedAt": "2015-09-04T11:29:17.862Z",
         "videoId": "sqkqUjZwaTI"
     },
 	{
@@ -4430,6 +4497,11 @@
         "country": "Montenegro",
         "createdAt": "2015-06-30T12:37:28.741Z",
         "description": "Please watch in 720p HD! © Sinan SOLMAZ.",
+        "hashTags": [
+            "Driving",
+            "Beach",
+            "Monument"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 42.392542,
@@ -4437,7 +4509,7 @@
         },
         "objectId": "69Z9xAM4wG",
         "title": "Our Trip to Montenegro (Part1) GoPro HERO3",
-        "updatedAt": "2015-06-30T12:37:28.741Z",
+        "updatedAt": "2015-09-04T11:22:38.295Z",
         "videoId": "iH4I92zTT-Y"
     },
 	{
@@ -4580,6 +4652,9 @@
         "country": "Portugal",
         "createdAt": "2015-06-22T21:57:12.948Z",
         "description": "",
+        "hashTags": [
+            "Quad"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 41.102913,
@@ -4587,7 +4662,7 @@
         },
         "objectId": "6G92gv1bXH",
         "title": "Altino Quad Vimioso GOPRO(01)",
-        "updatedAt": "2015-06-23T15:49:50.311Z",
+        "updatedAt": "2015-09-04T12:00:51.190Z",
         "videoId": "Po3ih2Yx3CE"
     },
 	{
@@ -4595,6 +4670,9 @@
         "country": "Lebanon",
         "createdAt": "2015-06-30T11:37:57.186Z",
         "description": "Ukraine - GoPro footage getting Ambushed and Hit on their way to a fire support mission during Battles. Filmed by Ukrain Army and pro russian units +Subtitles ...",
+        "hashTags": [
+            "Tank"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 33.900168,
@@ -4602,7 +4680,7 @@
         },
         "objectId": "6Gdb4re4Zi",
         "title": "Ukrainian tanks force - WAR UKRAINE RUSSIA Today 720p",
-        "updatedAt": "2015-06-30T11:37:57.186Z",
+        "updatedAt": "2015-09-04T11:45:31.581Z",
         "videoId": "i5SQAyR9kIc"
     },
 	{
@@ -5210,6 +5288,10 @@
         "country": "Spain",
         "createdAt": "2015-08-14T11:08:00.694Z",
         "description": "http://www.Andruvision.cz.",
+        "hashTags": [
+            "Editor´s choice",
+            "Drone"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 39.52431533999977,
@@ -5217,7 +5299,7 @@
         },
         "objectId": "7BialX7WSB",
         "title": "Mallorca - AndruVision",
-        "updatedAt": "2015-08-14T11:09:21.917Z",
+        "updatedAt": "2015-09-04T12:04:43.520Z",
         "videoId": "2n9uqvtqrZk"
     },
 	{
@@ -5360,6 +5442,10 @@
         "country": "Russia",
         "createdAt": "2015-06-22T20:32:39.502Z",
         "description": "",
+        "hashTags": [
+            "Diving",
+            "Swimming"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 55.753712,
@@ -5367,7 +5453,7 @@
         },
         "objectId": "7OAoJeGvCw",
         "title": "GoPro 2 waterproof test (Crimea, Black sea)",
-        "updatedAt": "2015-06-23T15:48:21.445Z",
+        "updatedAt": "2015-09-04T12:43:14.113Z",
         "videoId": "JIx8R0lR-4k"
     },
 	{
@@ -5450,6 +5536,10 @@
         "country": "China",
         "createdAt": "2015-06-28T19:55:17.838Z",
         "description": "GoPro cam view of Vince Soberano training on the focus mitts.",
+        "hashTags": [
+            "Boxing",
+            "Gym"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 39.904799,
@@ -5457,7 +5547,7 @@
         },
         "objectId": "7TCQPMK2Lv",
         "title": "Boxing training with GoPro cam",
-        "updatedAt": "2015-06-28T19:55:17.838Z",
+        "updatedAt": "2015-09-04T11:30:25.448Z",
         "videoId": "AcgeZu0qzAs"
     },
 	{
@@ -5510,6 +5600,10 @@
         "country": "Australia",
         "createdAt": "2015-06-22T20:51:21.302Z",
         "description": "Early monring Adelaide, SA roads...trying to get to work on time. The video was spead up x10.",
+        "hashTags": [
+            "Driving",
+            "Time lapse"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -35.113504,
@@ -5517,7 +5611,7 @@
         },
         "objectId": "7UcNXBWRa9",
         "title": "Drive to Work Adelaide South Australia GoPro 4",
-        "updatedAt": "2015-06-23T15:49:17.824Z",
+        "updatedAt": "2015-09-04T11:38:13.501Z",
         "videoId": "CsSZj-YcHJo"
     },
 	{
@@ -6140,6 +6234,10 @@
         "country": "Namibia",
         "createdAt": "2015-06-30T11:48:38.030Z",
         "description": "Night flight over Windhoek in QX 350.",
+        "hashTags": [
+            "Drone",
+            "Nightlife"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -22.516325,
@@ -6147,7 +6245,7 @@
         },
         "objectId": "8cFZoyK11m",
         "title": "QX 350 night flight with GoPro Hero 3+",
-        "updatedAt": "2015-06-30T11:48:38.030Z",
+        "updatedAt": "2015-09-04T12:09:55.075Z",
         "videoId": "HWmJ1KiuM2E"
     },
 	{
@@ -7940,6 +8038,10 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.749Z",
         "description": "3 Day Stopover in Abu Dhabi after traveling in Thailand Don´t forget to watch the Thailand Movie :) Filmed with Actionpro X7.",
+        "hashTags": [
+            "Abu Dhabi",
+            "Dubai"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.072422,
@@ -7947,7 +8049,7 @@
         },
         "objectId": "BBG1fBESWN",
         "title": "Abu Dhabi \u0026 Dubai 2015 [No GoPro]",
-        "updatedAt": "2015-06-23T15:48:58.334Z",
+        "updatedAt": "2015-09-04T10:55:35.748Z",
         "videoId": "bRmVfxwT3js"
     },
 	{
@@ -8105,6 +8207,11 @@
         "country": "Madagascar",
         "createdAt": "2015-06-30T11:42:52.037Z",
         "description": "Gopro.",
+        "hashTags": [
+            "Diving",
+            "Editor´s choice",
+            "Wild animal"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -18.915236,
@@ -8112,7 +8219,7 @@
         },
         "objectId": "BNwLAkDzFX",
         "title": "GoPro Underwater trip : Madagascar \u0026 Belize",
-        "updatedAt": "2015-06-30T11:42:52.037Z",
+        "updatedAt": "2015-09-04T12:22:13.184Z",
         "videoId": "9ArbiVc4xIw"
     },
 	{
@@ -11495,6 +11602,11 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.748Z",
         "description": "The Dubai Mall Fountain at the heart of the Dubai Mall has the biggest fountain show on Earth. It really is impressive seeing how the water dances.",
+        "hashTags": [
+            "Dubai Mall",
+            "Dubai",
+            "Fountain"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.22839,
@@ -11502,7 +11614,7 @@
         },
         "objectId": "G0ADUpi5v2",
         "title": "Dubai Mall Fountain on a GoPro Camera Arabic Music",
-        "updatedAt": "2015-06-23T15:48:58.332Z",
+        "updatedAt": "2015-09-04T10:56:56.529Z",
         "videoId": "RaLk0qSRdz0"
     },
 	{
@@ -11791,10 +11903,13 @@
         "videoId": "q8UFWfaHWtg"
     },
 	{
-        "city": "",
-        "country": "",
+        "city": "Keswick",
+        "country": "United Kingdom",
         "createdAt": "2015-08-14T10:20:51.758Z",
         "description": "A few general views captured high above Keswick during summer 2014. The Lake District summer has started with some lovely hot weather and still mornings ...",
+        "hashTags": [
+            "Editor's choice"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 52.174368824965285,
@@ -11802,7 +11917,7 @@
         },
         "objectId": "GUhcZWzwyF",
         "title": "Keswick - Cumbria - Mountains and Lakes",
-        "updatedAt": "2015-08-14T10:20:51.758Z",
+        "updatedAt": "2015-09-04T12:33:25.926Z",
         "videoId": "iuZkA4k3XNo"
     },
 	{
@@ -12125,6 +12240,10 @@
         "country": "Ukraine",
         "createdAt": "2015-06-30T11:35:46.214Z",
         "description": "Rollers becaming roofers :) Fellas from Nikolaev, Ukraine having fun with their friends in Kiev. Music: N'to – trauma (worakls remix) Editor \u0026 Operator – Yuriy ...",
+        "hashTags": [
+            "Skating",
+            "Urban Style"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 50.449286,
@@ -12132,7 +12251,7 @@
         },
         "objectId": "GzwiUBT50Z",
         "title": "GoPro: Roofers on Voskresensko-Podolskyy bridge, Kiev",
-        "updatedAt": "2015-06-30T11:35:46.214Z",
+        "updatedAt": "2015-09-04T11:58:04.291Z",
         "videoId": "1gEZ0X_y0SA"
     },
 	{
@@ -12230,6 +12349,10 @@
         "country": "Mayotte",
         "createdAt": "2015-06-30T13:05:39.177Z",
         "description": "Mayotte (DOM) - Février 2013 Planète Vision est l'espace dédié aux photos et vidéos du site www.planete-decouverte.org Matériels utilisés dans cette vidéo ...",
+        "hashTags": [
+            "Wild animal",
+            "Beach"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -12.865938,
@@ -12237,7 +12360,7 @@
         },
         "objectId": "H44z81ZFBF",
         "title": "GOPRO PLANETE VISION MAI 2014 - AUDIO OFF",
-        "updatedAt": "2015-06-30T13:05:39.177Z",
+        "updatedAt": "2015-09-04T12:23:24.835Z",
         "videoId": "dIttMeGHORA"
     },
 	{
@@ -12755,6 +12878,9 @@
         "country": "Mayotte",
         "createdAt": "2015-06-30T13:05:39.178Z",
         "description": "Pmt en face de Boueni , dans la baie des tortues a Mayotte HD.",
+        "hashTags": [
+            "Wild animal"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -12.775716,
@@ -12762,7 +12888,7 @@
         },
         "objectId": "HmrzNkDsNu",
         "title": "Mayotte Gopro: Recif de Boueni",
-        "updatedAt": "2015-06-30T13:05:39.178Z",
+        "updatedAt": "2015-09-04T12:24:15.655Z",
         "videoId": "RnFi1gyVuyQ"
     },
 	{
@@ -13055,6 +13181,9 @@
         "country": "Russia",
         "createdAt": "2015-06-22T20:32:39.503Z",
         "description": "Эмоции в связи с покупкой GoPro 4 :))",
+        "hashTags": [
+            "Editor´s choice"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 55.75393,
@@ -13062,7 +13191,7 @@
         },
         "objectId": "I5EjX8SZkT",
         "title": "Hello GoPro 4 black",
-        "updatedAt": "2015-06-23T15:48:21.438Z",
+        "updatedAt": "2015-09-04T12:44:55.004Z",
         "videoId": "G2m1cE-zwe8"
     },
 	{
@@ -13115,6 +13244,9 @@
         "country": "Ukraine",
         "createdAt": "2015-06-30T11:35:46.216Z",
         "description": "",
+        "hashTags": [
+            "Football"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 50.450401,
@@ -13122,7 +13254,7 @@
         },
         "objectId": "I6vXCoxgZo",
         "title": "GoPro. Днепр - Брюгге НСК \"Олимпийский\"",
-        "updatedAt": "2015-06-30T11:35:46.216Z",
+        "updatedAt": "2015-09-04T12:33:55.972Z",
         "videoId": "5OKaBXHR_uU"
     },
 	{
@@ -13250,6 +13382,9 @@
         "country": "Cameroon",
         "createdAt": "2015-06-30T11:45:48.056Z",
         "description": "vidéo GO PRO héro3. Ce que voit l'arbitre, ce qu'il dit, ce qu'il entend : buts, pénalty, réactions, rires, colères. La passion du football tous les dimanche matin sur ...",
+        "hashTags": [
+            "Football"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 3.702222,
@@ -13257,7 +13392,7 @@
         },
         "objectId": "IGzzJlU9LN",
         "title": "VIDEO HD FOOTBALL YAOUNDE CAMEROUN GOPRO HERO3 arbitre, buts, pénalty, réaction, rire, colère ect...",
-        "updatedAt": "2015-06-30T11:45:48.056Z",
+        "updatedAt": "2015-09-04T12:08:44.616Z",
         "videoId": "5f6De3YF1ws"
     },
 	{
@@ -15680,6 +15815,9 @@
         "country": "Russia",
         "createdAt": "2015-06-22T20:32:39.504Z",
         "description": "тест.",
+        "hashTags": [
+            "Driving"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 55.768781,
@@ -15687,7 +15825,7 @@
         },
         "objectId": "LW9eKccMHD",
         "title": "тест gopro",
-        "updatedAt": "2015-06-23T15:48:21.438Z",
+        "updatedAt": "2015-09-04T12:48:00.178Z",
         "videoId": "isKe3xoe-vU"
     },
 	{
@@ -15890,6 +16028,9 @@
         "country": "Russia",
         "createdAt": "2015-06-22T20:32:39.499Z",
         "description": "",
+        "hashTags": [
+            "Water motocycle"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 55.822403,
@@ -15897,7 +16038,7 @@
         },
         "objectId": "LhZt49uKAx",
         "title": "Watercraft Crimea GoPro 2",
-        "updatedAt": "2015-06-23T15:48:21.432Z",
+        "updatedAt": "2015-09-04T12:36:32.112Z",
         "videoId": "v997hj3BVnI"
     },
 	{
@@ -16010,6 +16151,10 @@
         "country": "Uganda",
         "createdAt": "2015-06-30T11:41:18.548Z",
         "description": "",
+        "hashTags": [
+            "Rafting",
+            "Water sport"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 0.35749,
@@ -16017,7 +16162,7 @@
         },
         "objectId": "Lww5smRnUu",
         "title": "Whitewater rafting on the source of the Nile | September 2014 | GoPro Hero2 Black",
-        "updatedAt": "2015-06-30T11:41:18.548Z",
+        "updatedAt": "2015-09-04T12:13:41.586Z",
         "videoId": "uDbX-gEvL6w"
     },
 	{
@@ -19295,6 +19440,9 @@
         "country": "Madagascar",
         "createdAt": "2015-06-30T11:42:52.036Z",
         "description": "One day Off road ride around 20kms from Antananarivo Madagascar Just get a ride with friends and enjoy the beautiful landscapes Shot 100% on the HD ...",
+        "hashTags": [
+            "Motorcycle"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -18.919625,
@@ -19302,7 +19450,7 @@
         },
         "objectId": "QeIiKtVpXj",
         "title": "GoPro : Offroad Enduro KTM / Yamaha Madagascar",
-        "updatedAt": "2015-06-30T11:42:52.036Z",
+        "updatedAt": "2015-09-04T12:25:29.391Z",
         "videoId": "hogUiJGq4pY"
     },
 	{
@@ -19340,6 +19488,9 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:22:30.038Z",
         "description": "",
+        "hashTags": [
+            "Time lapse"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 24.819565,
@@ -19347,7 +19498,7 @@
         },
         "objectId": "QiTTNO8rh6",
         "title": "albdayr desert timelapes gopro hero4 black  تايم لابس البداير بإستخدام قوبرو 4 بلاك إدشن",
-        "updatedAt": "2015-06-23T15:47:50.573Z",
+        "updatedAt": "2015-09-04T10:57:27.145Z",
         "videoId": "N_b-s4TaJJg"
     },
 	{
@@ -20255,6 +20406,10 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.750Z",
         "description": "",
+        "hashTags": [
+            "Qatar",
+            "Dubai"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.25312,
@@ -20262,7 +20417,7 @@
         },
         "objectId": "S2Ufzq8stM",
         "title": "GoPro Hero4 BeachLife",
-        "updatedAt": "2015-06-23T15:48:58.339Z",
+        "updatedAt": "2015-09-04T11:03:31.943Z",
         "videoId": "XT2-DQpA9wM"
     },
 	{
@@ -20551,10 +20706,13 @@
         "videoId": "HuHJmR8yfG0"
     },
 	{
-        "city": "",
-        "country": "",
+        "city": "Bacalar",
+        "country": "Mexico",
         "createdAt": "2015-08-14T10:26:55.592Z",
         "description": "Conocida como la Laguna de los 7 colores debido a las tonalidades del agua es una de las maravillas naturales de México más impresionantes. De agua ...",
+        "hashTags": [
+            "Editor's choice"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 18.408513497626455,
@@ -20562,7 +20720,7 @@
         },
         "objectId": "SKZLyElkD9",
         "title": "Bacalar desde el aire 4K",
-        "updatedAt": "2015-08-14T10:26:55.592Z",
+        "updatedAt": "2015-09-04T12:31:04.732Z",
         "videoId": "LR8IJpvA2A8"
     },
 	{
@@ -21365,6 +21523,9 @@
         "country": "Austria",
         "createdAt": "2015-06-22T20:28:56.217Z",
         "description": "",
+        "hashTags": [
+            "Extreme sport"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 52.0055148,
@@ -21372,7 +21533,7 @@
         },
         "objectId": "TIxg0cqR4q",
         "title": "GoPro HERO3: sk forest park",
-        "updatedAt": "2015-06-23T15:48:12.363Z",
+        "updatedAt": "2015-09-04T12:55:04.791Z",
         "videoId": "o78RAl-EWdY"
     },
 	{
@@ -21425,6 +21586,9 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:22:30.038Z",
         "description": "First ride after a few months.",
+        "hashTags": [
+            "Dubai"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 24.819564,
@@ -21432,7 +21596,7 @@
         },
         "objectId": "TMVRXvrBYJ",
         "title": "GoPro Hero 3 - Raptor 700 Duning in Dubai, UAE",
-        "updatedAt": "2015-06-23T15:47:50.574Z",
+        "updatedAt": "2015-09-04T11:05:36.504Z",
         "videoId": "2gTYm2uk9z4"
     },
 	{
@@ -21755,6 +21919,11 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:22:30.039Z",
         "description": "BAITFISH GOPRO 3 BLACK - SLOW MOTION UNDERWATER.",
+        "hashTags": [
+            "Diving",
+            "Dubai",
+            "Fishing"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.310278,
@@ -21762,7 +21931,7 @@
         },
         "objectId": "TgMV3M5LEF",
         "title": "BAITFISH GOPRO 3 BLACK - SLOW MOTION UNDERWATER",
-        "updatedAt": "2015-06-23T15:47:50.575Z",
+        "updatedAt": "2015-09-04T11:06:41.213Z",
         "videoId": "zdFrJLJIa0M"
     },
 	{
@@ -23465,6 +23634,11 @@
         "country": "Chad",
         "createdAt": "2015-06-30T11:52:37.980Z",
         "description": "Around the world in 80 napkins in Tchad.",
+        "hashTags": [
+            "Swimming",
+            "Editor´s choice",
+            "Drifting"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 12.129056,
@@ -23472,7 +23646,7 @@
         },
         "objectId": "WAzXUrRJAw",
         "title": "Le tour du Monde en 80 serviettes Tchad Gopro",
-        "updatedAt": "2015-06-30T11:52:37.980Z",
+        "updatedAt": "2015-09-04T12:06:13.012Z",
         "videoId": "GAQxNGiglx8"
     },
 	{
@@ -24920,6 +25094,9 @@
         "country": "Sudan",
         "createdAt": "2015-06-30T12:31:45.046Z",
         "description": "We put a gopro on a whirling dervish in Sudan.",
+        "hashTags": [
+            "Tradition"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 15.592767,
@@ -24927,7 +25104,7 @@
         },
         "objectId": "XlWhQu0AnH",
         "title": "GoPro on a whirling dervish",
-        "updatedAt": "2015-06-30T12:31:45.046Z",
+        "updatedAt": "2015-09-04T12:11:45.870Z",
         "videoId": "_Cnb72dqR5A"
     },
 	{
@@ -25066,10 +25243,13 @@
         "videoId": "VFY4h_15npU"
     },
 	{
-        "city": "",
+        "city": "Italy",
         "country": "Italy",
         "createdAt": "2015-08-14T10:17:27.057Z",
         "description": "Capturing this beautiful Italian village, Sirolo by drone. Very close to Ancona. Sirolo is one of the only villages that is on top of a mountain that is near the sea.",
+        "hashTags": [
+            "Editor's choice"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 43.46996281557381,
@@ -25077,7 +25257,7 @@
         },
         "objectId": "XvZvoixdEo",
         "title": "Italy by drone - Sirolo",
-        "updatedAt": "2015-08-14T10:17:27.057Z",
+        "updatedAt": "2015-09-04T12:34:21.554Z",
         "videoId": "GUy3tiDO6PA"
     },
 	{
@@ -25325,6 +25505,12 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.749Z",
         "description": "Easter trip to Dubai with family from 2nd till 6th of April 2015.",
+        "hashTags": [
+            "Fountain",
+            "Dubai",
+            "Cars",
+            "Port"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.227185,
@@ -25332,7 +25518,7 @@
         },
         "objectId": "YEWMCismhp",
         "title": "GoPro Hero4: Dubai 2015 - 4 days family adventure",
-        "updatedAt": "2015-06-23T15:48:58.335Z",
+        "updatedAt": "2015-09-04T11:11:50.639Z",
         "videoId": "rgs-9jTzFDA"
     },
 	{
@@ -25430,6 +25616,9 @@
         "country": "Mayotte",
         "createdAt": "2015-06-30T13:05:39.177Z",
         "description": "Un petit tour de vélo pour tester ma nouvelle caméra + un petit, petit montage et voilà le résultat ! http://www.facebook.com/baptistesproduction.",
+        "hashTags": [
+            "Motorcycle"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -12.961694,
@@ -25437,7 +25626,7 @@
         },
         "objectId": "YMsLXYN5gs",
         "title": "Mountain bike with GoPro HD HERO 2",
-        "updatedAt": "2015-06-30T13:05:39.177Z",
+        "updatedAt": "2015-09-04T12:27:46.780Z",
         "videoId": "GOXLCg605xs"
     },
 	{
@@ -25505,6 +25694,11 @@
         "country": "Vanuatu",
         "createdAt": "2015-06-30T12:32:08.386Z",
         "description": "Went kayaking off the main island of Vila with a cruise ship shore excursion (Royal Caribbean Radiance of the seas) and went to a small island only big enough ...",
+        "hashTags": [
+            "Swimming",
+            "Water sport",
+            "Diving"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -17.734234,
@@ -25512,7 +25706,7 @@
         },
         "objectId": "YRJpAqfJef",
         "title": "GoPro Hero HD Swimming with Nemo at Port Vila",
-        "updatedAt": "2015-06-30T12:32:08.386Z",
+        "updatedAt": "2015-09-04T11:32:11.928Z",
         "videoId": "1d6xhVrybbc"
     },
 	{
@@ -26360,6 +26554,18 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.750Z",
         "description": "We spent 7 great days in one of the most amazing cities in the world, Dubai ! That was our first family trip to country which is outside of Europe ! Video filmed with ...",
+        "hashTags": [
+            "Dubai",
+            "Boat",
+            "Cars",
+            "Fountain",
+            "Swimming",
+            "Diving",
+            "Atlantis hotel",
+            "Ferarri",
+            "Nightlife",
+            "Port"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.31205,
@@ -26367,7 +26573,7 @@
         },
         "objectId": "ZWiI4BTlQu",
         "title": "Holidays in Dubai - 2015 - GoPro Hero 4 [ HD ]",
-        "updatedAt": "2015-06-23T15:48:58.338Z",
+        "updatedAt": "2015-09-04T11:16:57.159Z",
         "videoId": "AAjSpg_eL_I"
     },
 	{
@@ -26585,6 +26791,14 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.748Z",
         "description": "Probably the most outrageous edition of the GoPro travel edits to date. Friday night flight from Busan to Dubai, via Seoul. Spent a jam packed 40 odd hours in ...",
+        "hashTags": [
+            "10 min+",
+            "Burj Khalifa",
+            "Dubai",
+            "Abu Dhabi",
+            "Mosque",
+            "Sheikh Zayed Grand Mosque"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.197628,
@@ -26592,7 +26806,7 @@
         },
         "objectId": "Zgw6rbLEub",
         "title": "UAE GoPro Edit",
-        "updatedAt": "2015-06-23T15:48:58.335Z",
+        "updatedAt": "2015-09-04T11:20:03.641Z",
         "videoId": "ECIUilEq5DM"
     },
 	{
@@ -27331,10 +27545,13 @@
         "videoId": "cfSokIgJ2OA"
     },
 	{
-        "city": "",
+        "city": "Buenos aires",
         "country": "Argentina",
         "createdAt": "2015-08-14T10:56:28.101Z",
         "description": "TRAILER - Mar del Plata Perspectiva Música: Ólafur Arnalds - 3055.",
+        "hashTags": [
+            "Editor´s choice"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -38.22859072111483,
@@ -27342,7 +27559,7 @@
         },
         "objectId": "apdkhcWnLl",
         "title": "TRAILER - Mar del Plata Perspectiva",
-        "updatedAt": "2015-08-14T10:56:28.101Z",
+        "updatedAt": "2015-09-04T12:29:15.959Z",
         "videoId": "Jo3IbUVEBr0"
     },
 	{
@@ -27755,10 +27972,6 @@
         "country": "Nepal",
         "createdAt": "2015-06-23T16:05:13.517Z",
         "description": "Enjoy this crazy driving video I made. A sped up long shot capturing the insane driving experience in Nepal. Footage that combines GoPro, a Jeep, and an ...",
-        "hashTags": [
-            "first hashtag",
-            "This is a very very long hashtag"
-        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 27.716395,
@@ -27766,32 +27979,8 @@
         },
         "objectId": "bLdGW30IwQ",
         "title": "GoPro Movie Driving B.P. Highway, Nepal",
-        "updatedAt": "2015-09-03T20:00:48.578Z",
+        "updatedAt": "2015-06-23T16:05:13.517Z",
         "videoId": "Z58HOwhMCSU"
-    },
-	{
-        "city": "",
-        "country": "Saudi Arabia",
-        "createdAt": "2015-08-20T15:28:24.502Z",
-        "description": "",
-        "hashTags": [
-            "This is a very very long hashtag",
-            "first hashtag",
-            "Beach",
-            "Boat",
-            "Boxing",
-            "Water sport",
-            "Whale"
-        ],
-        "location": {
-            "__type": "GeoPoint",
-            "latitude": 28.089168022890505,
-            "longitude": 43.914631716907024
-        },
-        "objectId": "bMPs8foYdJ",
-        "title": "",
-        "updatedAt": "2015-09-04T15:13:35.014Z",
-        "videoId": "_m7LKFridwY"
     },
 	{
         "city": "Yamoussoukro",
@@ -29928,6 +30117,9 @@
         "country": "Mayotte",
         "createdAt": "2015-06-30T13:05:39.177Z",
         "description": "",
+        "hashTags": [
+            "Wild animal"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -12.803479,
@@ -29935,7 +30127,7 @@
         },
         "objectId": "eSFbooDTH2",
         "title": "Test GoPro en PMT",
-        "updatedAt": "2015-06-30T13:05:39.177Z",
+        "updatedAt": "2015-09-04T12:30:11.403Z",
         "videoId": "l3H1aXd4h4Q"
     },
 	{
@@ -30003,6 +30195,11 @@
         "country": "Djibouti",
         "createdAt": "2015-06-30T12:42:28.220Z",
         "description": "",
+        "hashTags": [
+            "Boat",
+            "Editor´s choice",
+            "Motorcycle"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 11.754198,
@@ -30010,7 +30207,7 @@
         },
         "objectId": "eXK7JLNcTO",
         "title": "Djibouti GoPro Suite",
-        "updatedAt": "2015-06-30T12:42:28.220Z",
+        "updatedAt": "2015-09-04T12:07:48.438Z",
         "videoId": "wbeQzw2Ss28"
     },
 	{
@@ -30674,10 +30871,14 @@
         "videoId": "Vx8sImPjBi8"
     },
 	{
-        "city": "",
-        "country": "",
+        "city": "Poznań",
+        "country": "Poland",
         "createdAt": "2015-08-14T10:14:50.477Z",
         "description": "Supercars on the street - drift burnouts accelerations at GT Polonia 2011 Poznań, Poland http://www.youtube.com/watch?v=K_j2jzc0_nQ PART 1 ...",
+        "hashTags": [
+            "Cars",
+            "Ferarri"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 50.27434422193438,
@@ -30685,7 +30886,7 @@
         },
         "objectId": "fYyu8R837X",
         "title": "SUPERCARS on the street 2011 - CRAZY BURNOUTS ACCELERATIONS DRIFTS  PART 2",
-        "updatedAt": "2015-08-14T10:14:50.477Z",
+        "updatedAt": "2015-09-04T12:35:19.474Z",
         "videoId": "GoW5QTD22rY"
     },
 	{
@@ -33438,6 +33639,7 @@
         "country": "United Arab Emirates",
         "createdAt": "2015-06-22T20:44:48.748Z",
         "description": "Landing at Dubai International Airport Friday 13th February 2015.",
+        "hashTags": [],
         "location": {
             "__type": "GeoPoint",
             "latitude": 25.26332,
@@ -33445,7 +33647,7 @@
         },
         "objectId": "jVjbq2HEqy",
         "title": "Dubai Night Landing GoPro cabin view",
-        "updatedAt": "2015-06-23T15:48:58.335Z",
+        "updatedAt": "2015-09-04T11:11:31.487Z",
         "videoId": "j46iWj2i-28"
     },
 	{
@@ -39168,6 +39370,13 @@
         "country": "Uganda",
         "createdAt": "2015-06-30T11:41:18.548Z",
         "description": "Visited East Africa for 5 weeks with Sagavoll FHS Cameras GoPro 4 Black ediotion Cannon EOS 1200D Music Amadou \u0026 Mariam:La Réalité African Music ...",
+        "hashTags": [
+            "Boat",
+            "Swimming",
+            "Wild animal",
+            "Forest",
+            "Editor´s choice"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 1.957709,
@@ -39175,7 +39384,7 @@
         },
         "objectId": "rd46yOwT3f",
         "title": "GoPro- East Africa (5 weeks)",
-        "updatedAt": "2015-06-30T11:41:18.548Z",
+        "updatedAt": "2015-09-04T12:19:22.501Z",
         "videoId": "1Clf1MDljr8"
     },
 	{
@@ -43863,9 +44072,6 @@
         "country": "Norway",
         "createdAt": "2015-08-14T11:14:35.454Z",
         "description": "Pure Norway nature taken at summer 2015 by drone Tarot FY680 + NEX7. Check my website - http://www.imasik.cz.",
-        "hashTags": [
-            "New updated"
-        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": 63.02573104240729,
@@ -43873,7 +44079,7 @@
         },
         "objectId": "yoPwlYAmF4",
         "title": "Norway nature 2015 - Aerial drone video",
-        "updatedAt": "2015-09-04T16:19:26.201Z",
+        "updatedAt": "2015-08-14T11:14:35.454Z",
         "videoId": "2nv2r4995jg"
     },
 	{
@@ -43911,6 +44117,9 @@
         "country": "Madagascar",
         "createdAt": "2015-06-30T11:42:52.037Z",
         "description": "Rallye Total 2014 Madagascar. On board with Gerard Louvel Just amazing shots, amazing pilot.. enjoy Shot 100% on the HD HERO3+® camera from ...",
+        "hashTags": [
+            "Driving"
+        ],
         "location": {
             "__type": "GeoPoint",
             "latitude": -18.93,
@@ -43918,7 +44127,7 @@
         },
         "objectId": "ytXKQIuB4k",
         "title": "GoPro : Rallye 2014 madagascar Rush embarqué avec G Louvel",
-        "updatedAt": "2015-06-30T11:42:52.037Z",
+        "updatedAt": "2015-09-04T12:31:58.231Z",
         "videoId": "UqCh8bk5wlw"
     },
 	{

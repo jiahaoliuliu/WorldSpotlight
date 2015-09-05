@@ -28,6 +28,13 @@ public abstract class AbstractVideosModuleObservable extends AbstractBaseModuleO
     public abstract void requestAllVideos(Observer observer);
 
     /**
+     * Synchronize the video info with the backend
+     * TODO: Check if it is need to run this on another thread
+     * @param observer
+     */
+    public abstract void SyncVideoInfo(Observer observer);
+
+    /**
      * Given a list of likes, retrieve all the information about the videos in the list
      * @param observer
      *      The observer to notify when the data is ready

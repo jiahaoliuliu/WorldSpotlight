@@ -51,6 +51,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosM
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAddAVideoResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleUpdateVideosListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleVideosListResponse;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.UserData;
@@ -452,6 +453,27 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                     Log.w(TAG, "Error getting hash tags list", parseResponse.getCause());
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
                 }
+            } else if (response instanceof VideosModuleUpdateVideosListResponse) {
+                Log.v(TAG, "Videos module update videos list response received");
+                VideosModuleUpdateVideosListResponse videosModuleUpdateVideosListResponse = (VideosModuleUpdateVideosListResponse) response;
+                ParseResponse parseResponse = videosModuleUpdateVideosListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    // if the video list is null, not do anything
+                    if (mVideosList != null) {
+                        List<Video> videosListToBeUpdated = videosModuleUpdateVideosListResponse.getVideosList();
+                        Log.v(TAG, "The list of videos that should be updated has " + videosListToBeUpdated.size() + " videos.");
+                        Log.v(TAG, videosListToBeUpdated + "");
+                        for (Video videoUpdate : videosListToBeUpdated) {
+                            // If the video to be updated is not part of the video list, not do anything
+                            if (mVideosList.contains(videoUpdate)) {
+                                Video existentVideo = mVideosList.get(mVideosList.indexOf(videoUpdate));
+                                existentVideo.update(videoUpdate);
+                            }
+                        }
+                    }
+                } else {
+                    // Not do anything
+                }
             }
 
             Log.v(TAG, "Dismissing the loading dialog");
@@ -492,6 +514,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
         updateUserProfileIfPossibleAndNeeded();
         updateDrawerItems();
+        mVideosModule.SyncVideoInfo(this);
     }
 
     /**
