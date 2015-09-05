@@ -79,7 +79,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      * matches with the last time the videos.json was updated.
      *
      */
-    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1439510400000L;
+    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1441411200000L;
 
     //Some keys for the Parse Object
     private static final String PARSE_COLUMN_CREATED_AT = "createdAt";
