@@ -1,5 +1,8 @@
 package com.worldspotlightapp.android.model;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
@@ -30,12 +33,54 @@ public class City extends ParseObject{
         super();
     }
 
+    public City(String city, String country) {
+        this();
+        setCity(city);
+        setCountry(country);
+    }
+
+    // City
+    public boolean hasCity() {
+        if (!containsKey(PARSE_COLUMN_CITY)) {
+            return false;
+        }
+
+        return !TextUtils.isEmpty(getCity());
+    }
+
     public String getCity() {
         return getString(PARSE_COLUMN_CITY);
     }
 
+    private void setCity(String city) {
+        if (city == null) {
+            Log.e(TAG, "Trying to set the city when the city is null");
+            return;
+        }
+
+        put(PARSE_COLUMN_CITY, city);
+    }
+
+    // Country
+    public boolean hasCountry() {
+        if (!containsKey(PARSE_COLUMN_COUNTRY)) {
+            return false;
+        }
+
+        return !TextUtils.isEmpty(getCountry());
+    }
+
     public String getCountry() {
         return getString(PARSE_COLUMN_COUNTRY);
+    }
+
+    public void setCountry(String country) {
+        if (country == null) {
+            Log.e(TAG, "Trying to set the country when the country is null");
+            return;
+        }
+
+        put(PARSE_COLUMN_COUNTRY, country);
     }
 
     // TODO: Get the list of organizers

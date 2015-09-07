@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.citymodule;
 import android.app.Activity;
 
 import com.worldspotlightapp.android.maincontroller.AbstractBaseModuleObservable;
+import com.worldspotlightapp.android.model.City;
 import com.worldspotlightapp.android.model.UserData;
 
 import java.util.Observer;
@@ -21,5 +22,14 @@ public abstract class AbstractCityModuleObservable extends AbstractBaseModuleObs
      * @param observer
      *      The observer to notify when the data is ready.
      */
-    public abstract void retrieveCitiesList(Observer observer);
+    public abstract void retrieveAllCitiesList(Observer observer);
+
+    /**
+     * Add a new city if it does not exists in the backend before.
+     *
+     * Note this method does not return any data to the observer
+     * @param city
+     *      The city to be added
+     */
+    public abstract void addNewCityIfNotExisted(City city);
 }
