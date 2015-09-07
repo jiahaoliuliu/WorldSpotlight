@@ -82,6 +82,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         mVideosModule = mMainController.getVideosModule();
         mEventTrackingModule = mMainController.getEventTrackingModule();
         mActivityTrackerModule = mMainController.getActivityTrackerModule();
+        mCityModuleObservable = mMainController.getCityModuleObservable();
 
         // Getting the resolution error saved for localization service
         mResolvingError =
