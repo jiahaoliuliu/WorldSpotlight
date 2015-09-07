@@ -15,4 +15,11 @@ import java.util.UUID;
  * 
  */
 public abstract class AbstractCityModuleObservable extends AbstractBaseModuleObservable {
+
+    /**
+     * Retrieve the list of existence cities
+     * @param observer
+     *      The observer to notify when the data is ready.
+     */
+    public abstract void retrieveCitiesList(Observer observer);
 }

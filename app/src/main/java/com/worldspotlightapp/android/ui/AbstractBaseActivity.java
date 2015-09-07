@@ -20,6 +20,7 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.interfaces.IOnActionBarRequestListener;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.AbstractCityModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
@@ -54,6 +55,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     protected AbstractVideosModuleObservable mVideosModule;
     protected IEventsTrackingModule mEventTrackingModule;
     protected IActivityTrackerModule mActivityTrackerModule;
+    protected AbstractCityModuleObservable mCityModuleObservable;
 
     // Special variables for GpsLocalizationModule
     private boolean isRegisteredForLocalizationService;
@@ -315,6 +317,11 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     @Override
     public IActivityTrackerModule getActivityTrackerModule() {
         return mActivityTrackerModule;
+    }
+
+    @Override
+    public AbstractCityModuleObservable getCityModuleObservable() {
+        return mCityModuleObservable;
     }
 
     @Override
