@@ -438,6 +438,10 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
                             // Center the map to the video and show the preview
                             showVideoPreview(video);
+
+                            // Update the list of cities
+                            City city = new City(video.getCity(), video.getCountry());
+                            mCityModuleObservable.addNewCityIfNotExisted(city);
                         } else {
                             Log.v(TAG, "Error adding the video " + parseResponse.getCode());
                             mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
