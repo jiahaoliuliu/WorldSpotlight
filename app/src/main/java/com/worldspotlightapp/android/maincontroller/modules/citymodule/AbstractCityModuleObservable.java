@@ -35,8 +35,12 @@ public abstract class AbstractCityModuleObservable extends AbstractBaseModuleObs
 
     /**
      * Retrieve all the organizers from a specific city
+     * @param observer
+     *      The observer to notify when the data is ready
      * @param city
-     *      The city where the organizers has something organizered
+     *      The city where the organizers has something organized
+     * @param country
+     *      The country where the city is
      */
-    public abstract void retrieveAllOrganizersFromCity(City city);
+    public abstract void retrieveAllOrganizersOfTheCity(Observer observer, String city, String country);
 }

@@ -7,6 +7,9 @@ import android.util.Log;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jiahaoliuliu on 15/9/7.
  */
@@ -23,9 +26,6 @@ public class City extends ParseObject{
 
     // Country
     public static final String PARSE_COLUMN_COUNTRY = "country";
-
-    // Organizers
-    public static final String PARSE_COLUMN_ORGANIZERS = "organizers";
 
     /**
      * Empty constructor required by parse
@@ -84,9 +84,6 @@ public class City extends ParseObject{
         put(PARSE_COLUMN_COUNTRY, country);
     }
 
-    // Organizers
-//    public ArrayList<ContactsContract.CommonDataKinds.Organization>
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,7 +114,6 @@ public class City extends ParseObject{
                 "objectId='" + getObjectId() + "\'" +
                 "city='" + getCity() + '\'' +
                 "country='" + getCountry() + '\'' +
-                // TODO: Get the pointer to the organizers
                 '}';
     }
 }
