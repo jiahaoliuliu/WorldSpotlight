@@ -9,6 +9,7 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.interfaces.IOnActionBarRequestListener;
 import com.worldspotlightapp.android.maincontroller.MainController;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.AbstractCityModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
@@ -35,6 +36,7 @@ public abstract class AbstractBaseFragment extends Fragment {
     protected AbstractVideosModuleObservable mVideosModule;
     protected IEventsTrackingModule mEventTrackingModule;
     protected IActivityTrackerModule mActivityTrackerModule;
+    protected AbstractCityModuleObservable mCityModuleObservable;
 
     // Listener
     private MainController.IOnMainControllerInstantiatedListener mOnMainControllerInstantiatedListener;
@@ -77,6 +79,7 @@ public abstract class AbstractBaseFragment extends Fragment {
         mVideosModule = mOnMainControllerInstantiatedListener.getVideosModule();
         mEventTrackingModule = mOnMainControllerInstantiatedListener.getEventTrackingModule();
         mActivityTrackerModule = mOnMainControllerInstantiatedListener.getActivityTrackerModule();
+        mCityModuleObservable = mOnMainControllerInstantiatedListener.getCityModuleObservable();
     }
 
     /**

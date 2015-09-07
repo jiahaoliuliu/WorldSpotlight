@@ -18,9 +18,6 @@ public class City extends ParseObject{
 
     private static final String TAG = "City";
 
-    // Object Id
-    public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
-
     // City
     public static final String PARSE_COLUMN_CITY = "city";
 
@@ -38,6 +35,11 @@ public class City extends ParseObject{
         this();
         setCity(city);
         setCountry(country);
+    }
+
+    // Object id
+    public boolean hasObjectId() {
+        return !TextUtils.isEmpty(getObjectId());
     }
 
     // City
@@ -92,7 +94,7 @@ public class City extends ParseObject{
         City anotherCity = (City) o;
 
         // Check if the object id exists.
-        if (anotherCity.has(PARSE_COLUMN_OBJECT_ID)) {
+        if (anotherCity.hasObjectId()) {
             return getObjectId().equals(anotherCity.getObjectId());
             // If the object id does not exists, check the video id
         } else {

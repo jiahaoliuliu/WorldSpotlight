@@ -14,6 +14,7 @@ import com.parse.SaveCallback;
 import com.worldspotlightapp.android.model.City;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
+import com.worldspotlightapp.android.model.Organize;
 import com.worldspotlightapp.android.model.Organizer;
 import com.worldspotlightapp.android.model.Report;
 import com.worldspotlightapp.android.model.UserData;
@@ -44,6 +45,7 @@ public class MainApplication extends Application {
         ParseObject.registerSubclass(Report.class);
         ParseObject.registerSubclass(City.class);
         ParseObject.registerSubclass(Organizer.class);
+        ParseObject.registerSubclass(Organize.class);
         if (IS_PRODUCTION) {
             Parse.initialize(this, Secret.PARSE_APPLICATION_ID_PRODUCTION, Secret.PARSE_CLIENT_KEY_PRODUCTION);
         } else {

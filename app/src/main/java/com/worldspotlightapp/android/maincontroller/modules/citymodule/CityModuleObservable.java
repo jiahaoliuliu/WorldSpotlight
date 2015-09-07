@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleCitiesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleOrganizersListResponse;
 import com.worldspotlightapp.android.model.City;
+import com.worldspotlightapp.android.model.Organize;
 import com.worldspotlightapp.android.model.Organizer;
 
 import java.util.ArrayList;
@@ -25,9 +27,6 @@ import java.util.Observer;
 public class CityModuleObservable extends AbstractCityModuleObservable {
 
     private static final String TAG = "CityModuleObservable";
-
-    private static final String ORGANIZE_RELATION_TABLE_NAME = "Organize";
-    private static final String ORGANIZE_RELATION_TABLE_COLUMN_CITY = "city";
 
     private static final int MAX_PARSE_QUERY_RESULT = 500;
 
@@ -188,30 +187,40 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
      *      The city which the organizer is organizing some event. The object id of the city cannot be null
      */
     private void retrieveAllOrganizersOfTheCity(Observer observer, City city) {
-        if (!city.has(City.PARSE_COLUMN_OBJECT_ID)) {
+        if (!city.hasObjectId()) {
             throw new IllegalArgumentException("You must pass the city with object id");
         }
 
         addObserver(observer);
 
-        ParseQuery<Organizer> organizerParseQuery = ParseQuery.getQuery(ORGANIZE_RELATION_TABLE_NAME);
-        organizerParseQuery.whereEqualTo(ORGANIZE_RELATION_TABLE_COLUMN_CITY, city);
-        organizerParseQuery.findInBackground(new FindCallback<Organizer>() {
+        ParseQuery<Organize> organizerParseQuery = ParseQuery.getQuery(Organize.class);
+        organizerParseQuery.whereEqualTo(Organize.PARSE_COLUMN_CITY, city);
+        organizerParseQuery.include("organizer");
+        organizerParseQuery.findInBackground(new FindCallback<Organize>() {
             @Override
-            public void done(List<Organizer> organizersList, ParseException e) {
+            public void done(List<Organize> organizesList, ParseException e) {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 // Check if there is any error
                 if (!parseResponse.isError()) {
-                    if (organizersList.isEmpty()) {
+                    if (organizesList.isEmpty()) {
                         Log.e(TAG, "No organizer found for that city");
                     } else {
+                        Log.v(TAG, organizesList.size() + " organizations found");
+
+                        List<Organizer> organizersList = new ArrayList<Organizer>();
+                        // Get the organizer
+                        for (Organize organize : organizesList) {
+                            Log.v(TAG, organize.getOrganizer() + "");
+                            organizersList.add(organize.getOrganizer());
+                        }
+
+                        Log.v(TAG, organizersList + "");
                         CityModuleOrganizersListResponse cityModuleOrganizersListResponse =
                                 new CityModuleOrganizersListResponse(parseResponse, organizersList);
 
                         setChanged();
                         notifyObservers(cityModuleOrganizersListResponse);
                     }
-
                 } else {
                     Log.e(TAG, "Error retrieving the list of organizers", parseResponse);
                 }

@@ -30,6 +30,9 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.CityModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleCitiesListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleOrganizersListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
@@ -42,6 +45,7 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.respons
 import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
+import com.worldspotlightapp.android.model.Organizer;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
@@ -52,6 +56,7 @@ import com.worldspotlightapp.android.utils.Secret;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -313,7 +318,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Update received from " + observable);
-        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable) {
+        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable
+                || observable instanceof CityModuleObservable) {
 
             // Add the data to the list of responses
             mResponsesStack.push(o);
@@ -357,6 +363,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         if (mYouTubePlayer != null) {
             mYouTubePlayer.cueVideo(mVideo.getVideoId());
         }
+
+        // Refresh the list of organizers
+        mCityModuleObservable.retrieveAllOrganizersOfTheCity(this, mVideo.getCity(), mVideo.getCountry());
     }
 
     private void updateAuthorInfo() {
@@ -533,6 +542,20 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                         mVideo.setHashTags(videosModuleHashTagsListByVideoResponse.getHashTagsList());
                         updateHashTagsView();
                     }
+                }
+            } else if (response instanceof CityModuleOrganizersListResponse) {
+                Log.v(TAG, "Organizers list received");
+                CityModuleOrganizersListResponse cityModuleOrganizersListResponse =
+                        (CityModuleOrganizersListResponse) response;
+                ParseResponse parseResponse = cityModuleOrganizersListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    List<Organizer> organizersList = cityModuleOrganizersListResponse.getOrganizersList();
+                    Log.v(TAG, "Organizers list received ");
+                    for (Organizer organizer : organizersList) {
+                        Log.v(TAG, "organizer " + organizer);
+                    }
+                } else {
+                    Log.v(TAG, "Error getting the list of organizers");
                 }
             }
         }

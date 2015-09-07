@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.model;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -218,10 +219,17 @@ public class Video extends ParseObject implements ClusterItem {
         put(PARSE_COLUMN_TITLE, title);
     }
 
+    // Object id
+    public boolean hasObjectId() {
+        return !TextUtils.isEmpty(getObjectId());
+    }
+
+    // Title
     public String getTitle() {
         return getString(PARSE_COLUMN_TITLE);
     }
 
+    // Description
     private void setDescription(String description) {
         if (description == null) {
             return;
@@ -420,7 +428,7 @@ public class Video extends ParseObject implements ClusterItem {
         Video anotherVideo = (Video) o;
 
         // Check if the object id exists.
-        if (anotherVideo.has(PARSE_COLUMN_OBJECT_ID)) {
+        if (anotherVideo.hasObjectId()) {
             return getObjectId().equals(anotherVideo.getObjectId());
         // If the object id does not exists, check the video id
         } else {
