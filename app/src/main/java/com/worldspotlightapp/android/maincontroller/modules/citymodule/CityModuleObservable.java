@@ -103,7 +103,7 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
     }
 
     @Override
-    public void addNewCityIfNotExisted(City city) {
+    public void addNewCityIfNotExisted(final City city) {
         if (!city.hasCity() || !city.hasCountry()) {
             Log.e(TAG, "The city name or the country is null");
             return;
@@ -122,11 +122,17 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "City added to the backend correctly");
+                    mCitiesList.add(city);
                 } else {
                     Log.e(TAG, "Error adding city to the backend.", parseResponse);
                 }
             }
         });
+    }
+
+    @Override
+    public void retrieveAllOrganizersFromCity(City city) {
+        // TODO: Implement thi
     }
 
 }

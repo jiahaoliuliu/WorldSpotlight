@@ -32,4 +32,11 @@ public abstract class AbstractCityModuleObservable extends AbstractBaseModuleObs
      *      The city to be added
      */
     public abstract void addNewCityIfNotExisted(City city);
+
+    /**
+     * Retrieve all the organizers from a specific city
+     * @param city
+     *      The city where the organizers has something organizered
+     */
+    public abstract void retrieveAllOrganizersFromCity(City city);
 }
