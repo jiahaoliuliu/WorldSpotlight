@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.model;
 
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,7 +25,7 @@ public class City extends ParseObject{
     public static final String PARSE_COLUMN_COUNTRY = "country";
 
     // Organizers
-    // TODO:
+    public static final String PARSE_COLUMN_ORGANIZERS = "organizers";
 
     /**
      * Empty constructor required by parse
@@ -83,7 +84,8 @@ public class City extends ParseObject{
         put(PARSE_COLUMN_COUNTRY, country);
     }
 
-    // TODO: Get the list of organizers
+    // Organizers
+//    public ArrayList<ContactsContract.CommonDataKinds.Organization>
 
     @Override
     public boolean equals(Object o) {
