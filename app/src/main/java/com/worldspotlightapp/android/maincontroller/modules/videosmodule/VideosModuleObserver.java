@@ -144,12 +144,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     "in the local file");
             mVideosList = retrieveVideosListFromRawFile();
             videosListToBeAddedToTheDatabase.addAll(mVideosList);
-            // TODO: Remove this
-//            Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
-//            saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
-            // Remove the list of videos to be added to the database since they are already
-            // added
-//            videosListToBeAddedToTheDatabase.clear();
         }
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
