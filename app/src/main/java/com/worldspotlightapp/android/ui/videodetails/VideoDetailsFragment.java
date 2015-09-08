@@ -403,8 +403,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         if (youTubeInitializationResult.isUserRecoverableError()) {
             youTubeInitializationResult.getErrorDialog(mAttachedActivity, RECOVERY_DIALOG_REQUEST).show();
         } else {
-            String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
-            Toast.makeText(mAttachedActivity, errorMessage, Toast.LENGTH_SHORT).show();
+            // In case that the fragment is not in foreground
+            if (mAttachedActivity != null) {
+                String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
+                Toast.makeText(mAttachedActivity, errorMessage, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
