@@ -82,6 +82,12 @@ public abstract class AbstractBaseFragment extends Fragment {
         mCityModuleObservable = mOnMainControllerInstantiatedListener.getCityModuleObservable();
     }
 
+    @Override
+    public void onDetach() {
+        this.mAttachedActivity = null;
+        super.onDetach();
+    }
+
     /**
      * Invoking the same method in the attached activity
      * @param message

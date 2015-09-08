@@ -102,6 +102,10 @@ public class Organizer extends ParseObject {
     }
 
     // Logo
+    public boolean hasLogoUrl() {
+        return has(PARSE_COLUMN_LOGO);
+    }
+
     public String getLogoUrl() {
         if (has(PARSE_COLUMN_LOGO)) {
             return getParseFile(PARSE_COLUMN_LOGO).getUrl();

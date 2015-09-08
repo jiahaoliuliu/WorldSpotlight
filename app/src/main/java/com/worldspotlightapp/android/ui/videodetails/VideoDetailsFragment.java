@@ -6,11 +6,11 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.text.Spannable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,6 @@ import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.CityModuleObservable;
-import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleCitiesListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleOrganizersListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
@@ -43,7 +41,6 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosM
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListByVideoResponse;
 import com.worldspotlightapp.android.model.Author;
-import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Organizer;
 import com.worldspotlightapp.android.model.Video;
@@ -59,8 +56,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class VideoDetailsFragment extends AbstractBaseFragmentObserver implements YouTubePlayer.OnInitializedListener {
     private static final String TAG = "VideoDetailsFragment";
@@ -76,6 +71,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private Stack<Object> mResponsesStack;
     private Video mVideo;
     private Author mAuthor;
+    private List<Organizer> mOrganizersList;
 
     // Views
     private CardView mExtraInfoCardView;
@@ -93,6 +89,13 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private TextView mEmptyHashTagsTextView;
     private ImageView mChangeHashTagsImageView;
 
+    // Organizers
+    private CardView mOrganizersCardView;
+    private RecyclerView mOrganizersRecyclerView;
+    private RecyclerView.Adapter mOrganizersRecyclerViewAdapter;
+    private RecyclerView.LayoutManager mOrganizerRecyclerViewLayoutManager;
+
+    // YouTube
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
     private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
     private YouTubePlayer mYouTubePlayer;
@@ -173,6 +176,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mChangeHashTagsImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.change_hashtag_image_view);
         mChangeHashTagsImageView.setOnClickListener(onClickListener);
 
+        mOrganizersCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_card_view);
+        mOrganizersRecyclerView = (RecyclerView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_recycler_view);
+
+//        mOrganizersRecyclerView.setHasFixedSize(true);
+
         return videoDetailsFragmentScrollView;
     }
 
@@ -182,6 +190,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         // Initialize items
         mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mAttachedActivity);
+
+        mOrganizerRecyclerViewLayoutManager = new LinearLayoutManager(mAttachedActivity);
+        mOrganizersRecyclerView.setLayoutManager(mOrganizerRecyclerViewLayoutManager);
 
         // TODO: Capture the screen orientation when the fragment starts
 //        // Get the screen orientation
@@ -552,11 +563,12 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                         (CityModuleOrganizersListResponse) response;
                 ParseResponse parseResponse = cityModuleOrganizersListResponse.getParseResponse();
                 if (!parseResponse.isError()) {
-                    List<Organizer> organizersList = cityModuleOrganizersListResponse.getOrganizersList();
-                    Log.v(TAG, "Organizers list received ");
-                    for (Organizer organizer : organizersList) {
-                        Log.v(TAG, "organizer " + organizer);
-                    }
+                    mOrganizersList = cityModuleOrganizersListResponse.getOrganizersList();
+                    Log.v(TAG, "Organizers list received " + mOrganizersList);
+                    // Restart the adapter
+                    mOrganizersRecyclerViewAdapter = new OrganizersRecyclerViewAdapter(mAttachedActivity, mOrganizersList);
+                    mOrganizersRecyclerView.setAdapter(mOrganizersRecyclerViewAdapter);
+//                    showOrganizersCardViewIfNeeded();
                 } else {
                     Log.v(TAG, "Error getting the list of organizers");
                 }
@@ -604,6 +616,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mActionBar.hide();
             mExtraInfoCardView.setVisibility(View.GONE);
             mDescriptionCardView.setVisibility(View.GONE);
+            mHashTagsTextView.setVisibility(View.GONE);
+//            mOrganizersCardView.setVisibility(View.GONE);
             // Set it as full screen when it was not in full screen
             if (mYouTubePlayer != null && !mIsFullScreen) {
                 mYouTubePlayer.setFullscreen(true);
@@ -612,10 +626,29 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mActionBar.show();
             mExtraInfoCardView.setVisibility(View.VISIBLE);
             mDescriptionCardView.setVisibility(View.VISIBLE);
+            mHashTagsTextView.setVisibility(View.VISIBLE);
+//            showOrganizersCardViewIfNeeded();
             if (mYouTubePlayer != null) {
                 mYouTubePlayer.setFullscreen(false);
             }
         }
+    }
+
+    /**
+     * Show the organizers card view only if it is needed.
+     * The previous state must be Gone
+     */
+    private void showOrganizersCardViewIfNeeded() {
+        mOrganizersCardView.setVisibility(View.GONE);
+
+        // If the user has not received the organizers list or if it is empty
+        // keep the organizers card view hidden
+        if (mOrganizersList == null || mOrganizersList.isEmpty()) {
+            return;
+        }
+
+        // Show the organizers card view only when there are at least one organizer
+        mOrganizersCardView.setVisibility(View.VISIBLE);
     }
 
     // Action bar
