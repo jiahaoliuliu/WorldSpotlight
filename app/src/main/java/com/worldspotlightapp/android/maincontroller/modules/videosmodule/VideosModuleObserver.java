@@ -699,17 +699,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 ", location " + videoLocation + ", city " + city + ", country " + country);
         final Video video = new Video(title, description, videoId, city, country, videoLocation, hashTagsList);
 
-        // Update the hashtags
-        if (mHashTagsList != null && !mHashTagsList.isEmpty()) {
-            for (HashTag hashTag : mHashTagsList) {
-                if (video.shouldAddHashTag(hashTag)) {
-                    addHashTag(video.getObjectId(), hashTag.getName());
-                }
-            }
-        } else {
-            // TODO: See what to do
-        }
-
         video.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
