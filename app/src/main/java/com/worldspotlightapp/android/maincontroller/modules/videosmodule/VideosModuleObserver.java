@@ -40,6 +40,7 @@ import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.utils.Secret;
 
 import org.json.JSONArray;
@@ -49,9 +50,17 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Observer;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -191,6 +200,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
                         // Ask parse to update the list of videos
                         SyncVideoInfo(observer);
+
+                        // Print the possible hashtags only not in production
+                        if (!MainApplication.IS_PRODUCTION) {
+                            printPossibleHashTagsFromTheVideo();
+                        }
                     }
                 } else {
                     Log.e(TAG, "Error retrieving data from backend");
@@ -810,6 +824,79 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         @Override
         public void run() {
             mVideoDataLayer.insertListDataToDatabase(mVideosList);
+        }
+   }
+
+    /**
+     * Print all the possible hashtags from the list of the actual videos
+     */
+    private void printPossibleHashTagsFromTheVideo() {
+        // Get the list of hashtags
+        HashMap<String, Integer> hashTagsMap = new HashMap<String, Integer>();
+
+        for (Video video: mVideosList) {
+            // Get the title
+            String title = video.getTitle();
+            if (!TextUtils.isEmpty(title)) {
+                String[] titles = title.split(" ");
+                addWordsToHashMap(hashTagsMap, titles);
+            }
+
+            // Ge the description
+            String description = video.getDescription();
+            if (!TextUtils.isEmpty(description)) {
+                String[] descriptions = description.split(" ");
+                addWordsToHashMap(hashTagsMap, descriptions);
+            }
+        }
+
+        // Sort the content
+        Map<String, Integer> hashTagsMapSorted = sortHashTagsMap(hashTagsMap);
+
+        // Print the content
+        printMap(hashTagsMapSorted);
+
+
+    }
+
+    private void addWordsToHashMap(HashMap<String, Integer> hashTagsMap, String[] words) {
+        for (String word : words) {
+            String lowerCaseWord = word.toLowerCase();
+            if (hashTagsMap.containsKey(lowerCaseWord)) {
+                Integer counter = hashTagsMap.get(lowerCaseWord);
+                counter++;
+                hashTagsMap.put(lowerCaseWord, counter);
+            } else {
+                hashTagsMap.put(lowerCaseWord, 1);
+            }
+        }
+    }
+
+    private Map<String, Integer> sortHashTagsMap(HashMap<String, Integer> hashTagsMap) {
+        // Convert map to list
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(hashTagsMap.entrySet());
+
+        // Sort list with comparator, to compare the map values
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        // Convert sorted mpa back to a map
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext();) {
+            Map.Entry<String, Integer> entry = it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+    }
+
+    private void printMap(Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            Log.v(TAG, entry.getKey() + ":" + entry.getValue());
         }
     }
 }
