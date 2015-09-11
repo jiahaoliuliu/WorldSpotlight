@@ -694,10 +694,22 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      * @param hashTagsList
      *      The list of hash tags
      */
-    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country, ArrayList<String> hashTagsList) {
+    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country, final ArrayList<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation + ", city " + city + ", country " + country);
         final Video video = new Video(title, description, videoId, city, country, videoLocation, hashTagsList);
+
+        // Update the hashtags
+        if (mHashTagsList != null && !mHashTagsList.isEmpty()) {
+            for (HashTag hashTag : mHashTagsList) {
+                if (video.shouldAddHashTag(hashTag)) {
+                    addHashTag(video.getObjectId(), hashTag.getName());
+                }
+            }
+        } else {
+            // TODO: See what to do
+        }
+
         video.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -709,6 +721,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     // The database should be updated according to the backend. This is because there could be several user adding
                     // videos at the same time. So, the order the video was added are different. Since we based on the number of existence
                     // videos in the database to update the list of videos, it is more safe do it asking directly to Parse.
+
+
                     VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, video);
                     setChanged();
                     notifyObservers(videosModuleAddAVideoResponse);
