@@ -207,7 +207,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
                         // Print the possible hashtags only not in production
                         if (!MainApplication.IS_PRODUCTION) {
-                            printPossibleHashTagsFromTheVideo();
+//                            printPossibleHashTagsFromTheVideo();
 
                             // Update automatically the hashtags if it is not ready
                             if (mHashTagsList == null) {
@@ -524,7 +524,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     notifyObservers(videosModuleHashTagsListResponse);
 
                     // Update the list of hashtags in the videos. Only if it is not in production
-                    if (!MainApplication.IS_PRODUCTION && mUpdateHashTagsListForAllVideosPending) {
+                    if (
+                        !MainApplication.IS_PRODUCTION &&
+                        mUpdateHashTagsListForAllVideosPending
+                            ) {
                         updateHashTagsListForAllVideos();
                     }
                 } else {
@@ -922,7 +925,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         Map<String, Integer> hashTagsMapSorted = sortHashTagsMap(hashTagsMap);
 
         // Print the content
-//        printMap(hashTagsMapSorted);
+        printMap(hashTagsMapSorted);
 
     }
 
