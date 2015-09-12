@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Debug;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -42,6 +43,7 @@ import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.Secret;
 
 import org.json.JSONArray;
@@ -67,6 +69,8 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * General module implementation for all the method related with videos.
+ *
  * Created by jiahaoliuliu on 6/12/15.
  */
 public class VideosModuleObserver extends AbstractVideosModuleObservable {
@@ -206,7 +210,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                         SyncVideoInfo(observer);
 
                         // Print the possible hashtags only not in production
-                        if (!MainApplication.IS_PRODUCTION) {
+                        if (!DebugOptions.IS_PRODUCTION) {
 //                            printPossibleHashTagsFromTheVideo();
 
                             // Update automatically the hashtags if it is not ready
@@ -525,7 +529,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
                     // Update the list of hashtags in the videos. Only if it is not in production
                     if (
-                        !MainApplication.IS_PRODUCTION &&
+                        !DebugOptions.IS_PRODUCTION &&
                         mUpdateHashTagsListForAllVideosPending
                             ) {
                         updateHashTagsListForAllVideos();
