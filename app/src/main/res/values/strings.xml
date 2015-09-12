@@ -100,5 +100,6 @@
     <string name="error_message_field_empty">This field canont be empty</string>
     <string name="error_message_string_too_short">You must enter at least %1$s characters</string>
     <string name="error_message_email_address_required">You must enter a valid email address</string>
+    <string name="title_activity_organizers_recycler">Organizers list</string> <!-- TODO: Translate this -->
 
 </resources>

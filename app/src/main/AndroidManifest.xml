@@ -164,6 +164,11 @@
             android:name=".ui.HashTagsListActivity"
             android:label="@string/title_activity_hash_tags" >
         </activity>
+
+        <activity
+            android:name=".ui.OrganizersRecyclerActivity"
+            android:label="@string/title_activity_organizers_recycler" >
+        </activity>
     </application>
 
 </manifest>
