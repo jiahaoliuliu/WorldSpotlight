@@ -203,6 +203,7 @@
             android:layout_marginTop="@dimen/video_details_group_margin_vertical"
             android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
             android:layout_below="@+id/hashtags_card_view"
+            android:visibility="gone"
             >
 
             <LinearLayout
@@ -214,23 +215,33 @@
 
                 <include
                     android:id="@+id/organizer_1_layout"
-                    layout="@layout/organizer_layout"/>
+                    layout="@layout/organizer_layout"
+                    android:visibility="gone"
+                    />
 
                 <include
                     android:id="@+id/organizer_2_layout"
-                    layout="@layout/organizer_layout"/>
+                    layout="@layout/organizer_layout"
+                    android:visibility="gone"
+                    />
 
                 <include
                     android:id="@+id/organizer_3_layout"
-                    layout="@layout/organizer_layout"/>
+                    layout="@layout/organizer_layout"
+                    android:visibility="gone"
+                    />
 
                 <include
                     android:id="@+id/organizer_4_layout"
-                    layout="@layout/organizer_layout"/>
+                    layout="@layout/organizer_layout"
+                    android:visibility="gone"
+                    />
 
                 <include
                     android:id="@+id/organizer_5_layout"
-                    layout="@layout/organizer_layout"/>
+                    layout="@layout/organizer_layout"
+                    android:visibility="gone"
+                    />
 
                 <!-- TODO: Add "More" button -->
             </LinearLayout>

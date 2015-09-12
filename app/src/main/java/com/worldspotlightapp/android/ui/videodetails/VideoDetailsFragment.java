@@ -611,7 +611,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mExtraInfoCardView.setVisibility(View.GONE);
             mDescriptionCardView.setVisibility(View.GONE);
             mHashTagsTextView.setVisibility(View.GONE);
-//            mOrganizersCardView.setVisibility(View.GONE);
+            mOrganizersCardView.setVisibility(View.GONE);
             // Set it as full screen when it was not in full screen
             if (mYouTubePlayer != null && !mIsFullScreen) {
                 mYouTubePlayer.setFullscreen(true);
