@@ -91,6 +91,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     // Organizers
     private CardView mOrganizersCardView;
     private RelativeLayout mOrganizer1RelativeLayout;
+    private RelativeLayout mOrganizer2RelativeLayout;
+    private RelativeLayout mOrganizer3RelativeLayout;
+    private RelativeLayout mOrganizer4RelativeLayout;
+    private RelativeLayout mOrganizer5RelativeLayout;
+
     private List<RelativeLayout> mOrganizersViewsList;
 
     // YouTube
@@ -180,6 +185,18 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         mOrganizer1RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
         mOrganizersViewsList.add(mOrganizer1RelativeLayout);
+
+        mOrganizer2RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_2_layout);
+        mOrganizersViewsList.add(mOrganizer2RelativeLayout);
+
+        mOrganizer3RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_3_layout);
+        mOrganizersViewsList.add(mOrganizer3RelativeLayout);
+
+        mOrganizer4RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_4_layout);
+        mOrganizersViewsList.add(mOrganizer4RelativeLayout);
+
+        mOrganizer5RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_5_layout);
+        mOrganizersViewsList.add(mOrganizer5RelativeLayout);
 
         return videoDetailsFragmentScrollView;
     }
