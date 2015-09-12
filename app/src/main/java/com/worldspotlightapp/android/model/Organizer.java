@@ -1,5 +1,7 @@
 package com.worldspotlightapp.android.model;
 
+import android.text.TextUtils;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
@@ -52,8 +54,21 @@ public class Organizer extends ParseObject {
     }
 
     // Name
+    public boolean hasName() {
+        return !TextUtils.isEmpty(getName());
+    }
+
     public String getName() {
         return getString(PARSE_COLUMN_NAME);
+    }
+
+    // Description
+    public boolean hasDescription() {
+        return !TextUtils.isEmpty(getDescription());
+    }
+
+    public String getDescription() {
+        return getString(PARSE_COLUMN_DESCRIPTION);
     }
 
     // Address
@@ -69,11 +84,6 @@ public class Organizer extends ParseObject {
     // Country
     public String getCountry() {
         return getString(PARSE_COLUMN_COUNTRY);
-    }
-
-    // Description
-    public String getDescription() {
-        return getString(PARSE_COLUMN_DESCRIPTION);
     }
 
     // Phone number 1

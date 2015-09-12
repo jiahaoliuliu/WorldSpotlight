@@ -6,8 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -93,6 +91,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     // Organizers
     private CardView mOrganizersCardView;
     private RelativeLayout mOrganizer1RelativeLayout;
+    private List<RelativeLayout> mOrganizersViewsList;
 
     // YouTube
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
@@ -108,7 +107,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     // Others
     private Picasso mPicasso;
     private boolean mIsThisFragmentVisible;
-
 
     /**
      * Use this factory method to create a new instance of
@@ -140,6 +138,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         mVideoObjectId = arguments.getString(Video.INTENT_KEY_OBJECT_ID);
         Log.v(TAG, "Video object id received " + mVideoObjectId);
+
+        // SetUp the data
+        mOrganizersViewsList = new ArrayList<RelativeLayout>();
 
         setHasOptionsMenu(true);
     }
@@ -176,7 +177,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mChangeHashTagsImageView.setOnClickListener(onClickListener);
 
         mOrganizersCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_card_view);
+
         mOrganizer1RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
+        mOrganizersViewsList.add(mOrganizer1RelativeLayout);
 
         return videoDetailsFragmentScrollView;
     }
@@ -640,6 +643,53 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         // Show the organizers card view only when there are at least one organizer
         mOrganizersCardView.setVisibility(View.VISIBLE);
+
+        // Fill each one of the organizers
+        for (int i = 0; i < mOrganizersList.size() && i < mOrganizersViewsList.size(); i++) {
+            Organizer organizer = mOrganizersList.get(i);
+            RelativeLayout organizerView = mOrganizersViewsList.get(i);
+            fillOrganizerView(organizer, organizerView);
+        }
+
+        // Show more button when there are more organizers to be shown
+        if (mOrganizersList.size() > mOrganizersViewsList.size()) {
+            // TODO: Show the more button
+        }
+    }
+
+    /**
+     * Fill the content of the organizer view using the data in the organizer
+     * @param organizer
+     * @param organizerView
+     */
+    private void fillOrganizerView(Organizer organizer, RelativeLayout organizerView) {
+        if (organizerView == null) {
+            Log.w(TAG, "Trying to fill the organizer view with organizer but the organizer view is null");
+            return;
+        }
+
+        // Set the whole view as visible
+        organizerView.setVisibility(View.VISIBLE);
+
+        // Image
+        // When the data is received, Picasso could not be ready
+        if (mPicasso != null && organizer.hasLogoUrl()) {
+            ImageView logoImageView = (ImageView) organizerView.findViewById(R.id.logo_image_view);
+            mPicasso.load(organizer.getLogoUrl()).into(logoImageView);
+        }
+
+        // Title
+        if (organizer.hasName()) {
+            TextView nameTextView = (TextView) organizerView.findViewById(R.id.name_text_view);
+            nameTextView.setText(organizer.getName());
+        }
+
+        // Description
+        if (organizer.hasDescription()) {
+            TextView descriptionTextView = (TextView) organizerView.findViewById(R.id.description_text_view);
+            descriptionTextView.setText(organizer.getDescription());
+        }
+
     }
 
     // Action bar
