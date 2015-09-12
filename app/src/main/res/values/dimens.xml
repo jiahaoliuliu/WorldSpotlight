@@ -56,6 +56,8 @@
     <dimen name="video_details_elements_margin_horizontal">10dp</dimen>
     <dimen name="video_details_like_image_size">50dp</dimen>
     <dimen name="video_details_hash_tag_image_size">50dp</dimen>
+    <dimen name="video_details_elements_margin_vertical">1dp</dimen>
+    <dimen name="video_details_organizers_margin_vertical">4dp</dimen>
 
     <!-- videos list -->
     <dimen name="video_list_item_left_margin">20dp</dimen>

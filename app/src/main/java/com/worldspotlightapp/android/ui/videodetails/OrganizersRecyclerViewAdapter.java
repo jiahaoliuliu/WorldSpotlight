@@ -59,7 +59,7 @@ public class OrganizersRecyclerViewAdapter extends RecyclerView.Adapter<Organize
         // Create a new view
         View view =
                 LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.organizers_list_item_layout, viewGroup, false);
+                        .inflate(R.layout.organizer_layout, viewGroup, false);
 
         // Set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(view);

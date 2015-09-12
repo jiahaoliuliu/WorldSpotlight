@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,9 +92,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
     // Organizers
     private CardView mOrganizersCardView;
-    private RecyclerView mOrganizersRecyclerView;
-    private RecyclerView.Adapter mOrganizersRecyclerViewAdapter;
-    private RecyclerView.LayoutManager mOrganizerRecyclerViewLayoutManager;
+    private RelativeLayout mOrganizer1RelativeLayout;
 
     // YouTube
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
@@ -177,9 +176,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mChangeHashTagsImageView.setOnClickListener(onClickListener);
 
         mOrganizersCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_card_view);
-        mOrganizersRecyclerView = (RecyclerView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_recycler_view);
-
-//        mOrganizersRecyclerView.setHasFixedSize(true);
+        mOrganizer1RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
 
         return videoDetailsFragmentScrollView;
     }
@@ -190,9 +187,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         // Initialize items
         mResponsesStack = new Stack<Object>();
         mPicasso = Picasso.with(mAttachedActivity);
-
-        mOrganizerRecyclerViewLayoutManager = new LinearLayoutManager(mAttachedActivity);
-        mOrganizersRecyclerView.setLayoutManager(mOrganizerRecyclerViewLayoutManager);
 
         // TODO: Capture the screen orientation when the fragment starts
 //        // Get the screen orientation
@@ -565,10 +559,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 if (!parseResponse.isError()) {
                     mOrganizersList = cityModuleOrganizersListResponse.getOrganizersList();
                     Log.v(TAG, "Organizers list received " + mOrganizersList);
-                    // Restart the adapter
-                    mOrganizersRecyclerViewAdapter = new OrganizersRecyclerViewAdapter(mAttachedActivity, mOrganizersList);
-                    mOrganizersRecyclerView.setAdapter(mOrganizersRecyclerViewAdapter);
-//                    showOrganizersCardViewIfNeeded();
+                    updateOrganizersCardView();
                 } else {
                     Log.v(TAG, "Error getting the list of organizers");
                 }
@@ -627,7 +618,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mExtraInfoCardView.setVisibility(View.VISIBLE);
             mDescriptionCardView.setVisibility(View.VISIBLE);
             mHashTagsTextView.setVisibility(View.VISIBLE);
-//            showOrganizersCardViewIfNeeded();
+            updateOrganizersCardView();
             if (mYouTubePlayer != null) {
                 mYouTubePlayer.setFullscreen(false);
             }
@@ -638,7 +629,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
      * Show the organizers card view only if it is needed.
      * The previous state must be Gone
      */
-    private void showOrganizersCardViewIfNeeded() {
+    private void updateOrganizersCardView() {
         mOrganizersCardView.setVisibility(View.GONE);
 
         // If the user has not received the organizers list or if it is empty
