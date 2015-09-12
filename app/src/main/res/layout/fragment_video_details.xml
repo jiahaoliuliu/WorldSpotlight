@@ -243,7 +243,15 @@
                     android:visibility="gone"
                     />
 
-                <!-- TODO: Add "More" button -->
+                <!-- More button -->
+                <com.github.snuffix.android.material.RippleButton
+                    android:id="@+id/more_organizers_button"
+                    android:layout_marginTop="@dimen/sign_up_login_activity_element_margin_vertical"
+                    android:layout_marginBottom="@dimen/sign_up_login_activity_element_margin_vertical"
+                    style="@style/WorldSpotlightButton"
+                    android:text="@string/video_details_activity_more_organizers"
+                    android:visibility="gone"
+                    />
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </RelativeLayout>

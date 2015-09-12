@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -95,6 +96,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private RelativeLayout mOrganizer3RelativeLayout;
     private RelativeLayout mOrganizer4RelativeLayout;
     private RelativeLayout mOrganizer5RelativeLayout;
+    private Button mMoreOrganizersButton;
 
     private List<RelativeLayout> mOrganizersViewsList;
 
@@ -160,6 +162,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mDummyYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.dummy_youtube_fragment);
 
         // Link the views
+        // Extra info
         mExtraInfoCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.extra_info_card_view);
         mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.author_thumbnail_image_view);
         mAuthorNameTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.author_name_text_view);
@@ -170,9 +173,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mReportAVideoImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.report_image_view);
         mReportAVideoImageView.setOnClickListener(onClickListener);
 
+        // Description
         mDescriptionCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.description_card_view);
         mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
 
+        // Hash tag
         mEmptyHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.empty_hash_tag_text_view);
         mEmptyHashTagsTextView.setOnClickListener(onClickListener);
 
@@ -181,22 +186,26 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mChangeHashTagsImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.change_hashtag_image_view);
         mChangeHashTagsImageView.setOnClickListener(onClickListener);
 
+        // Organizers
         mOrganizersCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_card_view);
 
-        mOrganizer1RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
+        mOrganizer1RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
         mOrganizersViewsList.add(mOrganizer1RelativeLayout);
 
-        mOrganizer2RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_2_layout);
+        mOrganizer2RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_2_layout);
         mOrganizersViewsList.add(mOrganizer2RelativeLayout);
 
-        mOrganizer3RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_3_layout);
+        mOrganizer3RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_3_layout);
         mOrganizersViewsList.add(mOrganizer3RelativeLayout);
 
-        mOrganizer4RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_4_layout);
+        mOrganizer4RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_4_layout);
         mOrganizersViewsList.add(mOrganizer4RelativeLayout);
 
-        mOrganizer5RelativeLayout = (RelativeLayout)  videoDetailsFragmentScrollView.findViewById(R.id.organizer_5_layout);
+        mOrganizer5RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_5_layout);
         mOrganizersViewsList.add(mOrganizer5RelativeLayout);
+
+        mMoreOrganizersButton = (Button) videoDetailsFragmentScrollView.findViewById(R.id.more_organizers_button);
+        mMoreOrganizersButton.setOnClickListener(onClickListener);
 
         return videoDetailsFragmentScrollView;
     }
@@ -270,6 +279,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 case R.id.empty_hash_tag_text_view:
                 case R.id.change_hashtag_image_view:
                     launchHashTagsListActivity();
+                    break;
+                case R.id.more_organizers_button:
+                    // TODO: Implement this
                     break;
             }
         }
@@ -670,7 +682,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         // Show more button when there are more organizers to be shown
         if (mOrganizersList.size() > mOrganizersViewsList.size()) {
-            // TODO: Show the more button
+            mMoreOrganizersButton.setVisibility(View.VISIBLE);
         }
     }
 

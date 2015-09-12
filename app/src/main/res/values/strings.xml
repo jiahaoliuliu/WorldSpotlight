@@ -65,6 +65,7 @@
     <string name="video_details_activity_user_must_logged_in_to_report">You must logged in to report this video. Would you like to log in now?</string>
     <string name="video_details_activity_report_sent_correctly">Thanks to report this video. We will check it as soon as possible</string>
     <string name="video_details_activity_empty_hash_tag">Add HashTags</string>
+    <string name="video_details_activity_more_organizers">More</string> <!-- TODO: Translate -->
 
     <!-- Hash tags list activity -->
     <string name="title_activity_hash_tags">HashTags</string>
