@@ -202,27 +202,28 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 // Check if there is any error
                 if (!parseResponse.isError()) {
-                    if (organizesList.isEmpty()) {
-                        Log.e(TAG, "No organizer found for that city");
-                    } else {
-                        Log.v(TAG, organizesList.size() + " organizations found");
+                    Log.v(TAG, organizesList.size() + " organizations found");
 
-                        List<Organizer> organizersList = new ArrayList<Organizer>();
-                        // Get the organizer
-                        for (Organize organize : organizesList) {
-                            Log.v(TAG, organize.getOrganizer() + "");
-                            organizersList.add(organize.getOrganizer());
-                        }
-
-                        Log.v(TAG, organizersList + "");
-                        CityModuleOrganizersListResponse cityModuleOrganizersListResponse =
-                                new CityModuleOrganizersListResponse(parseResponse, organizersList);
-
-                        setChanged();
-                        notifyObservers(cityModuleOrganizersListResponse);
+                    List<Organizer> organizersList = new ArrayList<Organizer>();
+                    // Get the organizer
+                    for (Organize organize : organizesList) {
+                        Log.v(TAG, organize.getOrganizer() + "");
+                        organizersList.add(organize.getOrganizer());
                     }
+
+                    Log.v(TAG, organizersList + "");
+                    CityModuleOrganizersListResponse cityModuleOrganizersListResponse =
+                            new CityModuleOrganizersListResponse(parseResponse, organizersList);
+
+                    setChanged();
+                    notifyObservers(cityModuleOrganizersListResponse);
                 } else {
                     Log.e(TAG, "Error retrieving the list of organizers", parseResponse);
+                    CityModuleOrganizersListResponse cityModuleOrganizersListResponse =
+                            new CityModuleOrganizersListResponse(parseResponse, null);
+
+                    setChanged();
+                    notifyObservers(cityModuleOrganizersListResponse);
                 }
             }
         });

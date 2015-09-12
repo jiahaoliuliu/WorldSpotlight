@@ -47,6 +47,7 @@ import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.ui.OrganizersRecyclerActivity;
 import com.worldspotlightapp.android.ui.mainactivity.MainActivity;
 import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
@@ -281,7 +282,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                     launchHashTagsListActivity();
                     break;
                 case R.id.more_organizers_button:
-                    // TODO: Implement this
+                    launchOrganizersListActivity();
                     break;
             }
         }
@@ -773,6 +774,24 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
         startHashTagsListActivityIntent.putStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST, mVideo.getHashTags());
         startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
+    }
+
+    // Show the list of organizers
+    private void launchOrganizersListActivity() {
+        if (mVideo == null) {
+            Log.e(TAG, "Trying to launch the organizers list when the video is null");
+            return;
+        }
+
+        if (!mVideo.hasCity() || !mVideo.hasCountry()) {
+            Log.e(TAG, "The video must have city and the country");
+            return;
+        }
+
+        Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, OrganizersRecyclerActivity.class);
+        startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_CITY, mVideo.getCity());
+        startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_COUNTRY, mVideo.getCountry());
+        startActivity(startHashTagsListActivityIntent);
     }
 
     @Override

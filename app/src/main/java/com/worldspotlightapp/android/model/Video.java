@@ -254,6 +254,11 @@ public class Video extends ParseObject implements ClusterItem {
         return getString(PARSE_COLUMN_VIDEO_ID);
     }
 
+    // City
+    public boolean hasCity() {
+        return !TextUtils.isEmpty(getCity());
+    }
+
     private void setCity(String city) {
         if (city == null) {
             return;
@@ -263,6 +268,11 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     public String getCity(){ return getString(PARSE_COLUMN_CITY); }
+
+    // Country
+    public boolean hasCountry() {
+        return !TextUtils.isEmpty(getCountry());
+    }
 
     private void setCountry(String country) {
         if (country == null) {
