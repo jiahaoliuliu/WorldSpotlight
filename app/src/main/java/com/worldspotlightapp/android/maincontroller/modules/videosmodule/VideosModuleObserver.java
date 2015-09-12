@@ -209,10 +209,13 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                         // Ask parse to update the list of videos
                         SyncVideoInfo(observer);
 
-                        // Print the possible hashtags only not in production
-                        if (!DebugOptions.IS_PRODUCTION) {
-//                            printPossibleHashTagsFromTheVideo();
+                        // Print the possible hash tags only not in production
+                        if (DebugOptions.shouldPrintKeywords()) {
+                            printPossibleHashTagsFromTheVideo();
+                        }
 
+                        // Update the hashtags for all the videos
+                        if (!DebugOptions.shouldUpdateHashTagsForAllTheVideos()) {
                             // Update automatically the hashtags if it is not ready
                             if (mHashTagsList == null) {
                                 mUpdateHashTagsListForAllVideosPending = true;
@@ -527,11 +530,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     setChanged();
                     notifyObservers(videosModuleHashTagsListResponse);
 
-                    // Update the list of hashtags in the videos. Only if it is not in production
-                    if (
-                        !DebugOptions.IS_PRODUCTION &&
-                        mUpdateHashTagsListForAllVideosPending
-                            ) {
+                    // Update the list of hashtags in the videos.
+                    if (DebugOptions.shouldUpdateHashTagsForAllTheVideos() &&
+                            mUpdateHashTagsListForAllVideosPending) {
                         updateHashTagsListForAllVideos();
                     }
                 } else {
