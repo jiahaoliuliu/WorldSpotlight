@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Debug;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -42,6 +43,7 @@ import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.Secret;
 
 import org.json.JSONArray;
@@ -67,6 +69,8 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * General module implementation for all the method related with videos.
+ *
  * Created by jiahaoliuliu on 6/12/15.
  */
 public class VideosModuleObserver extends AbstractVideosModuleObservable {
@@ -205,10 +209,13 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                         // Ask parse to update the list of videos
                         SyncVideoInfo(observer);
 
-                        // Print the possible hashtags only not in production
-                        if (!MainApplication.IS_PRODUCTION) {
-//                            printPossibleHashTagsFromTheVideo();
+                        // Print the possible hash tags only not in production
+                        if (DebugOptions.shouldPrintKeywords()) {
+                            printPossibleHashTagsFromTheVideo();
+                        }
 
+                        // Update the hashtags for all the videos
+                        if (!DebugOptions.shouldUpdateHashTagsForAllTheVideos()) {
                             // Update automatically the hashtags if it is not ready
                             if (mHashTagsList == null) {
                                 mUpdateHashTagsListForAllVideosPending = true;
@@ -523,11 +530,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     setChanged();
                     notifyObservers(videosModuleHashTagsListResponse);
 
-                    // Update the list of hashtags in the videos. Only if it is not in production
-                    if (
-                        !MainApplication.IS_PRODUCTION &&
-                        mUpdateHashTagsListForAllVideosPending
-                            ) {
+                    // Update the list of hashtags in the videos.
+                    if (DebugOptions.shouldUpdateHashTagsForAllTheVideos() &&
+                            mUpdateHashTagsListForAllVideosPending) {
                         updateHashTagsListForAllVideos();
                     }
                 } else {

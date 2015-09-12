@@ -9,6 +9,7 @@ import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.Secret;
 
 import org.json.JSONArray;
@@ -37,7 +38,7 @@ public class EventsTrackingModule implements IEventsTrackingModule {
 
         // Initialize Mixpanel
         String mixPanelToken =
-                MainApplication.IS_PRODUCTION?
+                DebugOptions.IS_PRODUCTION?
                         Secret.MIX_PANEL_API_PRODUCTION :
                         Secret.MIX_PANEL_API_DEBUG;
         mMixpanel = MixpanelAPI.getInstance(context, mixPanelToken);

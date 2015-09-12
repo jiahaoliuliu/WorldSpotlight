@@ -47,6 +47,7 @@ import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
 import com.worldspotlightapp.android.ui.mainactivity.MainActivity;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
 
@@ -426,7 +427,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             return;
         }
 
-        if (MainApplication.IS_PRODUCTION) {
+        if (DebugOptions.IS_PRODUCTION) {
             mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_PRODUCTION, this);
         } else {
             mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_DEBUG, this);
