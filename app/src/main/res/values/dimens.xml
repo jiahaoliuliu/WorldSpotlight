@@ -63,4 +63,12 @@
     <dimen name="video_list_item_left_margin">20dp</dimen>
     <dimen name="video_list_item_bottom_margin">20dp</dimen>
     <dimen name="video_list_item_height">200dp</dimen>
+
+    <!-- Organizers list -->
+    <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
+    <dimen name="organizers_list_group_margin_vertical">1dp</dimen>
+
+    <!-- Hash tags list -->
+    <dimen name="hash_tags_list_left_margin">10dp</dimen>
+
 </resources>

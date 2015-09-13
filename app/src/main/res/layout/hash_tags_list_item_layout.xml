@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A CardView that contains a TextView -->
+<!-- A CardView that contains a Checkbox -->
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -11,13 +11,19 @@
     android:layout_marginTop="@dimen/video_details_group_margin_vertical"
     android:layout_marginBottom="@dimen/video_details_group_margin_vertical"
     >
-
-    <CheckBox
-        android:id="@+id/hash_tag_check_box"
+    <!-- The linear layout is needed for the general padding -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/textAppearanceMedium"
-        android:padding="16dp"
-        android:paddingLeft="30dp"
-        />
+        android:layout_height="match_parent"
+        android:padding="@dimen/card_view_inside_padding"
+        >
+        <CheckBox
+            android:id="@+id/hash_tag_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?android:attr/textAppearanceMedium"
+            android:paddingLeft="@dimen/hash_tags_list_left_margin"
+            android:text="HashTag"
+            />
+    </LinearLayout>
 </android.support.v7.widget.CardView>

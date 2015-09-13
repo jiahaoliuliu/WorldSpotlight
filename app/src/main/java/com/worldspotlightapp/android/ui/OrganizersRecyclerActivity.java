@@ -3,6 +3,8 @@ package com.worldspotlightapp.android.ui;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +32,11 @@ public class OrganizersRecyclerActivity extends AbstractBaseActivityObserver {
     private String mCity;
     private String mCountry;
     private List<Organizer> mOrganizersList;
+
+    // The views
+    private RecyclerView mOrganizersListRecyclerView;
+    private OrganizersRecyclerAdapter mOrganizersRecyclerAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     // The stack of responses from backend
     private Stack<Object> mResponsesStack;
@@ -59,6 +66,17 @@ public class OrganizersRecyclerActivity extends AbstractBaseActivityObserver {
 
         mResponsesStack = new Stack<Object>();
 
+        // Link the views
+        mOrganizersListRecyclerView = (RecyclerView) findViewById(R.id.organizers_recycler_view);
+
+        // This this setting to improve the performance if you know that changes
+        // in content do not change the layout sie of the RecyclerView
+        mOrganizersListRecyclerView.setHasFixedSize(true);
+
+        // Use a linearLayoutManager
+        mLayoutManager = new LinearLayoutManager(this);
+        mOrganizersListRecyclerView.setLayoutManager(mLayoutManager);
+
         mNotificationModule.showLoadingDialog(mContext);
         mCityModuleObservable.retrieveAllOrganizersOfTheCity(this, mCity, mCountry);
     }
@@ -82,7 +100,8 @@ public class OrganizersRecyclerActivity extends AbstractBaseActivityObserver {
                     mOrganizersList = cityModuleOrganizersListResponse.getOrganizersList();
                     Log.v(TAG, "The list of organizers received has " + mOrganizersList.size() + " organizers.");
                     Log.v(TAG, "The list of organizers is " + mOrganizersList);
-                    // TODO: Update the view
+                    mOrganizersRecyclerAdapter = new OrganizersRecyclerAdapter(mContext, mOrganizersList);
+                    mOrganizersListRecyclerView.setAdapter(mOrganizersRecyclerAdapter);
                 } else {
                     Log.e(TAG, "Error retrieving the list of Organizers for this city");
                     mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
