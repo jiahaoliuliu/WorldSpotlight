@@ -14,6 +14,7 @@ public class Organizer extends ParseObject {
     private static final String TAG = "Organizer";
 
     // Object Id
+    public static final String INTENT_KEY_OBJECT_ID = "com.worldspotlightapp.android.model.Organizer.objectId";
     public static final String PARSE_COLUMN_OBJECT_ID = "objectId";
 
     // Name

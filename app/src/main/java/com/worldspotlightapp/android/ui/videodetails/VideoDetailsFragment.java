@@ -47,6 +47,7 @@ import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.ui.OrganizerDetailsActivity;
 import com.worldspotlightapp.android.ui.OrganizersRecyclerActivity;
 import com.worldspotlightapp.android.ui.mainactivity.MainActivity;
 import com.worldspotlightapp.android.utils.HashTagView;
@@ -192,18 +193,23 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         mOrganizer1RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
         mOrganizersViewsList.add(mOrganizer1RelativeLayout);
+        mOrganizer1RelativeLayout.setOnClickListener(onClickListener);
 
         mOrganizer2RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_2_layout);
         mOrganizersViewsList.add(mOrganizer2RelativeLayout);
+        mOrganizer2RelativeLayout.setOnClickListener(onClickListener);
 
         mOrganizer3RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_3_layout);
         mOrganizersViewsList.add(mOrganizer3RelativeLayout);
+        mOrganizer3RelativeLayout.setOnClickListener(onClickListener);
 
         mOrganizer4RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_4_layout);
         mOrganizersViewsList.add(mOrganizer4RelativeLayout);
+        mOrganizer4RelativeLayout.setOnClickListener(onClickListener);
 
         mOrganizer5RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_5_layout);
         mOrganizersViewsList.add(mOrganizer5RelativeLayout);
+        mOrganizer5RelativeLayout.setOnClickListener(onClickListener);
 
         mMoreOrganizersButton = (Button) videoDetailsFragmentScrollView.findViewById(R.id.more_organizers_button);
         mMoreOrganizersButton.setOnClickListener(onClickListener);
@@ -280,6 +286,21 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 case R.id.empty_hash_tag_text_view:
                 case R.id.change_hashtag_image_view:
                     launchHashTagsListActivity();
+                    break;
+                case R.id.organizer_1_layout:
+                    launchOrganizerDetailsActivity(0);
+                    break;
+                case R.id.organizer_2_layout:
+                    launchOrganizerDetailsActivity(1);
+                    break;
+                case R.id.organizer_3_layout:
+                    launchOrganizerDetailsActivity(2);
+                    break;
+                case R.id.organizer_4_layout:
+                    launchOrganizerDetailsActivity(3);
+                    break;
+                case R.id.organizer_5_layout:
+                    launchOrganizerDetailsActivity(4);
                     break;
                 case R.id.more_organizers_button:
                     launchOrganizersListActivity();
@@ -792,6 +813,32 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_CITY, mVideo.getCity());
         startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_COUNTRY, mVideo.getCountry());
         startActivity(startHashTagsListActivityIntent);
+    }
+
+    /**
+     * Launch the activity which shows the organizer details
+     * @param organizerPosition
+     *      The position of the organizer in the list
+     */
+    private void launchOrganizerDetailsActivity(int organizerPosition) {
+        // Precondition: The organizers list should not be null
+        if (mOrganizersList == null) {
+            Log.e(TAG, "Trying to show the organizer detail when the organizer list is null");
+            return;
+        }
+
+        // Precondition: The index should not be bigger than the position
+        if (organizerPosition + 1 > mOrganizersList.size()) {
+            Log.e(TAG, "Trying to shwo the organizer detail when the position " + organizerPosition + "(+1) is bigger than the list " + mOrganizersList);
+            return;
+        }
+
+        Organizer organizer = mOrganizersList.get(organizerPosition);
+        String organizerObjectId = organizer.getObjectId();
+
+        Intent startOrganizerDetailsActivityIntent = new Intent(mAttachedActivity, OrganizerDetailsActivity.class);
+        startOrganizerDetailsActivityIntent.putExtra(Organizer.INTENT_KEY_OBJECT_ID, organizerObjectId);
+        startActivity(startOrganizerDetailsActivityIntent);
     }
 
     @Override
