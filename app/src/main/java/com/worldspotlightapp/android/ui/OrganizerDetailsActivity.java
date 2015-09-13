@@ -2,6 +2,7 @@ package com.worldspotlightapp.android.ui;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.model.Organizer;
@@ -27,6 +28,10 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
 
         mOrganizerObjectId = extras.getString(Organizer.INTENT_KEY_OBJECT_ID);
         Log.v(TAG, "The object id got from the intent is " + mOrganizerObjectId);
+
+        // Action bar
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override
@@ -37,5 +42,17 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
     @Override
     public void update(Observable observable, Object data) {
         // TODO: implement this
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "home button pressed");
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
