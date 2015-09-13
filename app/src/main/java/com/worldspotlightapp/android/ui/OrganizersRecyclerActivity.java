@@ -13,6 +13,7 @@ import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.CityModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleOrganizersListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleLikedVideosListResponse;
@@ -65,6 +66,9 @@ public class OrganizersRecyclerActivity extends AbstractBaseActivityObserver {
         Log.v(TAG, "The country received is " + mCountry);
 
         mResponsesStack = new Stack<Object>();
+
+        // Action bar
+        mActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Link the views
         mOrganizersListRecyclerView = (RecyclerView) findViewById(R.id.organizers_recycler_view);
@@ -133,6 +137,18 @@ public class OrganizersRecyclerActivity extends AbstractBaseActivityObserver {
             }
 
             observable.deleteObserver(this);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v(TAG, "home button pressed");
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
