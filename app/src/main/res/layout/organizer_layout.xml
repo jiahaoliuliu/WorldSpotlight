@@ -7,11 +7,12 @@
 
     <ImageView
         android:id="@+id/logo_image_view"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="@dimen/organizer_item_logo_image_size"
+        android:layout_width="@dimen/organizer_item_logo_image_size"
         android:src="@mipmap/ic_launcher"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
         />
 
     <TextView

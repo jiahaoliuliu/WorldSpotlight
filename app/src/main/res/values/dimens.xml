@@ -64,6 +64,9 @@
     <dimen name="video_list_item_bottom_margin">20dp</dimen>
     <dimen name="video_list_item_height">200dp</dimen>
 
+    <!-- Organizer item layout -->
+    <dimen name="organizer_item_logo_image_size">80dp</dimen>
+
     <!-- Organizers list -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
     <dimen name="organizers_list_group_margin_vertical">1dp</dimen>
