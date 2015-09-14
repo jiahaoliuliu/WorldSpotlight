@@ -3,17 +3,36 @@ package com.worldspotlightapp.android.ui;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.organizermodule.OrganizerModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.organizermodule.response.OrganizerModuleOrganizerResponse;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
+import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.model.Organizer;
+import com.worldspotlightapp.android.ui.videodetails.HashTagsListAdapter;
 
 import java.util.Observable;
+import java.util.Stack;
 
 public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
 
     private static final String TAG = "OrganizerDetails";
 
+    // The organizer
     private String mOrganizerObjectId;
+    private Organizer mOrganizer;
+
+    // Internal data
+    private Picasso mPicasso;
+    private Stack<Object> mResponsesStack;
+
+    // The list of views
+    private ImageView mBigLogoImageView;
+    private ImageView mSmallLogoImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +51,88 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
         // Action bar
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
+        // Internal data
+        mPicasso = Picasso.with(mContext);
+        mResponsesStack = new Stack<Object>();
+
+        // Link the views
+        mBigLogoImageView = (ImageView) findViewById(R.id.big_logo_image_view);
+        mSmallLogoImageView = (ImageView) findViewById(R.id.small_logo_image_view);
+
+        // Request for the organizer data
+        mNotificationModule.showLoadingDialog(mContext);
+        mOrganizerModuleObservable.retrieveOrganizerInfo(this, mOrganizerObjectId);
+
     }
 
     @Override
     protected void processDataIfExists() {
-        // TODO: implement this
+        Log.v(TAG, "Processing data if exists. Is the activity in foreground " + isInForeground());
+
+        // 1. Check if the data exists
+        // If there were not data received from backend, then
+        // Not do anything
+        if (mResponsesStack.isEmpty()) {
+            return;
+        }
+
+        // 2. Process the data
+        while (!mResponsesStack.isEmpty()) {
+            Object response = mResponsesStack.pop();
+            // Checking the type of data
+            if (response instanceof OrganizerModuleOrganizerResponse) {
+                OrganizerModuleOrganizerResponse organizerModuleOrganizerResponse = (OrganizerModuleOrganizerResponse) response;
+                ParseResponse parseResponse = organizerModuleOrganizerResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mOrganizer = organizerModuleOrganizerResponse.getOrganizer();
+                    updateView();
+                } else {
+                    // Display the notification to the user
+                    mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
+                }
+            }
+
+            Log.v(TAG, "Dismissing the loading dialog");
+            mNotificationModule.dismissLoadingDialog();
+
+            // 3. Remove the responses
+            // Not do anything. Because the list of the response is a stack. Once all the responses has been pop out,
+            // there is not need to clean them
+        }
     }
 
     @Override
     public void update(Observable observable, Object data) {
-        // TODO: implement this
+        Log.v(TAG, "Data received from " + observable + ", Object:" + data);
+        if (observable instanceof OrganizerModuleObserver) {
+            // Add the data to the list of responses
+            mResponsesStack.push(data);
+
+            if (isInForeground()) {
+                Log.v(TAG, "This activity is in foreground. Processing data if exists");
+                processDataIfExists();
+            } else {
+                Log.v(TAG, "This activity is not in foreground. Not do anything");
+            }
+
+            observable.deleteObserver(this);
+        }
+    }
+
+    /**
+     * Update the view based on the organizer
+     */
+    private void updateView() {
+        if (mOrganizer == null) {
+            Log.e(TAG, "Trying to update the view of the organizer when the organizer is null");
+            return;
+        }
+
+        // Update the logo
+        if (mOrganizer.hasLogoUrl()) {
+            mPicasso.load(mOrganizer.getLogoUrl()).into(mBigLogoImageView);
+            mPicasso.load(mOrganizer.getLogoUrl()).into(mSmallLogoImageView);
+        }
     }
 
     @Override
