@@ -70,10 +70,11 @@
     <!-- Organizer details -->
     <dimen name="organizer_details_logo_big_height">200dp</dimen>
     <dimen name="organizer_details_logo_small_size">80dp</dimen>
-    <!--    This size is the difference of thebig logo height and the the small image size -->
+    <!--    This size is the difference of the big logo height and the the small image size -->
     <dimen name="organizer_details_logo_small_margin_top">140dp</dimen>
     <dimen name="organizer_details_logo_small_margin_bottom">6dp</dimen>
     <dimen name="organizer_details_logo_small_padding">3dp</dimen>
+    <dimen name="organizer_details_group_margin_vertical">3dp</dimen>
 
     <!-- Organizers list -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->

@@ -1,19 +1,19 @@
 package com.worldspotlightapp.android.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
 import com.worldspotlightapp.android.maincontroller.modules.organizermodule.OrganizerModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.organizermodule.response.OrganizerModuleOrganizerResponse;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosModuleObserver;
-import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListResponse;
 import com.worldspotlightapp.android.model.Organizer;
-import com.worldspotlightapp.android.ui.videodetails.HashTagsListAdapter;
 
 import java.util.Observable;
 import java.util.Stack;
@@ -33,6 +33,8 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
     // The list of views
     private ImageView mBigLogoImageView;
     private ImageView mSmallLogoImageView;
+    private CardView mDescriptionCardView;
+    private TextView mDescriptionTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
         // Link the views
         mBigLogoImageView = (ImageView) findViewById(R.id.big_logo_image_view);
         mSmallLogoImageView = (ImageView) findViewById(R.id.small_logo_image_view);
+        mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
+        mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
 
         // Request for the organizer data
         mNotificationModule.showLoadingDialog(mContext);
@@ -128,10 +132,21 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
             return;
         }
 
+        // Set the name
+        if (mOrganizer.hasName()) {
+            mActionBar.setTitle(mOrganizer.getName());
+        }
+
         // Update the logo
         if (mOrganizer.hasLogoUrl()) {
             mPicasso.load(mOrganizer.getLogoUrl()).into(mBigLogoImageView);
             mPicasso.load(mOrganizer.getLogoUrl()).into(mSmallLogoImageView);
+        }
+
+        // Update the description
+        if (mOrganizer.hasDescription()) {
+            mDescriptionCardView.setVisibility(View.VISIBLE);
+            mDescriptionTextView.setText(mOrganizer.getDescription());
         }
     }
 
