@@ -6,6 +6,9 @@
     <dimen name="activity_vertical_margin">64dp</dimen>
     <dimen name="main_logo">240dp</dimen>
     <dimen name="card_view_inside_padding">20dp</dimen>
+    <dimen name="card_view_card_corner_radius">4dp</dimen> <!-- TODO: Check this -->
+    <dimen name="card_view_card_elevation">4dp</dimen> <!-- TODO: Check this -->
+    <dimen name="card_view_title_size">25sp</dimen> <!-- TODO: Check this -->
 
     <!-- Sign Up Login activity -->
     <dimen name="sign_up_login_activity_group_margin_vertical">120dp</dimen>
@@ -38,10 +41,22 @@
     <dimen name="main_activity_video_preview_image_height">210dp</dimen>
     <dimen name="main_activity_video_preview_image_width">300dp</dimen>
 
+    <!-- Add a video tutorial activity -->
+    <dimen name="add_a_video_tutorial_activity_group_margin">15dp</dimen> <!-- TODO: Check this -->
+    <dimen name="add_a_video_tutorial_activity_element_margin">10dp</dimen> <!-- TODO: Check this -->
+
     <!-- Video details -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
     <dimen name="video_details_group_margin_vertical">5dp</dimen>
     <dimen name="video_details_view_pager_indicator_height">10dp</dimen>
+    <!--     This margin applies only to the top. It is used when it is not possible to apply -->
+    <dimen name="video_details_group_margin_vertical_absolute">6dp</dimen> <!-- TODO: Check this -->
+    <dimen name="video_details_author_image_size">50dp</dimen> <!-- TODO: Check this -->
+    <dimen name="video_details_elements_margin_horizontal">10dp</dimen> <!-- TODO: Check this -->
+    <dimen name="video_details_like_image_size">50dp</dimen> <!-- TODO: Check this -->
+    <dimen name="video_details_hash_tag_image_size">50dp</dimen> <!-- TODO: Check this -->
+    <dimen name="video_details_elements_margin_vertical">1dp</dimen> <!-- TODO: Check this -->
+    <dimen name="video_details_organizers_margin_vertical">4dp</dimen> <!-- TODO: Check this -->
 
     <!-- Add a video activity -->
     <dimen name="add_a_video_activity_mark_padding_bottom">100dp</dimen>
@@ -51,9 +66,21 @@
     <dimen name="video_list_item_bottom_margin">40dp</dimen>
     <dimen name="video_list_item_height">600dp</dimen>
 
+    <!-- Organizer item layout -->
+    <dimen name="organizer_item_logo_image_size">80dp</dimen> <!-- TODO: Check this -->
+
     <!-- Organizers list -->
     <!--     This margin applies both top and bottom of the elements, so it should be multiplied by 2 -->
     <dimen name="organizers_list_group_margin_vertical">5dp</dimen>
+
+    <!-- Organizer details -->
+    <dimen name="organizer_details_logo_big_height">300dp</dimen>
+    <dimen name="organizer_details_logo_small_size">100dp</dimen>
+    <!--    This size is the difference of the big logo height and the the small image size -->
+    <dimen name="organizer_details_logo_small_margin_top">250dp</dimen>
+    <dimen name="organizer_details_logo_small_margin_bottom">6dp</dimen> <!-- TODO: Check this -->
+    <dimen name="organizer_details_logo_small_padding">3dp</dimen> <!-- TODO: Check this -->
+    <dimen name="organizer_details_group_margin_vertical">3dp</dimen> <!-- TODO: Check this -->
 
     <!-- Hash tags list -->
     <dimen name="hash_tags_list_left_margin">20dp</dimen>
