@@ -65,9 +65,13 @@
     <string name="video_details_activity_user_must_logged_in_to_report">Du musst angemeldet sein um dieses Video melden zu können. Jetzt anmelden?</string>
     <string name="video_details_activity_report_sent_correctly">Danke dass du das Video gemeldet hast. Wir werden uns dies so schnell wie möglich genauer ansehen.</string>
     <string name="video_details_activity_empty_hash_tag">Fügen hashtags</string> <!-- TODO: Check translation -->
+    <string name="video_details_activity_more_organizers">Mehr</string>  <!-- TODO: Check translation -->
 
     <!-- Hash tags list activity -->
     <string name="title_activity_hash_tags">HashTags</string>
+
+    <!-- Organizers List activity -->
+    <string name="title_activity_organizers_recycler">Organisatoren Liste</string> <!-- TODO: Check translation -->
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Lade &#8230;</string>
@@ -99,5 +103,4 @@
     <string name="error_message_field_empty">Dieses Feld kann nicht leer sein</string>
     <string name="error_message_string_too_short">Du musst mindestens %1$s Zeichen eingeben</string>
     <string name="error_message_email_address_required">Du musst eine gültige E-Mail Adresse eingeben</string>
-
 </resources>

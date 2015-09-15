@@ -100,4 +100,7 @@
     <string name="error_message_string_too_short">Deve inserir pelo menos %1$s caracteres</string>
     <string name="error_message_email_address_required">Deve inserir um endereço de email válido</string>
 
+    <string name="title_activity_organizers_recycler">lista organizadores</string> <!-- TODO Check the translation -->
+    <string name="video_details_activity_more_organizers">Mais</string> <!-- TODO Check the translation -->
+
 </resources>

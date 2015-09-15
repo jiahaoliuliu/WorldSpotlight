@@ -64,9 +64,13 @@
     <string name="video_details_activity_user_must_logged_in_to_report">Tienes que loguearte para reportar este vídeo. ¿Te gustaría hacerlo ahora?</string>
     <string name="video_details_activity_report_sent_correctly">Gracias por reportar este vídeo. Vamos a comprobarlo lo antes posible</string>
     <string name="video_details_activity_empty_hash_tag">Añadir Hashtags</string>
+    <string name="video_details_activity_more_organizers">Más</string>
 
     <!-- Hash tags list activity -->
     <string name="title_activity_hash_tags">HashTags</string>
+
+    <!-- Organizers list activity -->
+    <string name="title_activity_organizers_recycler">Lista de organizadores</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">Cargando &#8230;</string>
