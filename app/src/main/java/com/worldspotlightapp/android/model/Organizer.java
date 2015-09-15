@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.model;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -101,22 +102,52 @@ public class Organizer extends ParseObject {
 
     // Phone numbers
     public boolean hasPhoneNumbers() {
-        return !TextUtils.isEmpty(getPhoneNumber1()) ||
-                !TextUtils.isEmpty(getPhoneNumber2()) ||
-                !TextUtils.isEmpty(getPhoneNumber3());
+        return hasPhoneNumber1() ||
+                hasPhoneNumber2() ||
+                hasPhoneNumber3();
     }
 
     // Phone number 1
+    public boolean hasPhoneNumber1() {
+        return !TextUtils.isEmpty(getPhoneNumber1());
+    }
+
     public String getPhoneNumber1() {
         return getString(PARSE_COLUMN_PHONE_NUMBER_1);
     }
 
     // Phone number 2
+    public boolean hasPhoneNumber2() {
+        return !TextUtils.isEmpty(getPhoneNumber2());
+    }
+
     public String getPhoneNumber2() {
         return getString(PARSE_COLUMN_PHONE_NUMBER_2);
     }
 
+    private void setPhoneNumber2(String phoneNumber2) {
+        if (TextUtils.isEmpty(phoneNumber2)) {
+            Log.e(TAG, "Trying to set the phone number 2 with empty string");
+            return;
+        }
+
+        put(PARSE_COLUMN_PHONE_NUMBER_2, phoneNumber2);
+    }
+
     // Phone number 3
+    public boolean hasPhoneNumber3() {
+        return !TextUtils.isEmpty(getPhoneNumber3());
+    }
+
+    private void setPhoneNumber3(String phoneNumber3) {
+        if (TextUtils.isEmpty(phoneNumber3)) {
+            Log.e(TAG, "Trying to set the phone number 3 with empty string");
+            return;
+        }
+
+        put(PARSE_COLUMN_PHONE_NUMBER_3, phoneNumber3);
+    }
+
     public String getPhoneNumber3() {
         return getString(PARSE_COLUMN_PHONE_NUMBER_3);
     }

@@ -31,10 +31,23 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
     private Stack<Object> mResponsesStack;
 
     // The list of views
+    //      Logo
     private ImageView mBigLogoImageView;
     private ImageView mSmallLogoImageView;
+
+    //      Description
     private CardView mDescriptionCardView;
     private TextView mDescriptionTextView;
+
+    //      Contact information
+    private CardView mContactInfoCardView;
+    private TextView mPhoneNumber1TextView;
+    private TextView mPhoneNumber2TextView;
+    private TextView mPhoneNumber3TextView;
+    private TextView mMailTextView;
+    private TextView mWebPageTextView;
+
+    //      Address
     private CardView mAddressCardView;
     private TextView mAddressTextView;
     private TextView mCityTextView;
@@ -62,12 +75,23 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
         mResponsesStack = new Stack<Object>();
 
         // Link the views
+        //      Logo views
         mBigLogoImageView = (ImageView) findViewById(R.id.big_logo_image_view);
         mSmallLogoImageView = (ImageView) findViewById(R.id.small_logo_image_view);
+
+        //      Description views
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
 
-        // Address
+        //      Contact info views
+        mContactInfoCardView = (CardView) findViewById(R.id.contact_info_card_view);
+        mPhoneNumber1TextView = (TextView) findViewById(R.id.phone_number_1_text_view);
+        mPhoneNumber2TextView = (TextView) findViewById(R.id.phone_number_2_text_view);
+        mPhoneNumber3TextView = (TextView) findViewById(R.id.phone_number_3_text_view);
+        mMailTextView = (TextView) findViewById(R.id.mail_text_view);
+        mWebPageTextView = (TextView) findViewById(R.id.web_page_text_view);
+
+        //      Address views
         mAddressCardView = (CardView) findViewById(R.id.address_card_view);
         mAddressTextView = (TextView) findViewById(R.id.address_text_view);
         mCityTextView = (TextView) findViewById(R.id.city_text_view);
@@ -99,6 +123,7 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
                 ParseResponse parseResponse = organizerModuleOrganizerResponse.getParseResponse();
                 if (!parseResponse.isError()) {
                     mOrganizer = organizerModuleOrganizerResponse.getOrganizer();
+
                     Log.v(TAG, "The organizer is " + mOrganizer);
                     updateView();
                 } else {
@@ -158,6 +183,44 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
         if (mOrganizer.hasDescription()) {
             mDescriptionCardView.setVisibility(View.VISIBLE);
             mDescriptionTextView.setText(mOrganizer.getDescription());
+        }
+
+        // Update the contact info
+        if (mOrganizer.hasPhoneNumbers() || mOrganizer.hasMailAddress() || mOrganizer.hasWebPage()) {
+            mContactInfoCardView.setVisibility(View.VISIBLE);
+
+            // Phone Numbers
+            if (mOrganizer.hasPhoneNumbers()) {
+                // Phone number 1
+                if (mOrganizer.hasPhoneNumber1()) {
+                    mPhoneNumber1TextView.setVisibility(View.VISIBLE);
+                    mPhoneNumber1TextView.setText(mOrganizer.getPhoneNumber1());
+                }
+
+                // Phone number 2
+                if (mOrganizer.hasPhoneNumber2()) {
+                    mPhoneNumber2TextView.setVisibility(View.VISIBLE);
+                    mPhoneNumber2TextView.setText(mOrganizer.getPhoneNumber2());
+                }
+
+                // Phone number 3
+                if (mOrganizer.hasPhoneNumber3()) {
+                    mPhoneNumber3TextView.setVisibility(View.VISIBLE);
+                    mPhoneNumber3TextView.setText(mOrganizer.getPhoneNumber3());
+                }
+            }
+
+            // Mail address
+            if (mOrganizer.hasMailAddress()) {
+                mMailTextView.setVisibility(View.VISIBLE);
+                mMailTextView.setText(mOrganizer.getMailAddress());
+            }
+
+            // Web page
+            if (mOrganizer.hasWebPage()) {
+                mWebPageTextView.setVisibility(View.VISIBLE);
+                mWebPageTextView.setText(mOrganizer.getWebPage());
+            }
         }
 
         // Update the address
