@@ -65,9 +65,13 @@
     <string name="video_details_activity_user_must_logged_in_to_report">يجب عليك تسجيل الدخول للإبلاغ عن هذا الفيديو. هل ترغب في الدخول الآن؟</string>
     <string name="video_details_activity_report_sent_correctly">بفضل الإبلاغ عن هذا الفيديو. سوف نتحقق منه في أقرب وقت ممكن</string>
     <string name="video_details_activity_empty_hash_tag">إضافة وسوم</string> <!-- TODO: Translate -->
+    <string name="video_details_activity_more_organizers">مزيد</string>
 
     <!-- Hash tags list activity -->
     <string name="title_activity_hash_tags">وسوم</string>
+
+    <!-- Organizers list activity -->
+    <string name="title_activity_organizers_recycler">لائحة المنظمين‎ </string>
 
     <!--  Notification module -->
     <string name="dialog_loading_generic_message">تحميل...</string>

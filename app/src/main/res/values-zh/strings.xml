@@ -64,9 +64,13 @@
     <string name="video_details_activity_user_must_logged_in_to_report">您必须登陆才能举报该视频。您希望现在登陆吗？</string>
     <string name="video_details_activity_report_sent_correctly">感谢您举报该视频。我们将尽快核查</string>
     <string name="video_details_activity_empty_hash_tag">添加标签</string>
+    <string name="video_details_activity_more_organizers">更多</string>
 
     <!-- Hash tags list activity -->
     <string name="title_activity_hash_tags">标签</string>
+
+    <!-- Organizers list activity -->
+    <string name="title_activity_organizers_recycler">主办单位名单</string>
 
     <!-- Notification module -->
     <string name="dialog_loading_generic_message">正在载入&#8230;</string>

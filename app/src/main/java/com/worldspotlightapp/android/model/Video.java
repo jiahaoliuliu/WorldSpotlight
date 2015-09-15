@@ -278,6 +278,12 @@ public class Video extends ParseObject implements ClusterItem {
         put(PARSE_COLUMN_TITLE, title);
     }
 
+    // Object id
+    public boolean hasObjectId() {
+        return !TextUtils.isEmpty(getObjectId());
+    }
+
+    // Title
     public String getTitle() {
         return getString(PARSE_COLUMN_TITLE);
     }
@@ -311,6 +317,11 @@ public class Video extends ParseObject implements ClusterItem {
         return getString(PARSE_COLUMN_VIDEO_ID);
     }
 
+    // City
+    public boolean hasCity() {
+        return !TextUtils.isEmpty(getCity());
+    }
+
     private void setCity(String city) {
         if (city == null) {
             return;
@@ -320,6 +331,11 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     public String getCity(){ return getString(PARSE_COLUMN_CITY); }
+
+    // Country
+    public boolean hasCountry() {
+        return !TextUtils.isEmpty(getCountry());
+    }
 
     private void setCountry(String country) {
         if (country == null) {
@@ -485,7 +501,7 @@ public class Video extends ParseObject implements ClusterItem {
         Video anotherVideo = (Video) o;
 
         // Check if the object id exists.
-        if (anotherVideo.has(PARSE_COLUMN_OBJECT_ID)) {
+        if (anotherVideo.hasObjectId()) {
             return getObjectId().equals(anotherVideo.getObjectId());
         // If the object id does not exists, check the video id
         } else {

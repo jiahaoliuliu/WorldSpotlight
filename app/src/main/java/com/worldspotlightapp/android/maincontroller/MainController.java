@@ -6,12 +6,16 @@ import com.parse.ParseException;
 import com.worldspotlightapp.android.maincontroller.database.VideoDataLayer;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.ActivityTrackerModule;
 import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodule.IActivityTrackerModule;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.AbstractCityModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.CityModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.EventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.GpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.NotificationModule;
+import com.worldspotlightapp.android.maincontroller.modules.organizermodule.AbstractOrganizerModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.organizermodule.OrganizerModuleObserver;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.AbstractVideosModuleObservable;
@@ -41,6 +45,8 @@ public final class MainController {
     private AbstractVideosModuleObservable mVideosModuleObservable;
     private IEventsTrackingModule mEventTrackingModule;
     private IActivityTrackerModule mActivityTrackerModule;
+    private AbstractCityModuleObservable mCityModuleObservable;
+    private AbstractOrganizerModuleObservable mOrganizerModuleObservable;
 
     /**
      * The constructor of the session. Because it is a singleton, there is not parameters for the
@@ -107,6 +113,8 @@ public final class MainController {
                 newMainController.mExecutorServiceHolder.createExecutorService(), new VideoDataLayer(), preferences);
         newMainController.mEventTrackingModule = new EventsTrackingModule(context, uuid);
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
+        newMainController.mCityModuleObservable = new CityModuleObservable();
+        newMainController.mOrganizerModuleObservable = new OrganizerModuleObserver();
 
         // Save the current session
         MainController.setCurrentMainController(newMainController);
@@ -157,6 +165,14 @@ public final class MainController {
 
     public IActivityTrackerModule getActivityTrackerModule() {
         return mActivityTrackerModule;
+    }
+
+    public AbstractCityModuleObservable getCityModuleObservable() {
+        return mCityModuleObservable;
+    }
+
+    public AbstractOrganizerModuleObservable getOrganizerModuleObservable() {
+        return mOrganizerModuleObservable;
     }
 
     /**
@@ -214,5 +230,9 @@ public final class MainController {
         public IEventsTrackingModule getEventTrackingModule();
 
         public IActivityTrackerModule getActivityTrackerModule();
+
+        public AbstractCityModuleObservable getCityModuleObservable();
+
+        public AbstractOrganizerModuleObservable getOrganizerModuleObservable();
     }
 }
