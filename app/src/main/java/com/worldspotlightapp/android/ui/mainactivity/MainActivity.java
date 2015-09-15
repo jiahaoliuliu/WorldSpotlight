@@ -62,6 +62,7 @@ import com.worldspotlightapp.android.ui.AddAVideoActivity;
 import com.worldspotlightapp.android.ui.AddAVideoTutorialActivity;
 import com.worldspotlightapp.android.ui.SignUpLoginActivity;
 import com.worldspotlightapp.android.ui.videodetails.VideoDetailsActivity;
+import com.worldspotlightapp.android.utils.DebugOptions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -392,6 +393,15 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         mVideosList.addAll(extraVideos);
                         mClusterManager.addItems(extraVideos);
                         mClusterManager.cluster();
+
+                        // Update the list of cities if needed
+                        if (DebugOptions.shouldUpdateCitiesList()) {
+                            for (Video video: extraVideos) {
+                                City city = new City(video.getCity(), video.getCountry());
+                                Log.v(TAG, "Trying to add the city " + city);
+                                mCityModuleObservable.addNewCityIfNotExisted(city);
+                            }
+                        }
                     } else {
                         Log.v(TAG, "Error updating the list of videos");
                     }
@@ -405,6 +415,15 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         mClusterManager.clearItems();
                         mClusterManager.addItems(mVideosList);
                         mClusterManager.cluster();
+
+                        // Update the list of cities if needed
+                        if (DebugOptions.shouldUpdateCitiesList()) {
+                            for (Video video: mVideosList) {
+                                City city = new City(video.getCity(), video.getCountry());
+                                Log.v(TAG, "Trying to add the city " + city);
+                                mCityModuleObservable.addNewCityIfNotExisted(city);
+                            }
+                        }
                     } else {
                         // Some error happend
                         mNotificationModule.showToast(parseResponse.getHumanRedableResponseMessage(mContext), true);
