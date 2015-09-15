@@ -73,18 +73,37 @@ public class Organizer extends ParseObject {
     }
 
     // Address
+    public boolean hasAddress() {
+        return !TextUtils.isEmpty(getAddress());
+    }
+
     public String getAddress() {
         return getString(PARSE_COLUMN_ADDRESS);
     }
 
     // City
+    public boolean hasCity() {
+        return !TextUtils.isEmpty(getCity());
+    }
+
     public String getCity() {
         return getString(PARSE_COLUMN_CITY);
     }
 
     // Country
+    public boolean hasCountry() {
+        return !TextUtils.isEmpty(getCountry());
+    }
+
     public String getCountry() {
         return getString(PARSE_COLUMN_COUNTRY);
+    }
+
+    // Phone numbers
+    public boolean hasPhoneNumbers() {
+        return !TextUtils.isEmpty(getPhoneNumber1()) ||
+                !TextUtils.isEmpty(getPhoneNumber2()) ||
+                !TextUtils.isEmpty(getPhoneNumber3());
     }
 
     // Phone number 1
@@ -103,11 +122,19 @@ public class Organizer extends ParseObject {
     }
 
     // Web page
+    public boolean hasWebPage() {
+        return !TextUtils.isEmpty(getWebPage());
+    }
+
     public String getWebPage() {
         return getString(PARSE_COLUMN_WEB_PAGE);
     }
 
     // Mail address
+    public boolean hasMailAddress() {
+        return !TextUtils.isEmpty(getMailAddress());
+    }
+
     public String getMailAddress() {
         return getString(PARSE_COLUMN_MAIL_ADDRESS);
     }

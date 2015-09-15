@@ -35,6 +35,10 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
     private ImageView mSmallLogoImageView;
     private CardView mDescriptionCardView;
     private TextView mDescriptionTextView;
+    private CardView mAddressCardView;
+    private TextView mAddressTextView;
+    private TextView mCityTextView;
+    private TextView mCountryTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,12 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
         mDescriptionCardView = (CardView) findViewById(R.id.description_card_view);
         mDescriptionTextView = (TextView) findViewById(R.id.description_text_view);
 
+        // Address
+        mAddressCardView = (CardView) findViewById(R.id.address_card_view);
+        mAddressTextView = (TextView) findViewById(R.id.address_text_view);
+        mCityTextView = (TextView) findViewById(R.id.city_text_view);
+        mCountryTextView = (TextView) findViewById(R.id.country_text_view);
+
         // Request for the organizer data
         mNotificationModule.showLoadingDialog(mContext);
         mOrganizerModuleObservable.retrieveOrganizerInfo(this, mOrganizerObjectId);
@@ -89,6 +99,7 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
                 ParseResponse parseResponse = organizerModuleOrganizerResponse.getParseResponse();
                 if (!parseResponse.isError()) {
                     mOrganizer = organizerModuleOrganizerResponse.getOrganizer();
+                    Log.v(TAG, "The organizer is " + mOrganizer);
                     updateView();
                 } else {
                     // Display the notification to the user
@@ -147,6 +158,29 @@ public class OrganizerDetailsActivity extends AbstractBaseActivityObserver {
         if (mOrganizer.hasDescription()) {
             mDescriptionCardView.setVisibility(View.VISIBLE);
             mDescriptionTextView.setText(mOrganizer.getDescription());
+        }
+
+        // Update the address
+        if (mOrganizer.hasAddress() || mOrganizer.hasCity() || mOrganizer.hasCountry()) {
+            mAddressCardView.setVisibility(View.VISIBLE);
+
+            // Address
+            if (mOrganizer.hasAddress()) {
+                mAddressTextView.setVisibility(View.VISIBLE);
+                mAddressTextView.setText(mOrganizer.getAddress());
+            }
+
+            // City
+            if (mOrganizer.hasCity()) {
+                mCityTextView.setVisibility(View.VISIBLE);
+                mCityTextView.setText(mOrganizer.getCity());
+            }
+
+            // Country
+            if (mOrganizer.hasCountry()) {
+                mCountryTextView.setVisibility(View.VISIBLE);
+                mCountryTextView.setText(mOrganizer.getCountry());
+            }
         }
     }
 
