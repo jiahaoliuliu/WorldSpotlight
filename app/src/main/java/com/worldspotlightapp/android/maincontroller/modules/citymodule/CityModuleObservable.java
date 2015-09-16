@@ -4,19 +4,20 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
-import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleCitiesListResponse;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleCitiesSetResponse;
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleOrganizersListResponse;
 import com.worldspotlightapp.android.model.City;
 import com.worldspotlightapp.android.model.Organize;
 import com.worldspotlightapp.android.model.Organizer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observer;
+import java.util.Set;
 
 /**
  *
@@ -31,15 +32,22 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
     private static final int MAX_PARSE_QUERY_RESULT = 500;
 
     /**
-     * The list of cities
+     * The set of cities. Each city is unique
      */
-    private List<City> mCitiesList;
+    private Set<City> mCitiesSet;
+
+    /**
+     * The set of cities that should be added when the city list is ready.
+     * Each city is unique
+     */
+    private Set<City> mPendingCitySetToBeAdded;
 
     /**
      * Empty constructor
      */
     public CityModuleObservable() {
-        this.mCitiesList = new ArrayList<City>();
+        this.mCitiesSet = new HashSet<City>();
+        this.mPendingCitySetToBeAdded = new HashSet<City>();
 
         // Initialize the list of cities
         retrieveAllCitiesList(null);
@@ -54,12 +62,12 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
 
         // If the data already exists, return it to the observer
         // if observer is not null. Otherwise just finish
-        if (!mCitiesList.isEmpty()) {
+        if (!mCitiesSet.isEmpty()) {
             if (observer != null) {
-                CityModuleCitiesListResponse cityModuleCitiesListResponse = new CityModuleCitiesListResponse(
-                        new ParseResponse.Builder(null).build(), mCitiesList);
+                CityModuleCitiesSetResponse cityModuleCitiesSetResponse = new CityModuleCitiesSetResponse(
+                        new ParseResponse.Builder(null).build(), mCitiesSet);
                 setChanged();
-                notifyObservers(cityModuleCitiesListResponse);
+                notifyObservers(cityModuleCitiesSetResponse);
             }
 
             return;
@@ -73,29 +81,40 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
                     Log.v(TAG, "List of cities retrieved from backend " + newCitiesList.size());
 
                     // Add the content to the list
-                    mCitiesList.addAll(newCitiesList);
+                    mCitiesSet.addAll(newCitiesList);
 
                     // if the query has reached the limit number of results
                     if (newCitiesList.size() == MAX_PARSE_QUERY_RESULT) {
-                        requestCitiesList(mCitiesList.size(), this);
+                        requestCitiesList(mCitiesSet.size(), this);
                     } else {
                         // Notify the observer when all the cities are retrieved
                         if (observer != null) {
-                            CityModuleCitiesListResponse cityModuleCitiesListResponse = new CityModuleCitiesListResponse(
-                                    parseResponse, mCitiesList);
+                            CityModuleCitiesSetResponse cityModuleCitiesSetResponse = new CityModuleCitiesSetResponse(
+                                    parseResponse, mCitiesSet);
                             setChanged();
-                            notifyObservers(cityModuleCitiesListResponse);
+                            notifyObservers(cityModuleCitiesSetResponse);
+                        }
+
+                        // Check if there is any city that should be added
+                        // The city list shouldn't be empty. If so, this will end up in infinite loop
+                        if (!mPendingCitySetToBeAdded.isEmpty()) {
+                            for (City city : mPendingCitySetToBeAdded) {
+                                addNewCityIfNotExisted(city);
+                            }
+
+                            // Clear the list
+                            mPendingCitySetToBeAdded.clear();
                         }
                     }
                 } else {
                     Log.e(TAG, "Error retrieving the list of cities from backend", parseResponse);
                     // Restart the list
-                    mCitiesList = new ArrayList<City>();
+                    mCitiesSet = new HashSet<City>();
                 }
             }
         };
 
-        requestCitiesList(mCitiesList.size(), findCitiesListCallback);
+        requestCitiesList(mCitiesSet.size(), findCitiesListCallback);
     }
 
     private void requestCitiesList(int initialPosition, FindCallback<City> findCitiesListCallback) {
@@ -113,8 +132,14 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
             return;
         }
 
+        // If the list of cities is empty, wait it to be updated
+        if (mCitiesSet.isEmpty()) {
+            mPendingCitySetToBeAdded.add(city);
+            return;
+        }
+
         // If the city already exists, not do anything
-        if (mCitiesList.contains(city)) {
+        if (mCitiesSet.contains(city)) {
             Log.v(TAG, "The city already exists in the backend. Not do anything");
             return;
         }
@@ -126,12 +151,15 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
                     Log.v(TAG, "City added to the backend correctly");
-                    mCitiesList.add(city);
                 } else {
                     Log.e(TAG, "Error adding city to the backend.", parseResponse);
+                    mCitiesSet.remove(city);
                 }
             }
         });
+        // Since most of the time it goes ok and there is a short window time since the city
+        // is saved, it is better add it and then, if something went wrong, remove it.
+        mCitiesSet.add(city);
     }
 
     @Override
@@ -143,8 +171,8 @@ public class CityModuleObservable extends AbstractCityModuleObservable {
 
         // Look for the city with object id
         City cityWithObjectId = null;
-        if (mCitiesList != null) {
-            for (City existentCity : mCitiesList) {
+        if (mCitiesSet != null) {
+            for (City existentCity : mCitiesSet) {
                 if (city.equals(existentCity.getCity()) && country.equals(existentCity.getCountry())) {
                     cityWithObjectId = existentCity;
                     break;

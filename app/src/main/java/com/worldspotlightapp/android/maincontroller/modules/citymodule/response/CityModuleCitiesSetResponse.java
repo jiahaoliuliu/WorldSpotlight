@@ -6,20 +6,21 @@ import com.worldspotlightapp.android.model.City;
 import com.worldspotlightapp.android.model.UserData;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by jiahaoliuliu on 2/20/15.
  */
-public class CityModuleCitiesListResponse extends BaseModuleResponse {
+public class CityModuleCitiesSetResponse extends BaseModuleResponse {
 
-    private List<City> mCitiesList;
+    private Set<City> mCitiesSet;
 
-    public CityModuleCitiesListResponse(ParseResponse parseResponse, List<City> citiesList) {
+    public CityModuleCitiesSetResponse(ParseResponse parseResponse, Set<City> citiesSet) {
         super(parseResponse);
-        this.mCitiesList = citiesList;
+        this.mCitiesSet = citiesSet;
     }
 
-    public List<City> getCitiesList() {
-        return mCitiesList;
+    public Set<City> getCitiesSet() {
+        return mCitiesSet;
     }
 }

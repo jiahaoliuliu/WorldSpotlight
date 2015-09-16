@@ -215,7 +215,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                         }
 
                         // Update the hashtags for all the videos
-                        if (!DebugOptions.shouldUpdateHashTagsForAllTheVideos()) {
+                        if (DebugOptions.shouldUpdateHashTagsForAllTheVideos()) {
                             // Update automatically the hashtags if it is not ready
                             if (mHashTagsList == null) {
                                 mUpdateHashTagsListForAllVideosPending = true;
