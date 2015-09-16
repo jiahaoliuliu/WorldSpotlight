@@ -11,11 +11,15 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.worldspotlightapp.android.model.City;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
+import com.worldspotlightapp.android.model.Organize;
+import com.worldspotlightapp.android.model.Organizer;
 import com.worldspotlightapp.android.model.Report;
 import com.worldspotlightapp.android.model.UserData;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.Secret;
 import io.fabric.sdk.android.Fabric;
 
@@ -25,8 +29,6 @@ import io.fabric.sdk.android.Fabric;
 public class MainApplication extends Application {
 
     private static MainApplication sInstance;
-
-    public static final boolean IS_PRODUCTION = true;
 
     @Override
     public void onCreate() {
@@ -40,7 +42,10 @@ public class MainApplication extends Application {
         ParseObject.registerSubclass(UserData.class);
         ParseObject.registerSubclass(Like.class);
         ParseObject.registerSubclass(Report.class);
-        if (IS_PRODUCTION) {
+        ParseObject.registerSubclass(City.class);
+        ParseObject.registerSubclass(Organizer.class);
+        ParseObject.registerSubclass(Organize.class);
+        if (DebugOptions.IS_PRODUCTION) {
             Parse.initialize(this, Secret.PARSE_APPLICATION_ID_PRODUCTION, Secret.PARSE_CLIENT_KEY_PRODUCTION);
         } else {
             Parse.initialize(this, Secret.PARSE_APPLICATION_ID_DEBUG, Secret.PARSE_CLIENT_KEY_DEBUG);
@@ -63,7 +68,7 @@ public class MainApplication extends Application {
         FacebookSdk.sdkInitialize(sInstance);
 
         // Initialize Fabric/Crashlytics
-        if (!IS_PRODUCTION) {
+        if (!DebugOptions.IS_PRODUCTION) {
             Fabric.with(this, new Crashlytics());
         }
     }

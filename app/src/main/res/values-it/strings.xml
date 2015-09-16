@@ -100,4 +100,7 @@
     <string name="error_message_string_too_short">Devi inserire almeno %1$s caratteri</string>
     <string name="error_message_email_address_required">Devi inserire un indirizzo email valido</string>
 
+    <string name="title_activity_organizers_recycler">lista organizzatori</string> <!-- TODO Check the translation -->
+    <string name="video_details_activity_more_organizers">Di più</string> <!-- TODO Check the translation -->
+
 </resources>

@@ -99,4 +99,7 @@
     <string name="error_message_field_empty">Это поле не может быть пустым</string>
     <string name="error_message_string_too_short">Необходимо ввести не менее %1$s символов</string>
     <string name="error_message_email_address_required">Необходимо ввести действительный адрес электронной почты</string>
+
+    <string name="title_activity_organizers_recycler">список организаторы</string> <!-- TODO Check the translation -->
+    <string name="video_details_activity_more_organizers">Больше</string> <!-- TODO Check the translation -->
 </resources>

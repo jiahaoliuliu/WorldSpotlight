@@ -100,4 +100,7 @@
     <string name="error_message_string_too_short">少なくとも %1$s 文字入力してください</string>
     <string name="error_message_email_address_required">有効なEメールアドレスを入力してください</string>
 
+    <string name="title_activity_organizers_recycler">主催者リスト</string> <!-- TODO Check the translation -->
+    <string name="video_details_activity_more_organizers">もっと</string> <!-- TODO Check the translation -->
+
 </resources>

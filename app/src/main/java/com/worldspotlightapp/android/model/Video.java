@@ -1,5 +1,6 @@
 package com.worldspotlightapp.android.model;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -210,6 +211,65 @@ public class Video extends ParseObject implements ClusterItem {
         setHashTags(anotherVideo.getHashTags());
     }
 
+    /**
+     * Check if the hash tag should be added to this video
+     *
+     * - If the hash tag has 5 characters or less, then the title or the description should have at lease one word that matches with
+     *   the hash tag
+     * - If the hash tag has more than 5 characters, it is good enough that the title or the description contains that hash tag
+     *
+     * @param hashTag
+     *      The hash tag to be added
+     * @return
+     *      True if hash tag should be added
+     *      False otherwise
+     */
+    public boolean shouldAddHashTag(HashTag hashTag) {
+        String hashTagName = hashTag.getName();
+        Log.d(TAG, "Checking if the hash tag " + hashTagName + " should be added");
+        if (hashTag == null || TextUtils.isEmpty(hashTagName)) {
+            Log.w(TAG, "The hash tag is not valid " + hashTag);
+            return false;
+        }
+
+        String words = "";
+        if (hasTitle()) {
+            words += getTitle();
+        }
+
+        if (hasDescription()) {
+            words += " " + getDescription();
+        }
+        Log.d(TAG, "The words is " + words);
+
+        // If the hash tag has 5 characters or less, then the title or the description should have at
+        // lease one word that matches with the hash tag
+        if (hashTagName.length() <= 5) {
+            Log.d(TAG, "The hash tag has less or equal than 5 characters" );
+            String[] wordsArray = words.toLowerCase().split(" ");
+            for (String word : wordsArray) {
+                if (word.equalsIgnoreCase(hashTagName)) {
+                    Log.d(TAG, "Should the hash tag be added? True");
+                    return true;
+                }
+            }
+            Log.d(TAG, "Should the hash tag be added? False");
+            return false;
+        // If the hash tag has more than 5 characters, it is good enough that the title or the description
+        // contains that hash tag
+        } else {
+            Log.d(TAG, "The hash tag has more than 5 characters");
+            Log.d(TAG, "Should the hash tag be added? " + words.toLowerCase().contains(hashTagName.toLowerCase()));
+            return words.toLowerCase().contains(hashTagName.toLowerCase());
+        }
+    }
+
+    // POJO methods
+    // Title
+    public boolean hasTitle() {
+        return !TextUtils.isEmpty(getTitle());
+    }
+
     private void setTitle(String title) {
         if (title == null) {
             return;
@@ -218,8 +278,19 @@ public class Video extends ParseObject implements ClusterItem {
         put(PARSE_COLUMN_TITLE, title);
     }
 
+    // Object id
+    public boolean hasObjectId() {
+        return !TextUtils.isEmpty(getObjectId());
+    }
+
+    // Title
     public String getTitle() {
         return getString(PARSE_COLUMN_TITLE);
+    }
+
+    // Description
+    public boolean hasDescription() {
+        return !TextUtils.isEmpty(getDescription());
     }
 
     private void setDescription(String description) {
@@ -246,6 +317,11 @@ public class Video extends ParseObject implements ClusterItem {
         return getString(PARSE_COLUMN_VIDEO_ID);
     }
 
+    // City
+    public boolean hasCity() {
+        return !TextUtils.isEmpty(getCity());
+    }
+
     private void setCity(String city) {
         if (city == null) {
             return;
@@ -255,6 +331,11 @@ public class Video extends ParseObject implements ClusterItem {
     }
 
     public String getCity(){ return getString(PARSE_COLUMN_CITY); }
+
+    // Country
+    public boolean hasCountry() {
+        return !TextUtils.isEmpty(getCountry());
+    }
 
     private void setCountry(String country) {
         if (country == null) {
@@ -420,7 +501,7 @@ public class Video extends ParseObject implements ClusterItem {
         Video anotherVideo = (Video) o;
 
         // Check if the object id exists.
-        if (anotherVideo.has(PARSE_COLUMN_OBJECT_ID)) {
+        if (anotherVideo.hasObjectId()) {
             return getObjectId().equals(anotherVideo.getObjectId());
         // If the object id does not exists, check the video id
         } else {

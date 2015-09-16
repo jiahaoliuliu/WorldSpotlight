@@ -26,7 +26,7 @@ public class MainDatabase {
      * 1. Simple video format
      * 2. Added the column hashTagsList into Video table
      */
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     /**
      * The table of Videos

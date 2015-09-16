@@ -3,6 +3,7 @@ package com.worldspotlightapp.android.maincontroller.modules.videosmodule;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Debug;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.Preferences;
 import com.worldspotlightapp.android.maincontroller.Preferences.LongId;
@@ -40,6 +42,8 @@ import com.worldspotlightapp.android.model.Author;
 import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.Secret;
 
 import org.json.JSONArray;
@@ -49,14 +53,24 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Observer;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * General module implementation for all the method related with videos.
+ *
  * Created by jiahaoliuliu on 6/12/15.
  */
 public class VideosModuleObserver extends AbstractVideosModuleObservable {
@@ -79,7 +93,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      * matches with the last time the videos.json was updated.
      *
      */
-    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1441411200000L;
+    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1442435566000L;
 
     //Some keys for the Parse Object
     private static final String PARSE_COLUMN_CREATED_AT = "createdAt";
@@ -99,6 +113,9 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     private ExecutorService mExecutorService;
     private VideoDataLayer mVideoDataLayer;
     private Preferences mPreferences;
+
+    // Boolean used to detect if the hashtags
+    private boolean mUpdateHashTagsListForAllVideosPending;
 
     public VideosModuleObserver(Context context, ExecutorService executorService,
                                 VideoDataLayer videoDataLayer, Preferences preferences) {
@@ -191,6 +208,21 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
                         // Ask parse to update the list of videos
                         SyncVideoInfo(observer);
+
+                        // Print the possible hash tags only not in production
+                        if (DebugOptions.shouldPrintKeywords()) {
+                            printPossibleHashTagsFromTheVideo();
+                        }
+
+                        // Update the hashtags for all the videos
+                        if (DebugOptions.shouldUpdateHashTagsForAllTheVideos()) {
+                            // Update automatically the hashtags if it is not ready
+                            if (mHashTagsList == null) {
+                                mUpdateHashTagsListForAllVideosPending = true;
+                            } else {
+                                updateHashTagsListForAllVideos();
+                            }
+                        }
                     }
                 } else {
                     Log.e(TAG, "Error retrieving data from backend");
@@ -497,6 +529,12 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                             new VideosModuleHashTagsListResponse(parseResponse, mHashTagsList);
                     setChanged();
                     notifyObservers(videosModuleHashTagsListResponse);
+
+                    // Update the list of hashtags in the videos.
+                    if (DebugOptions.shouldUpdateHashTagsForAllTheVideos() &&
+                            mUpdateHashTagsListForAllVideosPending) {
+                        updateHashTagsListForAllVideos();
+                    }
                 } else {
                     VideosModuleHashTagsListResponse videosModuleHashTagsListResponse =
                             new VideosModuleHashTagsListResponse(parseResponse, null);
@@ -509,6 +547,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     @Override
     public void updateHashTagsList(Observer observer, final String videoObjectId, ArrayList<String> hashTagsList) {
+        if (TextUtils.isEmpty(videoObjectId)) {
+            Log.e(TAG, "The video object id cannot be null");
+            return;
+        }
+
         // Update the hashtag for the database
         final Video video = mVideoDataLayer.getVideoDetails(videoObjectId);
 
@@ -533,6 +576,54 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 }
             }
         });
+    }
+
+    /**
+     * Special method used internally to add specific hash tags. This is useful when the hashtag is added automatically
+     *
+     * @param videoObjectId
+     *      The object id of the video where the hash  tag should be added
+     * @param hashTagToBeAdded
+     *      The hashtag to be added
+     */
+    private void addHashTag(String videoObjectId, String hashTagToBeAdded) {
+        if (TextUtils.isEmpty(videoObjectId)) {
+            Log.e(TAG, "The video object id cannot be null");
+            return;
+        }
+
+        // Update the hashtag for the database
+        final Video video = mVideoDataLayer.getVideoDetails(videoObjectId);
+
+        // The video shouldn't be null
+        if (video == null) {
+            Log.e(TAG, "The video with id " + videoObjectId + " does not exists in the databse.");
+            return;
+        }
+
+        ArrayList<String> hashTags = video.getHashTags();
+        if (hashTags.contains(hashTagToBeAdded)) {
+            Log.v(TAG, "The hash tag already exists for this video");
+            return;
+        }
+
+        hashTags.add(hashTagToBeAdded);
+        video.setHashTags(hashTags);
+        mVideoDataLayer.updateVideo(video);
+
+        // Update the hashtag for the backend
+        video.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Video " + video + " saved correctly");
+                } else {
+                    Log.e(TAG, "Error saving the video " + video);
+                }
+            }
+        });
+
     }
 
     /**
@@ -608,10 +699,11 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      * @param hashTagsList
      *      The list of hash tags
      */
-    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country, ArrayList<String> hashTagsList) {
+    private void addAVideo(final String videoId, String title, String description, LatLng videoLocation, String city, String country, final ArrayList<String> hashTagsList) {
         Log.v(TAG, "Adding a video with id " + videoId + ", Title: " + title + ", description " + description +
                 ", location " + videoLocation + ", city " + city + ", country " + country);
         final Video video = new Video(title, description, videoId, city, country, videoLocation, hashTagsList);
+
         video.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -623,6 +715,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     // The database should be updated according to the backend. This is because there could be several user adding
                     // videos at the same time. So, the order the video was added are different. Since we based on the number of existence
                     // videos in the database to update the list of videos, it is more safe do it asking directly to Parse.
+
+
                     VideosModuleAddAVideoResponse videosModuleAddAVideoResponse = new VideosModuleAddAVideoResponse(parseResponse, video);
                     setChanged();
                     notifyObservers(videosModuleAddAVideoResponse);
@@ -777,7 +871,6 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 try {
                     Video video = new Video(videoJsonObject);
                     videosList.add(video);
-                    Log.d(TAG, "The video saved is " + video.toString());
                 } catch (JSONException jsonException) {
                     Log.e(TAG, "Error create a vide from json object " + jsonObject, jsonException);
                 }
@@ -811,5 +904,116 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
         public void run() {
             mVideoDataLayer.insertListDataToDatabase(mVideosList);
         }
+   }
+
+    /**
+     * Print all the possible hashtags from the list of the actual videos
+     */
+    private void printPossibleHashTagsFromTheVideo() {
+        // Get the list of hashtags
+        HashMap<String, Integer> hashTagsMap = new HashMap<String, Integer>();
+
+        for (Video video: mVideosList) {
+            // Get the title
+            String title = video.getTitle();
+            if (!TextUtils.isEmpty(title)) {
+                String[] titles = title.split(" ");
+                addWordsToHashMap(hashTagsMap, titles);
+            }
+
+            // Ge the description
+            String description = video.getDescription();
+            if (!TextUtils.isEmpty(description)) {
+                String[] descriptions = description.split(" ");
+                addWordsToHashMap(hashTagsMap, descriptions);
+            }
+        }
+
+        // Sort the content
+        Map<String, Integer> hashTagsMapSorted = sortHashTagsMap(hashTagsMap);
+
+        // Print the content
+        printMap(hashTagsMapSorted);
+
+    }
+
+    private void addWordsToHashMap(HashMap<String, Integer> hashTagsMap, String[] words) {
+        for (String word : words) {
+            String lowerCaseWord = word.toLowerCase();
+            if (hashTagsMap.containsKey(lowerCaseWord)) {
+                Integer counter = hashTagsMap.get(lowerCaseWord);
+                counter++;
+                hashTagsMap.put(lowerCaseWord, counter);
+            } else {
+                hashTagsMap.put(lowerCaseWord, 1);
+            }
+        }
+    }
+
+    private Map<String, Integer> sortHashTagsMap(HashMap<String, Integer> hashTagsMap) {
+        // Convert map to list
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(hashTagsMap.entrySet());
+
+        // Sort list with comparator, to compare the map values
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        // Convert sorted mpa back to a map
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext();) {
+            Map.Entry<String, Integer> entry = it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+    }
+
+    /**
+     * Print the content of a Map, with key and value
+     * @param map
+     *      The content of the map to be printed
+     */
+    private void printMap(Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            Log.v(TAG, entry.getKey() + ":" + entry.getValue());
+        }
+    }
+
+    /**
+     * Update the hash tags list for all the videos.
+     * Precondition
+     * - The list of the videos cannot be empty
+     * - The list of the hash tags cannot be empty
+     */
+    private void updateHashTagsListForAllVideos() {
+        if (mHashTagsList == null) {
+            Log.e(TAG, "Trying to update the hash tags list for all the videos but the hash tags list is empty");
+            return;
+        }
+
+        if (mVideosList == null || mVideosList.isEmpty()) {
+            Log.e(TAG, "Trying to update the hash tags list for all the videos but the videos list is empty");
+            return;
+        }
+
+        // Check for each video
+        for (Video video :mVideosList) {
+            Log.d(TAG, "##############################################################################");
+            Log.d(TAG, "Checking for the video " + video);
+            for (HashTag hashTag : mHashTagsList) {
+                Log.d(TAG, "Checking for the hashtag " + hashTag.getName());
+                Log.d(TAG, "-----------------------------------------------------------------------------");
+                if (video.shouldAddHashTag(hashTag)) {
+                    Log.d(TAG, "The hashtag should be added");
+                    addHashTag(video.getObjectId(), hashTag.getName());
+                }
+            }
+        }
+
+        mUpdateHashTagsListForAllVideosPending = false;
     }
 }

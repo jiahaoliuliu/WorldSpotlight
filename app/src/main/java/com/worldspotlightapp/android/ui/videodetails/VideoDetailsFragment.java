@@ -6,11 +6,9 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,8 +16,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +29,8 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 import com.worldspotlightapp.android.R;
 import com.worldspotlightapp.android.maincontroller.modules.ParseResponse;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.CityModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.citymodule.response.CityModuleOrganizersListResponse;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.ScreenId;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule.EventId;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.UserDataModuleObservable;
@@ -40,22 +41,24 @@ import com.worldspotlightapp.android.maincontroller.modules.videosmodule.VideosM
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleAuthorResponse;
 import com.worldspotlightapp.android.maincontroller.modules.videosmodule.response.VideosModuleHashTagsListByVideoResponse;
 import com.worldspotlightapp.android.model.Author;
-import com.worldspotlightapp.android.model.HashTag;
 import com.worldspotlightapp.android.model.Like;
+import com.worldspotlightapp.android.model.Organizer;
 import com.worldspotlightapp.android.model.Video;
 import com.worldspotlightapp.android.ui.AbstractBaseFragmentObserver;
 import com.worldspotlightapp.android.ui.HashTagsListActivity;
 import com.worldspotlightapp.android.ui.MainApplication;
+import com.worldspotlightapp.android.ui.OrganizerDetailsActivity;
+import com.worldspotlightapp.android.ui.OrganizersRecyclerActivity;
 import com.worldspotlightapp.android.ui.mainactivity.MainActivity;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.HashTagView;
 import com.worldspotlightapp.android.utils.Secret;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Observable;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class VideoDetailsFragment extends AbstractBaseFragmentObserver implements YouTubePlayer.OnInitializedListener {
     private static final String TAG = "VideoDetailsFragment";
@@ -71,6 +74,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private Stack<Object> mResponsesStack;
     private Video mVideo;
     private Author mAuthor;
+    private List<Organizer> mOrganizersList;
 
     // Views
     private CardView mExtraInfoCardView;
@@ -88,6 +92,18 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     private TextView mEmptyHashTagsTextView;
     private ImageView mChangeHashTagsImageView;
 
+    // Organizers
+    private CardView mOrganizersCardView;
+    private RelativeLayout mOrganizer1RelativeLayout;
+    private RelativeLayout mOrganizer2RelativeLayout;
+    private RelativeLayout mOrganizer3RelativeLayout;
+    private RelativeLayout mOrganizer4RelativeLayout;
+    private RelativeLayout mOrganizer5RelativeLayout;
+    private Button mMoreOrganizersButton;
+
+    private List<RelativeLayout> mOrganizersViewsList;
+
+    // YouTube
     private YouTubePlayerSupportFragment mYoutubePlayerFragment;
     private YouTubePlayerSupportFragment mDummyYoutubePlayerFragment;
     private YouTubePlayer mYouTubePlayer;
@@ -101,7 +117,6 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     // Others
     private Picasso mPicasso;
     private boolean mIsThisFragmentVisible;
-
 
     /**
      * Use this factory method to create a new instance of
@@ -134,6 +149,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mVideoObjectId = arguments.getString(Video.INTENT_KEY_OBJECT_ID);
         Log.v(TAG, "Video object id received " + mVideoObjectId);
 
+        // SetUp the data
+        mOrganizersViewsList = new ArrayList<RelativeLayout>();
+
         setHasOptionsMenu(true);
     }
 
@@ -147,6 +165,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mDummyYoutubePlayerFragment = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.dummy_youtube_fragment);
 
         // Link the views
+        // Extra info
         mExtraInfoCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.extra_info_card_view);
         mAuthorThumbnailImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.author_thumbnail_image_view);
         mAuthorNameTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.author_name_text_view);
@@ -157,9 +176,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         mReportAVideoImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.report_image_view);
         mReportAVideoImageView.setOnClickListener(onClickListener);
 
+        // Description
         mDescriptionCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.description_card_view);
         mDescriptionContentTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.description_content_text_view);
 
+        // Hash tag
         mEmptyHashTagsTextView = (TextView) videoDetailsFragmentScrollView.findViewById(R.id.empty_hash_tag_text_view);
         mEmptyHashTagsTextView.setOnClickListener(onClickListener);
 
@@ -167,6 +188,32 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
 
         mChangeHashTagsImageView = (ImageView) videoDetailsFragmentScrollView.findViewById(R.id.change_hashtag_image_view);
         mChangeHashTagsImageView.setOnClickListener(onClickListener);
+
+        // Organizers
+        mOrganizersCardView = (CardView) videoDetailsFragmentScrollView.findViewById(R.id.organizers_card_view);
+
+        mOrganizer1RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_1_layout);
+        mOrganizersViewsList.add(mOrganizer1RelativeLayout);
+        mOrganizer1RelativeLayout.setOnClickListener(onClickListener);
+
+        mOrganizer2RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_2_layout);
+        mOrganizersViewsList.add(mOrganizer2RelativeLayout);
+        mOrganizer2RelativeLayout.setOnClickListener(onClickListener);
+
+        mOrganizer3RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_3_layout);
+        mOrganizersViewsList.add(mOrganizer3RelativeLayout);
+        mOrganizer3RelativeLayout.setOnClickListener(onClickListener);
+
+        mOrganizer4RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_4_layout);
+        mOrganizersViewsList.add(mOrganizer4RelativeLayout);
+        mOrganizer4RelativeLayout.setOnClickListener(onClickListener);
+
+        mOrganizer5RelativeLayout = (RelativeLayout) videoDetailsFragmentScrollView.findViewById(R.id.organizer_5_layout);
+        mOrganizersViewsList.add(mOrganizer5RelativeLayout);
+        mOrganizer5RelativeLayout.setOnClickListener(onClickListener);
+
+        mMoreOrganizersButton = (Button) videoDetailsFragmentScrollView.findViewById(R.id.more_organizers_button);
+        mMoreOrganizersButton.setOnClickListener(onClickListener);
 
         return videoDetailsFragmentScrollView;
     }
@@ -241,6 +288,24 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                 case R.id.change_hashtag_image_view:
                     launchHashTagsListActivity();
                     break;
+                case R.id.organizer_1_layout:
+                    launchOrganizerDetailsActivity(0);
+                    break;
+                case R.id.organizer_2_layout:
+                    launchOrganizerDetailsActivity(1);
+                    break;
+                case R.id.organizer_3_layout:
+                    launchOrganizerDetailsActivity(2);
+                    break;
+                case R.id.organizer_4_layout:
+                    launchOrganizerDetailsActivity(3);
+                    break;
+                case R.id.organizer_5_layout:
+                    launchOrganizerDetailsActivity(4);
+                    break;
+                case R.id.more_organizers_button:
+                    launchOrganizersListActivity();
+                    break;
             }
         }
     };
@@ -313,7 +378,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
     @Override
     public void update(Observable observable, Object o) {
         Log.v(TAG, "Update received from " + observable);
-        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable) {
+        if (observable instanceof VideosModuleObserver || observable instanceof UserDataModuleObservable
+                || observable instanceof CityModuleObservable) {
 
             // Add the data to the list of responses
             mResponsesStack.push(o);
@@ -357,6 +423,9 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         if (mYouTubePlayer != null) {
             mYouTubePlayer.cueVideo(mVideo.getVideoId());
         }
+
+        // Refresh the list of organizers
+        mCityModuleObservable.retrieveAllOrganizersOfTheCity(this, mVideo.getCity(), mVideo.getCountry());
     }
 
     private void updateAuthorInfo() {
@@ -394,8 +463,11 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         if (youTubeInitializationResult.isUserRecoverableError()) {
             youTubeInitializationResult.getErrorDialog(mAttachedActivity, RECOVERY_DIALOG_REQUEST).show();
         } else {
-            String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
-            Toast.makeText(mAttachedActivity, errorMessage, Toast.LENGTH_SHORT).show();
+            // In case that the fragment is not in foreground
+            if (mAttachedActivity != null) {
+                String errorMessage = String.format(getString(R.string.error_player), youTubeInitializationResult.toString());
+                Toast.makeText(mAttachedActivity, errorMessage, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -426,7 +498,7 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             return;
         }
 
-        if (MainApplication.IS_PRODUCTION) {
+        if (DebugOptions.IS_PRODUCTION) {
             mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_PRODUCTION, this);
         } else {
             mYoutubePlayerFragment.initialize(Secret.GOOGLE_API_DEBUG, this);
@@ -534,6 +606,18 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
                         updateHashTagsView();
                     }
                 }
+            } else if (response instanceof CityModuleOrganizersListResponse) {
+                Log.v(TAG, "Organizers list received");
+                CityModuleOrganizersListResponse cityModuleOrganizersListResponse =
+                        (CityModuleOrganizersListResponse) response;
+                ParseResponse parseResponse = cityModuleOrganizersListResponse.getParseResponse();
+                if (!parseResponse.isError()) {
+                    mOrganizersList = cityModuleOrganizersListResponse.getOrganizersList();
+                    Log.v(TAG, "Organizers list received " + mOrganizersList);
+                    updateOrganizersCardView();
+                } else {
+                    Log.v(TAG, "Error getting the list of organizers");
+                }
             }
         }
 
@@ -578,6 +662,8 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mActionBar.hide();
             mExtraInfoCardView.setVisibility(View.GONE);
             mDescriptionCardView.setVisibility(View.GONE);
+            mHashTagsTextView.setVisibility(View.GONE);
+            mOrganizersCardView.setVisibility(View.GONE);
             // Set it as full screen when it was not in full screen
             if (mYouTubePlayer != null && !mIsFullScreen) {
                 mYouTubePlayer.setFullscreen(true);
@@ -586,10 +672,76 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
             mActionBar.show();
             mExtraInfoCardView.setVisibility(View.VISIBLE);
             mDescriptionCardView.setVisibility(View.VISIBLE);
+            mHashTagsTextView.setVisibility(View.VISIBLE);
+            updateOrganizersCardView();
             if (mYouTubePlayer != null) {
                 mYouTubePlayer.setFullscreen(false);
             }
         }
+    }
+
+    /**
+     * Show the organizers card view only if it is needed.
+     * The previous state must be Gone
+     */
+    private void updateOrganizersCardView() {
+        mOrganizersCardView.setVisibility(View.GONE);
+
+        // If the user has not received the organizers list or if it is empty
+        // keep the organizers card view hidden
+        if (mOrganizersList == null || mOrganizersList.isEmpty()) {
+            return;
+        }
+
+        // Show the organizers card view only when there are at least one organizer
+        mOrganizersCardView.setVisibility(View.VISIBLE);
+
+        // Fill each one of the organizers
+        for (int i = 0; i < mOrganizersList.size() && i < mOrganizersViewsList.size(); i++) {
+            Organizer organizer = mOrganizersList.get(i);
+            RelativeLayout organizerView = mOrganizersViewsList.get(i);
+            fillOrganizerView(organizer, organizerView);
+        }
+
+        // Show more button when there are more organizers to be shown
+        if (mOrganizersList.size() > mOrganizersViewsList.size()) {
+            mMoreOrganizersButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Fill the content of the organizer view using the data in the organizer
+     * @param organizer
+     * @param organizerView
+     */
+    private void fillOrganizerView(Organizer organizer, RelativeLayout organizerView) {
+        if (organizerView == null) {
+            Log.w(TAG, "Trying to fill the organizer view with organizer but the organizer view is null");
+            return;
+        }
+
+        // Set the whole view as visible
+        organizerView.setVisibility(View.VISIBLE);
+
+        // Image
+        // When the data is received, Picasso could not be ready
+        if (mPicasso != null && organizer.hasLogoUrl()) {
+            ImageView logoImageView = (ImageView) organizerView.findViewById(R.id.logo_image_view);
+            mPicasso.load(organizer.getLogoUrl()).into(logoImageView);
+        }
+
+        // Title
+        if (organizer.hasName()) {
+            TextView nameTextView = (TextView) organizerView.findViewById(R.id.name_text_view);
+            nameTextView.setText(organizer.getName());
+        }
+
+        // Description
+        if (organizer.hasDescription()) {
+            TextView descriptionTextView = (TextView) organizerView.findViewById(R.id.description_text_view);
+            descriptionTextView.setText(organizer.getDescription());
+        }
+
     }
 
     // Action bar
@@ -644,6 +796,50 @@ public class VideoDetailsFragment extends AbstractBaseFragmentObserver implement
         startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, mVideoObjectId);
         startHashTagsListActivityIntent.putStringArrayListExtra(HashTagsListActivity.INTENT_KEY_SELECTED_HASH_TAGS_LIST, mVideo.getHashTags());
         startActivityForResult(startHashTagsListActivityIntent, REQUEST_CODE_HASH_TAGS_LIST_ACTIVITY);
+    }
+
+    // Show the list of organizers
+    private void launchOrganizersListActivity() {
+        if (mVideo == null) {
+            Log.e(TAG, "Trying to launch the organizers list when the video is null");
+            return;
+        }
+
+        if (!mVideo.hasCity() || !mVideo.hasCountry()) {
+            Log.e(TAG, "The video must have city and the country");
+            return;
+        }
+
+        Intent startHashTagsListActivityIntent = new Intent(mAttachedActivity, OrganizersRecyclerActivity.class);
+        startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_CITY, mVideo.getCity());
+        startHashTagsListActivityIntent.putExtra(Video.INTENT_KEY_COUNTRY, mVideo.getCountry());
+        startActivity(startHashTagsListActivityIntent);
+    }
+
+    /**
+     * Launch the activity which shows the organizer details
+     * @param organizerPosition
+     *      The position of the organizer in the list
+     */
+    private void launchOrganizerDetailsActivity(int organizerPosition) {
+        // Precondition: The organizers list should not be null
+        if (mOrganizersList == null) {
+            Log.e(TAG, "Trying to show the organizer detail when the organizer list is null");
+            return;
+        }
+
+        // Precondition: The index should not be bigger than the position
+        if (organizerPosition + 1 > mOrganizersList.size()) {
+            Log.e(TAG, "Trying to shwo the organizer detail when the position " + organizerPosition + "(+1) is bigger than the list " + mOrganizersList);
+            return;
+        }
+
+        Organizer organizer = mOrganizersList.get(organizerPosition);
+        String organizerObjectId = organizer.getObjectId();
+
+        Intent startOrganizerDetailsActivityIntent = new Intent(mAttachedActivity, OrganizerDetailsActivity.class);
+        startOrganizerDetailsActivityIntent.putExtra(Organizer.INTENT_KEY_OBJECT_ID, organizerObjectId);
+        startActivity(startOrganizerDetailsActivityIntent);
     }
 
     @Override

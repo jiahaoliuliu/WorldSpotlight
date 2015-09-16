@@ -98,4 +98,7 @@
     <string name="error_message_field_empty">이 필드는 비워 둘 수 없습니다</string>
     <string name="error_message_string_too_short">최소한 %1$의 문자를 입력해야 합니다</string>
     <string name="error_message_email_address_required">유효한 이메일 주소를 입력해야 합니다</string>
+
+    <string name="title_activity_organizers_recycler">조직 목록</string> <!-- TODO Check the translation -->
+    <string name="video_details_activity_more_organizers">더</string> <!-- TODO Check the translation -->
 </resources>

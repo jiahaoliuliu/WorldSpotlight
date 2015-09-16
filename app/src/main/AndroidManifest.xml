@@ -93,7 +93,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_api_production" />
+            android:value="@string/google_api_debug" />
 
         <!-- Parse -->
         <service android:name="com.parse.PushService" />
@@ -163,6 +163,14 @@
         <activity
             android:name=".ui.HashTagsListActivity"
             android:label="@string/title_activity_hash_tags" >
+        </activity>
+        <activity
+            android:name=".ui.OrganizersRecyclerActivity"
+            android:label="@string/title_activity_organizers_recycler" >
+        </activity>
+        <activity
+            android:name=".ui.OrganizerDetailsActivity"
+            android:label="@string/app_name" >
         </activity>
     </application>
 
