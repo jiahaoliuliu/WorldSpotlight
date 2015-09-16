@@ -93,7 +93,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
      * matches with the last time the videos.json was updated.
      *
      */
-    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1441411200000L;
+    private static final Long LAST_VIDEOS_LIST_UPDATED_TIME = 1442435566000L;
 
     //Some keys for the Parse Object
     private static final String PARSE_COLUMN_CREATED_AT = "createdAt";
@@ -858,7 +858,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     private List<Video> retrieveVideosListFromRawFile() {
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos_debug);
+        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
         List<Video> videosList = new ArrayList<Video>();
         String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
 
