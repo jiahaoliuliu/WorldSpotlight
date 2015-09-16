@@ -94,12 +94,12 @@ public class City extends ParseObject{
         City anotherCity = (City) o;
 
         // Check if the object id exists.
-        if (anotherCity.hasObjectId()) {
+        if (anotherCity.hasObjectId() && hasObjectId()) {
             return getObjectId().equals(anotherCity.getObjectId());
             // If the object id does not exists, check the video id
         } else {
-            return getCity().equals(anotherCity.getCity()) &&
-                getCountry().equals(anotherCity.getCountry());
+            return getCity().equalsIgnoreCase(anotherCity.getCity()) &&
+                getCountry().equalsIgnoreCase(anotherCity.getCountry());
         }
     }
 

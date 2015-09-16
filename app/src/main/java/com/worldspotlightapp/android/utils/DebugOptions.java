@@ -12,7 +12,7 @@ public class DebugOptions {
      * Track if all the keywords that comes from the videos should be
      * printed via logs
      */
-    public static final boolean SHOULD_PRINT_KEYWORDS = false;
+    private static final boolean SHOULD_PRINT_KEYWORDS = false;
 
     /**
      * Check if all the keywords that comes from the video should be printed.
@@ -33,7 +33,7 @@ public class DebugOptions {
     /**
      * Track if the list of hashtags of the videos should be updated
      */
-    public static final boolean SHOULD_UPDATE_HASH_TAGS_FOR_ALL_THE_VIDEOS = false;
+    private static final boolean SHOULD_UPDATE_HASH_TAGS_FOR_ALL_THE_VIDEOS = false;
 
     /**
      * Check if all the hashtags of the videos should be updated depending
@@ -44,6 +44,23 @@ public class DebugOptions {
      */
     public static boolean shouldUpdateHashTagsForAllTheVideos() {
         return !IS_PRODUCTION && SHOULD_UPDATE_HASH_TAGS_FOR_ALL_THE_VIDEOS;
+    }
+
+    // ------------------ Update the list of cities ------------
+
+    /**
+     * Track if the list of cities should be updated
+     */
+    private static final boolean SHOULD_UPDATE_CITIES_LIST = false;
+
+    /**
+     * Check if all the cities should be updated
+     * @return
+     *      True if all the cities should be updated
+     *      False if not
+     */
+    public static boolean shouldUpdateCitiesList() {
+        return !IS_PRODUCTION && SHOULD_UPDATE_CITIES_LIST;
     }
 
 }
