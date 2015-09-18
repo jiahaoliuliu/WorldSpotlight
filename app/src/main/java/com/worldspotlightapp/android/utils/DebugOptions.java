@@ -5,7 +5,7 @@ package com.worldspotlightapp.android.utils;
  */
 public class DebugOptions {
 
-    public static final boolean IS_PRODUCTION = true;
+    public static final boolean IS_PRODUCTION = false;
 
     // --------------- Print the list of keywords ------------------
     /**
