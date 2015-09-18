@@ -160,13 +160,14 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             Log.v(TAG, "The list of the video in the database is empty. Retrieve the ones saved" +
                     "in the local file");
             mVideosList = retrieveVideosListFromRawFile();
-            videosListToBeAddedToTheDatabase.addAll(mVideosList);
-            // TODO: Remove this
-//            Log.v(TAG, "All the videos has been retrieved. Save the needed to the database");
-//            saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
-            // Remove the list of videos to be added to the database since they are already
-            // added
-//            videosListToBeAddedToTheDatabase.clear();
+
+            if (!DebugOptions.shouldUseProductionData()) {
+                videosListToBeAddedToTheDatabase.addAll(mVideosList);
+                saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
+                //Remove the list of videos to be added to the database since they are already
+                // added
+                videosListToBeAddedToTheDatabase.clear();
+            }
         }
 
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
@@ -175,6 +176,12 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                 new VideosModuleVideosListResponse(parseResponse, mVideosList, areExtraVideos);
         setChanged();
         notifyObservers(videosModuleVideosListResponse);
+
+        // If it is not using production data, it is good enough to use just the data from the
+        // database or from the raw file.
+        if (!DebugOptions.shouldUseProductionData()) {
+            return;
+        }
 
         // 2. Retrieve the rest of the videos from the parse server
         // Callback prepared to retrieve all the videos from the parse server
@@ -858,7 +865,10 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
     }
 
     private List<Video> retrieveVideosListFromRawFile() {
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.videos);
+        InputStream inputStream =
+                DebugOptions.shouldUseProductionData()?
+                    mContext.getResources().openRawResource(R.raw.videos):
+                    mContext.getResources().openRawResource(R.raw.videos_debug);
         List<Video> videosList = new ArrayList<Video>();
         String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
 

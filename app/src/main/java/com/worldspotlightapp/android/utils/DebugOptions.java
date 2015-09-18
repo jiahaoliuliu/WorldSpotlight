@@ -63,4 +63,22 @@ public class DebugOptions {
         return !IS_PRODUCTION && SHOULD_UPDATE_CITIES_LIST;
     }
 
+    // ------------------ Use the production database ------------
+
+    /**
+     * Track if the app should use the production data or not
+     */
+    private static final boolean SHOULD_USE_PRODUCTION_DATA = false;
+
+    /**
+     * Check if the app should use the production data
+     * @return
+     *      True if the app should use the production data
+     *      False otherwise
+     */
+    public static boolean shouldUseProductionData() {
+        return !IS_PRODUCTION && SHOULD_USE_PRODUCTION_DATA;
+    }
+
+
 }
