@@ -28,6 +28,7 @@
     <string name="main_activity_you_are_here">You are here</string>
     <string name="action_bar_search">Search</string>
     <string name="main_activity_show_fav_videos_list_title">Favourites</string>
+    <string name="main_activity_press_again_to_exit">Press again to exit</string>
 
     <!--    Drawer -->
     <string name="drawer_login">Login</string>

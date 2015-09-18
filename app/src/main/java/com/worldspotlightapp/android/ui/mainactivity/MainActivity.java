@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +27,7 @@ import android.support.v7.widget.SearchView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -127,6 +129,16 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private boolean isAutomaticCameraUpdate;
 
     private boolean mIsShowingFavouriteListVideos;
+
+    /**
+     * This is the number of back pressed in a certain among of this.
+     * This variable is used to avoid the user press back wrongly and exit the app
+     */
+    private int mNumberBackPressedConsequently = 0;
+
+    // The maximum number of time allowed which the user should press the back
+    // button after press the back button for first time to exit the app
+    private static final int TIME_ALLOWED_TO_PRESS_BACK_TO_EXIT = 3000;
 
     // Action bar items
     private Menu mMenu;
@@ -737,7 +749,32 @@ public class MainActivity extends AbstractBaseActivityObserver implements
             hideVideosPreview();
             return;
         }
-        super.onBackPressed();
+
+        // Detect back pressed to exit the app
+        mNumberBackPressedConsequently++;
+
+        if (mNumberBackPressedConsequently == 1) {
+            new CountDownTimer(TIME_ALLOWED_TO_PRESS_BACK_TO_EXIT, TIME_ALLOWED_TO_PRESS_BACK_TO_EXIT) {
+
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    // Do not do anything
+                }
+
+                @Override
+                public void onFinish() {
+                    // After the timer, restor the number of back pressed value
+                    mNumberBackPressedConsequently = 0;
+                    Log.v(TAG, "Time passed and the user has not clicked on the back again. " +
+                            "Restarting the timer");
+                }
+            }.start();
+            Toast.makeText(mContext, R.string.main_activity_press_again_to_exit, Toast.LENGTH_LONG).show();
+
+        } else if (mNumberBackPressedConsequently > 1) {
+            // Call super
+            super.onBackPressed();
+        }
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener(){
