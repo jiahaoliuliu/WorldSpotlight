@@ -292,7 +292,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
             public boolean onClusterItemClick(Video video) {
                 // If the videos preview is shown, launch the video details activity
                 if (isShowingVideosPreview() &&
-                        isShowingVideoPreviewOf(video.getObjectId())) {
+                        isShowingVideoPreviewOfTheVideo(video.getObjectId())) {
                     launchVideoDetailsActivity(video.getVideoId());
                 } else {
                     isAutomaticCameraUpdate = true;
@@ -735,7 +735,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
      *          - If video preview is showing a list of videos
      *          - If the video shwon in the video is not the actual one
      */
-    private boolean isShowingVideoPreviewOf(String videoObjectId) {
+    private boolean isShowingVideoPreviewOfTheVideo(String videoObjectId) {
         if (!isShowingVideosPreview()) {
             Log.w(TAG, "Asking if the video preview is showing a the preview of a certain video when it is not " +
                     "showing any video.");
