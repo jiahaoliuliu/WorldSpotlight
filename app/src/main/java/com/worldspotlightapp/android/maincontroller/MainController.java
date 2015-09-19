@@ -118,7 +118,7 @@ public final class MainController {
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
         newMainController.mCityModuleObservable = new CityModuleObservable();
         newMainController.mOrganizerModuleObservable = new OrganizerModuleObserver();
-        newMainController.mLocationModuleObserver = new LocationModuleObservable();
+        newMainController.mLocationModuleObserver = new LocationModuleObservable(context);
 
         // Save the current session
         MainController.setCurrentMainController(newMainController);

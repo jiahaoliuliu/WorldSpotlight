@@ -1,6 +1,7 @@
 package com.worldspotlightapp.android.maincontroller.modules.locationmodule;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
@@ -10,21 +11,21 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
@@ -33,6 +34,9 @@ import com.google.gdata.client.authn.oauth.OAuthParameters;
 import com.google.gdata.client.authn.oauth.OAuthRsaSha1Signer;
 import com.google.gdata.client.authn.oauth.OAuthUtil;
 import com.google.gdata.client.authn.oauth.OAuthException;
+import com.worldspotlightapp.android.R;
+import com.worldspotlightapp.android.model.Video;
+import com.worldspotlightapp.android.utils.DebugOptions;
 import com.worldspotlightapp.android.utils.Secret;
 
 /**
@@ -45,8 +49,19 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
     private static final String MASTER_CARD_SANDBOX_LOCATION_API_ATM_URL = "https://sandbox.api.mastercard.com/atms/v1/atm";
     private static final String MASTER_CARD_SANDBOX_MERCHANT_CATEGORY_CODES_URL = "https://sandbox.api.mastercard.com/merchantpoi/v1/merchantpoisvc.svc/merchantcategorycodes";
 
+    /*
+     * This matches only once in whole input,
+     * so Scanner.next returns whole InputStream as a String.
+     * http://stackoverflow.com/a/5445161/2183804
+     */
+    private static final String REGEX_INPUT_BOUNDARY_BEGINNING = "\\A";
+
+    private Context mContext;
+
     @SuppressLint("LongLogTag")
-    public LocationModuleObservable() {
+    public LocationModuleObservable(Context context) {
+        this.mContext = context;
+
         try {
             HttpsURLConnection merchantCategoryCodesConnection = createOpenAPIConnection(MASTER_CARD_SANDBOX_MERCHANT_CATEGORY_CODES_URL, null);
         } catch (NoSuchAlgorithmException e) {
@@ -141,28 +156,31 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
  * Pulls the private key out of a PEM file and loads it into an RSAPrivateKey and returns it.
  */
     private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        String privKeyFile = "master_card_key.pem";
         final String beginPK = "-----BEGIN PRIVATE KEY-----";
         final String endPK = "-----END PRIVATE KEY-----";
 
         // read private key PEM file
-        ClassLoader cl = this.getClass().getClassLoader();
-        InputStream stream = cl.getResourceAsStream(privKeyFile);
-        java.io.DataInputStream dis = new java.io.DataInputStream(stream);
-        byte[] privKeyBytes = new byte[(int) stream.available()];
-        dis.readFully(privKeyBytes);
-        dis.close();
-        String privKeyStr = new String(privKeyBytes, "UTF-8");
+//        ClassLoader cl = this.getClass().getClassLoader();
+//        InputStream stream = cl.getResourceAsStream(privKeyFile);
+//        java.io.DataInputStream dis = new java.io.DataInputStream(stream);
+//        byte[] privKeyBytes = new byte[(int) stream.available()];
+//        dis.readFully(privKeyBytes);
+//        dis.close();
+//        String privKeyStr = new String(privKeyBytes, "UTF-8");
 
-        int startIndex = privKeyStr.indexOf(beginPK);
-        int endIndex = privKeyStr.indexOf(endPK);
+        InputStream inputStream =
+                        mContext.getResources().openRawResource(R.raw.master_card_key);
+        String privateKeyString = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
 
-        privKeyStr = privKeyStr.substring(startIndex + beginPK.length(), endIndex);
+        int startIndex = privateKeyString.indexOf(beginPK);
+        int endIndex = privateKeyString.indexOf(endPK);
+
+        privateKeyString = privateKeyString.substring(startIndex + beginPK.length(), endIndex);
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         // decode private key. Check if it works
 //        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((new Base64()).decodeBuffer(privKeyStr));
-        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((Base64.decode(privKeyStr, Base64.DEFAULT)));
+        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((Base64.decode(privateKeyString, Base64.DEFAULT)));
         RSAPrivateKey privKey = (RSAPrivateKey)keyFactory.generatePrivate(privSpec);
         return privKey;
     }
