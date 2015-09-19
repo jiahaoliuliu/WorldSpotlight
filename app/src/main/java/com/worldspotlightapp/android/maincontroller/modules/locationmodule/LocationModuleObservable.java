@@ -5,8 +5,10 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -62,25 +64,44 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
     public LocationModuleObservable(Context context) {
         this.mContext = context;
 
-        try {
-            HttpsURLConnection merchantCategoryCodesConnection = createOpenAPIConnection(MASTER_CARD_SANDBOX_MERCHANT_CATEGORY_CODES_URL, null);
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (InvalidKeySpecException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (IOException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (OAuthException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (KeyStoreException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (CertificateException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (UnrecoverableKeyException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        } catch (KeyManagementException e) {
-            Log.e(TAG, "Error createing the connection with Master Card API ", e);
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    HttpsURLConnection merchantCategoryCodesConnection = createOpenAPIConnection(MASTER_CARD_SANDBOX_MERCHANT_CATEGORY_CODES_URL, null);
+//                    merchantCategoryCodesConnection.connect();
+                    int responseCode = merchantCategoryCodesConnection.getResponseCode();
+                    Log.v(TAG, "The response code is " + responseCode);
+
+//                    InputStream in = merchantCategoryCodesConnection.getInputStream();
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//                    StringBuilder result = new StringBuilder();
+//                    String line;
+//                    while ((line = reader.readLine()) != null) {
+//                        result.append(line);
+//                    }
+//                    Log.d(TAG, "Data read from master card api " + line);
+                } catch (NoSuchAlgorithmException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (InvalidKeySpecException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (OAuthException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (KeyStoreException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (CertificateException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (UnrecoverableKeyException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (KeyManagementException e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error createing the connection with Master Card API ", e);
+                }
+            }
+        }.start();
     }
 
     /*
