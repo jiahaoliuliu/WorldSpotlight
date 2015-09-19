@@ -27,10 +27,12 @@
     <string name="main_activity_you_are_here">당신은 여기에 있습니다</string>
     <string name="action_bar_search">검색</string>
     <string name="main_activity_show_fav_videos_list_title">즐겨찾기</string>
+    <string name="main_activity_press_again_to_exit">응용 프로그램을 닫으려면 다시 누르십시오</string>  <!-- TODO: Check translation -->
 
     <!--     Drawer -->
     <string name="drawer_login">로그인</string>
     <string name="drawer_likes">즐겨찾기</string>
+    <string name="drawer_recommended">추천</string>  <!-- TODO: Check translation -->
     <string name="drawer_logout">로그아웃</string>
     <string name="drawer_open">서랍 열기</string>
     <string name="drawer_close">서랍 닫기</string>
