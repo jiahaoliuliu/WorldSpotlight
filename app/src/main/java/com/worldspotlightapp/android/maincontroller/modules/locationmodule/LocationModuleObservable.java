@@ -2,28 +2,36 @@ package com.worldspotlightapp.android.maincontroller.modules.locationmodule;
 
 import android.util.Base64;
 
-import com.google.api.client.auth.oauth.OAuthParameters;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.security.Key;
+import java.security.KeyFactory;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.google.gdata.client.authn.oauth.OAuthParameters;
 import com.google.gdata.client.authn.oauth.OAuthRsaSha1Signer;
 import com.google.gdata.client.authn.oauth.OAuthUtil;
-import com.parse.signpost.exception.OAuthException;
+import com.google.gdata.client.authn.oauth.OAuthException;
+import com.worldspotlightapp.android.utils.Secret;
 
 /**
  * Created by jiahaoliuliu on 15/9/19.
@@ -46,7 +54,7 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
         if (privKey != null) {
             OAuthRsaSha1Signer rsaSigner = new OAuthRsaSha1Signer();
             OAuthParameters params = new OAuthParameters();
-            params.setOAuthConsumerKey(clientId);
+            params.setOAuthConsumerKey(Secret.MASTER_CARD_API_CONSUMER_KEY);
             params.setOAuthNonce(OAuthUtil.getNonce());
             params.setOAuthTimestamp(OAuthUtil.getTimestamp());
             params.setOAuthSignatureMethod("RSA-SHA1");
@@ -61,7 +69,7 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
                 MessageDigest digest = MessageDigest.getInstance("SHA-1");
                 digest.reset();
                 byte[] hash = digest.digest(body.getBytes("UTF-8"));
-                String encodedHash = Base64.encode(hash);
+                String encodedHash = Base64.encodeToString(hash, Base64.DEFAULT);
 
                 params.addCustomBaseParameter("oauth_body_hash", encodedHash);
             }
@@ -80,7 +88,6 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
             con.setDoOutput(true);
             con.setDoInput(true);
             con.addRequestProperty("Authorization",	buildAuthHeaderString(params));
-
             System.out.println(buildAuthHeaderString(params));
 
             if (body != null) {
@@ -96,11 +103,75 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
                 request.flush();
                 request.close();
             }
-
-
         }
-
         return con;
     }
 
+    /*
+ * Pulls the private key out of a PEM file and loads it into an RSAPrivateKey and returns it.
+ */
+//    private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+//        String privKeyFile = "openapi-samplecode-privatekey.pem";
+//        final String beginPK = "-----BEGIN PRIVATE KEY-----";
+//        final String endPK = "-----END PRIVATE KEY-----";
+//
+//        // read private key PEM file
+//        ClassLoader cl = this.getClass().getClassLoader();
+//        InputStream stream = cl.getResourceAsStream(privKeyFile);
+//        java.io.DataInputStream dis = new java.io.DataInputStream(stream);
+//        byte[] privKeyBytes = new byte[(int) stream.available()];
+//        dis.readFully(privKeyBytes);
+//        dis.close();
+//        String privKeyStr = new String(privKeyBytes, "UTF-8");
+//
+//        int startIndex = privKeyStr.indexOf(beginPK);
+//        int endIndex = privKeyStr.indexOf(endPK);
+//
+//        privKeyStr = privKeyStr.substring(startIndex + beginPK.length(), endIndex);
+//
+//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//        // decode private key
+//        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((
+//                //new Base64.decode();
+//                new Base64Decoder()).decodeBuffer(privKeyStr));
+//        RSAPrivateKey privKey = (RSAPrivateKey)keyFactory.generatePrivate(privSpec);
+//        return privKey;
+//    }
+
+    protected PrivateKey getPrivateKey()
+            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException,
+            CertificateException, UnrecoverableEntryException {
+
+        String kspw = "replaceme";
+        String privKeyFile = "MCOpenAPI.p12";
+        String keyAlias = "mckp";
+
+        KeyStore ks = KeyStore.getInstance("PKCS12");
+
+        // get user password and file input stream
+        ClassLoader cl = this.getClass().getClassLoader();
+        InputStream stream = cl.getResourceAsStream(privKeyFile);
+        ks.load(stream, kspw.toCharArray());
+        Key key = ks.getKey(keyAlias, kspw.toCharArray());
+
+        return (PrivateKey) key;
+    }
+
+    private String buildAuthHeaderString(OAuthParameters params) {
+        StringBuffer buffer = new StringBuffer();
+        int cnt = 0;
+        buffer.append("OAuth ");
+        Map<String, String> paramMap = params.getBaseParameters();
+        Object[] paramNames = paramMap.keySet().toArray();
+        for (Object paramName : paramNames) {
+            String value = paramMap.get((String) paramName);
+            buffer.append(paramName + "=\"" + OAuthUtil.encode(value) + "\"");
+            cnt++;
+            if (paramNames.length > cnt) {
+                buffer.append(",");
+            }
+
+        }
+        return buffer.toString();
+    }
 }
