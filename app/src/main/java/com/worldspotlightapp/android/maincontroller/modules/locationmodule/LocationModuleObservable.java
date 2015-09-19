@@ -110,52 +110,51 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
     /*
  * Pulls the private key out of a PEM file and loads it into an RSAPrivateKey and returns it.
  */
-//    private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-//        String privKeyFile = "openapi-samplecode-privatekey.pem";
-//        final String beginPK = "-----BEGIN PRIVATE KEY-----";
-//        final String endPK = "-----END PRIVATE KEY-----";
-//
-//        // read private key PEM file
-//        ClassLoader cl = this.getClass().getClassLoader();
-//        InputStream stream = cl.getResourceAsStream(privKeyFile);
-//        java.io.DataInputStream dis = new java.io.DataInputStream(stream);
-//        byte[] privKeyBytes = new byte[(int) stream.available()];
-//        dis.readFully(privKeyBytes);
-//        dis.close();
-//        String privKeyStr = new String(privKeyBytes, "UTF-8");
-//
-//        int startIndex = privKeyStr.indexOf(beginPK);
-//        int endIndex = privKeyStr.indexOf(endPK);
-//
-//        privKeyStr = privKeyStr.substring(startIndex + beginPK.length(), endIndex);
-//
-//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//        // decode private key
-//        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((
-//                //new Base64.decode();
-//                new Base64Decoder()).decodeBuffer(privKeyStr));
-//        RSAPrivateKey privKey = (RSAPrivateKey)keyFactory.generatePrivate(privSpec);
-//        return privKey;
-//    }
+    private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        String privKeyFile = "openapi-samplecode-privatekey.pem";
+        final String beginPK = "-----BEGIN PRIVATE KEY-----";
+        final String endPK = "-----END PRIVATE KEY-----";
 
-    protected PrivateKey getPrivateKey()
-            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException,
-            CertificateException, UnrecoverableEntryException {
-
-        String kspw = "replaceme";
-        String privKeyFile = "MCOpenAPI.p12";
-        String keyAlias = "mckp";
-
-        KeyStore ks = KeyStore.getInstance("PKCS12");
-
-        // get user password and file input stream
+        // read private key PEM file
         ClassLoader cl = this.getClass().getClassLoader();
         InputStream stream = cl.getResourceAsStream(privKeyFile);
-        ks.load(stream, kspw.toCharArray());
-        Key key = ks.getKey(keyAlias, kspw.toCharArray());
+        java.io.DataInputStream dis = new java.io.DataInputStream(stream);
+        byte[] privKeyBytes = new byte[(int) stream.available()];
+        dis.readFully(privKeyBytes);
+        dis.close();
+        String privKeyStr = new String(privKeyBytes, "UTF-8");
 
-        return (PrivateKey) key;
+        int startIndex = privKeyStr.indexOf(beginPK);
+        int endIndex = privKeyStr.indexOf(endPK);
+
+        privKeyStr = privKeyStr.substring(startIndex + beginPK.length(), endIndex);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        // decode private key. Check if it works
+//        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((new Base64()).decodeBuffer(privKeyStr));
+        PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec((Base64.decode(privKeyStr, Base64.DEFAULT)));
+        RSAPrivateKey privKey = (RSAPrivateKey)keyFactory.generatePrivate(privSpec);
+        return privKey;
     }
+
+//    protected PrivateKey getPrivateKey()
+//            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException,
+//            CertificateException, UnrecoverableEntryException {
+//
+//        String kspw = "replaceme";
+//        String privKeyFile = "MCOpenAPI.p12";
+//        String keyAlias = "mckp";
+//
+//        KeyStore ks = KeyStore.getInstance("PKCS12");
+//
+//        // get user password and file input stream
+//        ClassLoader cl = this.getClass().getClassLoader();
+//        InputStream stream = cl.getResourceAsStream(privKeyFile);
+//        ks.load(stream, kspw.toCharArray());
+//        Key key = ks.getKey(keyAlias, kspw.toCharArray());
+//
+//        return (PrivateKey) key;
+//    }
 
     private String buildAuthHeaderString(OAuthParameters params) {
         StringBuffer buffer = new StringBuffer();
