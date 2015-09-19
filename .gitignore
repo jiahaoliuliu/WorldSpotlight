@@ -46,3 +46,6 @@ app/src/main/res/values/secret.xml
 keys.txt
 keys_debug.txt
 app/debug.keystore
+
+#Certificates
+*.pem
