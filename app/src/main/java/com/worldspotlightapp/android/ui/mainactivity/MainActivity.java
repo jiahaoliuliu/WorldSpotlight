@@ -192,7 +192,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 super.onDrawerOpened(drawerView);
                 Log.v(TAG, "Drawer opened");
                 mIsDrawerOpen = true;
-                updateActionBarItems();
             }
 
             @Override
@@ -200,7 +199,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 super.onDrawerClosed(drawerView);
                 Log.v(TAG, "Drawer closed");
                 mIsDrawerOpen = false;
-                updateActionBarItems();
             }
         };
 
@@ -220,6 +218,14 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         showFavouritesVideosToUser();
                         // Close the drawer
                         mDrawerLayout.closeDrawers();
+                        return true;
+                    case R.id.drawer_item_recommended:
+                        Log.v(TAG, "Recommended clicked");
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FAVOURITES);
+                        // Close the drawer
+                        // The drawer must be closed before start searching.
+                        mDrawerLayout.closeDrawers();
+                        searchByKeyword("Recommended");
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
@@ -966,6 +972,16 @@ public class MainActivity extends AbstractBaseActivityObserver implements
             case MENU_ITEM_SEARCH_ID:
                 mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.SEARCH_STARTED);
                 mMenuItemSearch.expandActionView();
+                // Disable the drawer
+                if (mIsDrawerOpen) {
+                    mDrawerLayout.closeDrawers();
+                }
+
+                // Hide videos preview if it is shown
+                if (isShowingVideosPreview()) {
+                    hideVideosPreview();
+                }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1192,12 +1208,6 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                 String keyword = data.getStringExtra(INTENT_KEY_KEYWORD);
                 if (!TextUtils.isEmpty(keyword)) {
                     Log.v(TAG, "Keyword retrieved from details activity is " + keyword);
-
-                    // Hide the video preview
-                    if (isShowingVideosPreview()) {
-                        hideVideosPreview();
-                    }
-
                     searchByKeyword(keyword);
                 }
             }
@@ -1213,6 +1223,11 @@ public class MainActivity extends AbstractBaseActivityObserver implements
      *      The key word to looking for
      */
     private void searchByKeyword(String keyword) {
+        // Hide the video preview
+        if (isShowingVideosPreview()) {
+            hideVideosPreview();
+        }
+
         mMenuItemSearch.expandActionView();
         mSearchAutoCompleteTextView.setText(keyword);
         mSearchView.setQuery(keyword, true);

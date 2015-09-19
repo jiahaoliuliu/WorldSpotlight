@@ -214,6 +214,10 @@ public class EventsTrackingModule implements IEventsTrackingModule {
                 mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_main_activity_favourites), new JSONObject());
                 break;
+            case RECOMMENDED:
+                mMixpanel.track(prefix + " " +
+                        mContext.getString(R.string.mp_main_activity_recommended), new JSONObject());
+                break;
             case LOGOUT:
                 mMixpanel.track(prefix + " " +
                         mContext.getString(R.string.mp_main_activity_logout), new JSONObject());
