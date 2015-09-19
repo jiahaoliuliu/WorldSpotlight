@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.common.collect.Iterables;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
@@ -290,9 +291,15 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Video>() {
             @Override
             public boolean onClusterItemClick(Video video) {
-                isAutomaticCameraUpdate = true;
+                // If the videos preview is shown, launch the video details activity
+                if (isShowingVideosPreview() &&
+                        isShowingVideoPreviewOfTheVideo(video)) {
+                    launchVideoDetailsActivity(video.getVideoId());
+                } else {
+                    isAutomaticCameraUpdate = true;
 
-                showVideoPreview(video);
+                    showVideoPreview(video);
+                }
                 return true;
             }
         });
@@ -300,22 +307,28 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Video>() {
             @Override
             public boolean onClusterClick(Cluster<Video> cluster) {
-                isAutomaticCameraUpdate = true;
-                if (cluster == null) {
-                    return true;
-                }
+                if (isShowingVideosPreview() &&
+                        isShowingVideoPreviewOfTheCluster(cluster)) {
+                    // Get the first item
+                    launchVideoDetailsActivity(Iterables.get(cluster.getItems(), 0).getVideoId());
+                } else {
+                    isAutomaticCameraUpdate = true;
+                    if (cluster == null) {
+                        return true;
+                    }
 
-                Collection<Video> clusterVideos = cluster.getItems();
-                if (clusterVideos == null || clusterVideos.size() == 0) {
-                    return true;
-                }
+                    Collection<Video> clusterVideos = cluster.getItems();
+                    if (clusterVideos == null || clusterVideos.isEmpty()) {
+                        return true;
+                    }
 
-                List<Video> videosListToShow = new ArrayList<Video>();
-                for (Video video : clusterVideos) {
-                    videosListToShow.add(video);
-                }
+                    List<Video> videosListToShow = new ArrayList<Video>();
+                    for (Video video : clusterVideos) {
+                        videosListToShow.add(video);
+                    }
 
-                showVideosPreview(videosListToShow, cluster.getPosition());
+                    showVideosPreview(videosListToShow, cluster.getPosition());
+                }
                 return true;
             }
         });
@@ -706,16 +719,119 @@ public class MainActivity extends AbstractBaseActivityObserver implements
 
     private void hideVideosPreview() {
         mVideosPreviewViewPager.setVisibility(View.GONE);
-
         if (mVideosPreviewViewPagerIndicator != null) {
             mVideosPreviewViewPagerIndicator.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Check if the actual video preview is showing the information of a certain
+     * video object. The Video preview must showing only the information about this
+     * video, not a list of them.
+     * @param video
+     *      The video that should be shown on the screen
+     * @return
+     *      True if the video preview is showing only the information of this video
+     *      False
+     *          - If video preview does is not showing
+     *          - If video preview is showing a list of videos
+     *          - If the video shwon in the video is not the actual one
+     */
+    private boolean isShowingVideoPreviewOfTheVideo(Video video) {
+        if (video == null) {
+            Log.e(TAG, "The video cannot be null");
+            return false;
+        }
+
+        String videoObjectId = video.getObjectId();
+        if (TextUtils.isEmpty(videoObjectId)) {
+            Log.e(TAG, "The video must contains the object id");
+            return false;
+        }
+
+        if (!isShowingVideosPreview()) {
+            Log.w(TAG, "Asking if the video preview is showing a the preview of a certain video when it is not " +
+                    "showing any video.");
+            return false;
+        }
+
+        List<String> videosObjectIdList = mVideosPreviewViewPagerAdapter.getVideosObjectIdList();
+        if (videosObjectIdList == null || videosObjectIdList.isEmpty() || videosObjectIdList.size() > 1) {
+            return false;
+        }
+
+        return videosObjectIdList.contains(videoObjectId);
+    }
+
+    /**
+     * Check if it is showing the video preview of a certain cluster
+     * @param cluster
+     *      The cluster to be checked
+     * @return
+     *      True if it is showing the videos of a certain cluster
+     */
+    private boolean isShowingVideoPreviewOfTheCluster(Cluster cluster) {
+        if (cluster == null) {
+            Log.e(TAG, "The video cannot be null");
+            return false;
+        }
+
+        Collection<Video> videosCollection = cluster.getItems();
+        if (videosCollection == null || videosCollection.isEmpty()) {
+            Log.e(TAG, "The collection of videos cannot be null or empty");
+            return false;
+        }
+
+        if (!isShowingVideosPreview()) {
+            Log.e(TAG, "The videos preview must be shown");
+            return false;
+        }
+
+        List<String> videosObjectIdListToBeChecked = new ArrayList<String>();
+        for (Video video : videosCollection) {
+            videosObjectIdListToBeChecked.add(video.getObjectId());
+        }
+
+        List<String> videosObjectIdListShown = mVideosPreviewViewPagerAdapter.getVideosObjectIdList();
+
+        // Check they are equals or not
+        return videosObjectIdListShown.containsAll(videosObjectIdListToBeChecked) &&
+                videosObjectIdListToBeChecked.containsAll(videosObjectIdListShown);
+    }
+
     @Override
-    public void onClickOnVideoPreviewFragment(String objectId) {
+    public void onClickOnVideoPreviewFragment(String videoOjectId) {
+        // Precondition videoObjectId cannot be null
+        if (TextUtils.isEmpty(videoOjectId)) {
+            Log.e(TAG, "You must pass the video object id of the video" );
+            return;
+        }
+
+        launchVideoDetailsActivity(videoOjectId);
+    }
+
+    /**
+     * Launch the object id showing the corresponding video
+     * Precondition:
+     * - videoObjectId cannot be null
+     * - mVideosPreviewPagerAdapter cannot be null
+     *
+     * @param videoOjectId
+     *      The object id fo the video to be shown
+     */
+    private void launchVideoDetailsActivity(String videoOjectId) {
+        if (TextUtils.isEmpty(videoOjectId)) {
+            Log.e(TAG, "You must pass the video object id of the video" );
+            return;
+        }
+
+        if (mVideosPreviewViewPagerAdapter == null) {
+            Log.e(TAG, "The videos preview pager adapter cannot be null");
+            return;
+        }
+
         // Register the event
-        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, objectId);
+        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.VIDEO_PREVIEW_CLICK, videoOjectId);
 
         // Start the video details activity
         Intent startVideoDetailsActivityIntent = new Intent(mContext, VideoDetailsActivity.class);
@@ -724,7 +840,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         startVideoDetailsActivityIntent.putStringArrayListExtra(VideoDetailsActivity.INTENT_KEY_VIDEO_LIST_OBJECT_IDS,
                 mVideosPreviewViewPagerAdapter.getVideosObjectIdList());
         //      Pass the id of the video
-        startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, objectId);
+        startVideoDetailsActivityIntent.putExtra(Video.INTENT_KEY_OBJECT_ID, videoOjectId);
 
         // Start the activity
         startActivityForResult(startVideoDetailsActivityIntent, REQUEST_CODE_VIDEO_DETAILS_ACTIVITY);
