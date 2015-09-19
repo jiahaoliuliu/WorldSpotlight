@@ -21,7 +21,7 @@ public interface IEventsTrackingModule {
         VIDEOS_PREVIEW, VIDEO_PREVIEW_CLICK,
 
         //      Drawer
-        LOGIN, FAVOURITES, LOGOUT,
+        LOGIN, FAVOURITES, RECOMMENDED, LOGOUT,
 
         //      Other
         ADD_A_VIDEO,
