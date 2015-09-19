@@ -28,10 +28,12 @@
     <string name="main_activity_you_are_here">Du bist hier</string>
     <string name="action_bar_search">Suche</string>
     <string name="main_activity_show_fav_videos_list_title">Favoriten</string>
+    <string name="main_activity_press_again_to_exit">Drücken Sie wieder, um die App zu schließen</string> <!-- TODO: Check translation -->
 
     <!--    Drawer -->
     <string name="drawer_login">Anmelden</string>
     <string name="drawer_likes">Favoriten</string>
+    <string name="drawer_recommended">Empfohlen</string> <!-- TODO: Check translation -->
     <string name="drawer_logout">Abmelden</string>
     <string name="drawer_open">Schublade offen</string>
     <string name="drawer_close">Schublade geschlossen</string>

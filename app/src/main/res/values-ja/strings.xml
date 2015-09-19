@@ -28,10 +28,12 @@
     <string name="main_activity_you_are_here">ここにいます</string>
     <string name="action_bar_search">検索</string>
     <string name="main_activity_show_fav_videos_list_title">お気に入り</string>
+    <string name="main_activity_press_again_to_exit">アプリを閉じるには、再度押します</string> <!-- TODO: Check the translation -->
 
     <!--    Drawer -->
     <string name="drawer_login">ログイン</string>
     <string name="drawer_likes">お気に入り</string>
+    <string name="drawer_recommended">おすすめ</string> <!-- TODO: Check the translation -->
     <string name="drawer_logout">ログアウト</string>
     <string name="drawer_open">開いてる引き出し</string>
     <string name="drawer_close">閉じてる引き出し</string>

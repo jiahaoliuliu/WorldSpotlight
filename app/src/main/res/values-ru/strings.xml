@@ -28,10 +28,12 @@
     <string name="main_activity_you_are_here">Вы здесь</string>
     <string name="action_bar_search">Поиск</string>
     <string name="main_activity_show_fav_videos_list_title">Избранное</string>
+    <string name="main_activity_press_again_to_exit">Нажмите снова, чтобы закрыть приложение</string> <!-- TODO: Check the translation -->
 
     <!--    Drawer -->
     <string name="drawer_login">Войти</string>
     <string name="drawer_likes">Избранное</string>
+    <string name="drawer_recommended">рекомендуемый</string> <!-- TODO: Check the translation -->
     <string name="drawer_logout">Выйти</string>
     <string name="drawer_open">Ящик открыт</string>
     <string name="drawer_close">Ящик закрыт</string>

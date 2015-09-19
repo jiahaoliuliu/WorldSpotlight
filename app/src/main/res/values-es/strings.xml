@@ -27,10 +27,12 @@
     <string name="main_activity_you_are_here">Estás aquí</string>
     <string name="action_bar_search">Buscar</string>
     <string name="main_activity_show_fav_videos_list_title">Favoritos</string>
+    <string name="main_activity_press_again_to_exit">Pulsa volver otra vez para cerrar la app.</string>
 
     <!--    Drawer -->
     <string name="drawer_login">Loguar</string>
     <string name="drawer_likes">Favoritos</string>
+    <string name="drawer_recommended">Recomendado</string>
     <string name="drawer_logout">Salir</string>
     <string name="drawer_open">Cajón abierto</string>
     <string name="drawer_close">Cajón cerrado</string>

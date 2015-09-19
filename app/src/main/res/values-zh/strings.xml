@@ -27,10 +27,12 @@
     <string name="main_activity_you_are_here">您在这里</string>
     <string name="action_bar_search">搜索</string>
     <string name="main_activity_show_fav_videos_list_title">我喜欢</string>
+    <string name="main_activity_press_again_to_exit">如果您想关掉这个软件， 请再按一次返回键</string>
 
     <!--    Drawer -->
     <string name="drawer_login">登陆</string>
     <string name="drawer_likes">最喜欢</string>
+    <string name="drawer_recommended">推荐</string>
     <string name="drawer_logout">登出</string>
     <string name="drawer_open">抽屉打开</string>
     <string name="drawer_close">抽屉关闭</string>
