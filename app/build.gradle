@@ -31,6 +31,9 @@ android {
         targetSdkVersion 22
         versionCode 11
         versionName "1.10"
+
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -89,4 +92,6 @@ dependencies {
     // Gson
     compile 'com.google.code.gson:gson:2.3.1'
 
+    // Multi dex
+    compile 'com.android.support:multidex:1.0.0'
 }

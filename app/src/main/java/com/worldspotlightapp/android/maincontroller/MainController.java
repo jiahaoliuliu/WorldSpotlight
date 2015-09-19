@@ -12,6 +12,8 @@ import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.GpsLocalizationModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
+import com.worldspotlightapp.android.maincontroller.modules.locationmodule.AbstractLocationModuleObservable;
+import com.worldspotlightapp.android.maincontroller.modules.locationmodule.LocationModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.NotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.organizermodule.AbstractOrganizerModuleObservable;
@@ -47,6 +49,7 @@ public final class MainController {
     private IActivityTrackerModule mActivityTrackerModule;
     private AbstractCityModuleObservable mCityModuleObservable;
     private AbstractOrganizerModuleObservable mOrganizerModuleObservable;
+    private AbstractLocationModuleObservable mLocationModuleObserver;
 
     /**
      * The constructor of the session. Because it is a singleton, there is not parameters for the
@@ -115,6 +118,7 @@ public final class MainController {
         newMainController.mActivityTrackerModule = new ActivityTrackerModule();
         newMainController.mCityModuleObservable = new CityModuleObservable();
         newMainController.mOrganizerModuleObservable = new OrganizerModuleObserver();
+        newMainController.mLocationModuleObserver = new LocationModuleObservable();
 
         // Save the current session
         MainController.setCurrentMainController(newMainController);
@@ -173,6 +177,10 @@ public final class MainController {
 
     public AbstractOrganizerModuleObservable getOrganizerModuleObservable() {
         return mOrganizerModuleObservable;
+    }
+
+    public AbstractLocationModuleObservable getLocationModuleObserver() {
+        return mLocationModuleObserver;
     }
 
     /**
@@ -234,5 +242,7 @@ public final class MainController {
         public AbstractCityModuleObservable getCityModuleObservable();
 
         public AbstractOrganizerModuleObservable getOrganizerModuleObservable();
+
+        public AbstractLocationModuleObservable getLocationModuleObservable();
     }
 }

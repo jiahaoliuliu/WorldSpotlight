@@ -1,6 +1,8 @@
 package com.worldspotlightapp.android.maincontroller.modules.locationmodule;
 
+import android.annotation.SuppressLint;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +39,34 @@ import com.worldspotlightapp.android.utils.Secret;
  * Created by jiahaoliuliu on 15/9/19.
  */
 public class LocationModuleObservable extends AbstractLocationModuleObservable {
+
+    private static final String TAG = "LocationModuleObservable";
+
+    private static final String MASTER_CARD_SANDBOX_LOCATION_API_ATM_URL = "https://sandbox.api.mastercard.com/atms/v1/atm";
+    private static final String MASTER_CARD_SANDBOX_MERCHANT_CATEGORY_CODES_URL = "https://sandbox.api.mastercard.com/merchantpoi/v1/merchantpoisvc.svc/merchantcategorycodes";
+
+    @SuppressLint("LongLogTag")
+    public LocationModuleObservable() {
+        try {
+            HttpsURLConnection merchantCategoryCodesConnection = createOpenAPIConnection(MASTER_CARD_SANDBOX_MERCHANT_CATEGORY_CODES_URL, null);
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (InvalidKeySpecException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (IOException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (OAuthException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (KeyStoreException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (CertificateException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (UnrecoverableKeyException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        } catch (KeyManagementException e) {
+            Log.e(TAG, "Error createing the connection with Master Card API ", e);
+        }
+    }
 
     /*
      * Establish an OAuth connection to a MasterCard API over HTTPS.
@@ -111,7 +141,7 @@ public class LocationModuleObservable extends AbstractLocationModuleObservable {
  * Pulls the private key out of a PEM file and loads it into an RSAPrivateKey and returns it.
  */
     private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        String privKeyFile = "openapi-samplecode-privatekey.pem";
+        String privKeyFile = "master_card_key.pem";
         final String beginPK = "-----BEGIN PRIVATE KEY-----";
         final String endPK = "-----END PRIVATE KEY-----";
 

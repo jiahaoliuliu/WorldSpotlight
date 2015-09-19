@@ -1,6 +1,6 @@
 package com.worldspotlightapp.android.ui;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -26,7 +26,7 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Created by jiahaoliuliu on 6/12/15.
  */
-public class MainApplication extends Application {
+public class MainApplication extends MultiDexApplication {
 
     private static MainApplication sInstance;
 

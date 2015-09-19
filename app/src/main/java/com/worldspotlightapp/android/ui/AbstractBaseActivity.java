@@ -23,6 +23,7 @@ import com.worldspotlightapp.android.maincontroller.modules.activitytrackermodul
 import com.worldspotlightapp.android.maincontroller.modules.citymodule.AbstractCityModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.eventstrackingmodule.IEventsTrackingModule;
 import com.worldspotlightapp.android.maincontroller.modules.gpslocalizationmodule.IGpsLocalizationModule;
+import com.worldspotlightapp.android.maincontroller.modules.locationmodule.AbstractLocationModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.notificationmodule.INotificationModule;
 import com.worldspotlightapp.android.maincontroller.modules.organizermodule.AbstractOrganizerModuleObservable;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.AbstractUserDataModuleObservable;
@@ -58,6 +59,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     protected IActivityTrackerModule mActivityTrackerModule;
     protected AbstractCityModuleObservable mCityModuleObservable;
     protected AbstractOrganizerModuleObservable mOrganizerModuleObservable;
+    protected AbstractLocationModuleObservable mLocationModuleObservable;
 
     // Special variables for GpsLocalizationModule
     private boolean isRegisteredForLocalizationService;
@@ -86,6 +88,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
         mActivityTrackerModule = mMainController.getActivityTrackerModule();
         mCityModuleObservable = mMainController.getCityModuleObservable();
         mOrganizerModuleObservable = mMainController.getOrganizerModuleObservable();
+        mLocationModuleObservable = mMainController.getLocationModuleObserver();
 
         // Getting the resolution error saved for localization service
         mResolvingError =
@@ -331,6 +334,11 @@ public abstract class AbstractBaseActivity extends AppCompatActivity implements
     @Override
     public AbstractOrganizerModuleObservable getOrganizerModuleObservable() {
         return mOrganizerModuleObservable;
+    }
+
+    @Override
+    public AbstractLocationModuleObservable getLocationModuleObservable() {
+        return mLocationModuleObservable;
     }
 
     @Override
