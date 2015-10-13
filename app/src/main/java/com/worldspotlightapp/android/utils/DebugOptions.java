@@ -68,7 +68,7 @@ public class DebugOptions {
     /**
      * Track if the app should use the production data or not
      */
-    private static final boolean SHOULD_USE_PRODUCTION_DATA = false;
+    private static final boolean SHOULD_USE_PRODUCTION_DATA = IS_PRODUCTION;
 
     /**
      * Check if the app should use the production data

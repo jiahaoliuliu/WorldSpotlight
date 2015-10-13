@@ -903,11 +903,14 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
 
     private class SaveVideosListToDatabaseRunnable implements Runnable {
 
+        // The own copy of the video list.
         private List<Video> mVideosList;
 
         public SaveVideosListToDatabaseRunnable(List<Video> videosList) {
             super();
-            this.mVideosList = videosList;
+            // Since we are running in another thread, it is more safe using the copy
+            // of the data instead of using the pointer to the list
+            this.mVideosList = new ArrayList<Video>(videosList);
         }
 
         @Override
