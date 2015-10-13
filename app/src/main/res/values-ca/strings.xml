@@ -1,0 +1,107 @@
+<resources>
+    <string name="app_name">World Spotlight</string>
+
+    <!-- Abstract base Activity -->
+    <string name="abstract_base_activity_user_must_logged_in">Has de iniciar sessió. Voldries fer-ho ara?</string>
+
+    <!-- Sign Up Login Activity -->
+    <string name="sign_up_login_activity_sign_in_with_facebook">Loguear con Facebook Iniciar sessió amb Facebook</string>
+    <string name="sign_up_login_activity_sign_in_with_google_plus">Loguear con Google Iniciar sessió amb Google</string>
+    <string name="sign_up_login_activity_sign_up">Inscriu-t\'hi </string>
+    <string name="sign_up_login_activity_log_in">Iniciar sessió </string>
+    <string name="sign_up_login_activity_skip">Saltar això</string>
+
+    <!-- Sign up Activity -->
+    <string name="sign_up_activity_title">Inscriu-te amb el teu correu electrònic.</string>
+    <string name="sign_up_activity_email_hint">Escrigui el seu correu electrònic</string>
+    <string name="sign_up_activity_password_hint">Escrigui la seva contrasenya</string>
+    <string name="sign_up_activity_verify_password_hint">Verifiqui la seva contrasenya</string>
+    <string name="sign_up_activity_sign_up">Registrar</string>
+    <string name="sign_up_activity_error_message_password_not_match">Les seves contrasenyes no coincideixen</string>
+
+    <!-- Login Activity -->
+    <string name="login_activity_title">Inicia sessió amb el correu</string>
+    <string name="login_activity_login">Entrar</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_you_are_here">Estàs aquí</string>
+    <string name="action_bar_search">Buscar</string>
+    <string name="main_activity_show_fav_videos_list_title">Favorits</string>
+    <string name="main_activity_press_again_to_exit">Premi un alter cop per a tancar la app</string>
+
+    <!-- Drawer -->
+    <string name="drawer_login">Loguar</string>
+    <string name="drawer_likes">Favorits</string>
+    <string name="drawer_recommended">Recomanat</string>
+    <string name="drawer_logout">Sortir</string>
+    <string name="drawer_open">Calaix obert</string>
+    <string name="drawer_close">Calaix tancat</string>
+
+    <!-- Add a video tutorial activity -->
+    <string name="add_a_video_tutorial_activity_launch_youtube">Obrir Youtube</string>
+    <string name="add_a_video_tutorial_activity_1_click_on_button">1. Fes click al botó “Obrir Youtube” al final. \n\n Obrirem l’aplicació Youtube</string>
+    <string name="add_a_video_tutorial_activity_2_select_a_video">2. Selecciona un vídeo</string>
+    <string name="add_a_video_tutorial_activity_3_click_on_share">3.Fes click aquí</string>
+    <string name="add_a_video_tutorial_activity_4_select_our_app">4. Seleccioni aquesta aplicació</string>
+    <string name="add_a_video_tutorial_activity_5_choose_place">5.Selecciona el lloc on s’ha gravat el vídeo</string>
+    <string name="add_a_video_tutorial_activity_6_click_on_done">6. Fes click en fet.</string>
+    <string name="add_a_video_tutorial_activity_not_show_message">Això ja m’ho sé!</string>
+
+    <!-- Add a video activity -->
+    <string name="action_bar_done">Fet!</string>
+    <string name="add_a_video_activity_error_location_not_found">No hem pogut trobar el lloc, podries provar-ho més tard?</string>
+    <string name="add_a_video_activity_error_geocoder_not_present">No es posible trobar el lloc de manera automàtica, podries introduir-ho manualment?</string>
+    <string name="add_a_video_activity_video_added_correctly">El vídeo ha estat afegit correctament</string>
+    <string name="add_a_video_activity_error_adding_video">Hi ha hagut un error afegint el vídeo. Podries intentar-ho més tard?</string>
+    <string name="add_a_video_activity_error_user_not_logged_in">Has de iniciar sessió per a afegir el vídeo. Voldries fer-ho ara?</string>
+
+    <!-- Video details activity -->
+    <string name="video_details_description_title">Descripció</string>
+    <string name="video_details_hashtags_title">Hashtags</string>
+    <string name="error_player">Hi ha hagut un problema inicialitzant YoutubePlayer(%1$s)</string>
+    <string name="action_bar_share">Compartir</string>
+    <string name="share_title">Compartir-ho amb…</string>
+    <string name="share_subject">Mira aquest vídeo que he trobat!</string>
+    <string name="video_details_activity_user_must_logged_in_to_like">Has de iniciar sessió per a afegir un m’agrada al vídeo. Voldries fer-ho ara?</string>
+    <string name="video_details_activity_user_must_logged_in_to_report">Has de iniciar sessió per a reportar el video. Voldries fer-ho ara?</string>
+    <string name="video_details_activity_report_sent_correctly">Gracies per a reportar aquest vídeo, el comprovarem tant aviat ens sigui possible</string>
+    <string name="video_details_activity_empty_hash_tag">Afegir Hashtags</string>
+    <string name="video_details_activity_more_organizers">Més</string>
+
+    <!-- Hash tags list activity -->
+    <string name="title_activity_hash_tags">Hashtags</string>
+
+    <!-- Organizers list activity -->
+    <string name="title_activity_organizers_recycler">Llista d’organitzadors</string>
+
+    <!-- Notification module -->
+    <string name="dialog_loading_generic_message">Carregant…</string>
+    <string name="notification_module_dialog_yes">Sí</string>
+    <string name="notification_module_dialog_no">No per ara</string>
+    <string name="notification_module_dialog_user_not_logged_in_title">Has de iniciar sessió</string>
+
+    <!-- Correctly request messages -->
+    <string name="correct_request_ok">La petició ha anat bé</string>
+
+    <!-- Error messages -->
+    <string name="error_message_internet_connection">Sembla que no tens connexió a internet, podries comprovar-ho?</string>
+    <string name="error_message_server_generic">Hi ha hagut un problema amb el servidor, podries provar-ho més tard?</string>
+    <string name="error_message_script_error">Error processant el script</string>
+    <string name="error_message_validation_failed">Error validant cloud code</string>
+    <string name="error_message_generic">Sembla que hi ha hagut un problema, podries provar-ho més tard?</string>
+    <string name="error_message_video_not_found">El vídeo que estàs buscant no existeix</string>
+    <string name="error_message_username_already_taken">Ja existeix un usuari amb aquest correu electrònic, podries provar-ho amb un altre correu?</string>
+    <string name="error_message_login_with_facebook">Hi ha hagut un problema iniciant la sessió amb Facebook. Podries intentar-ho més tard?</string>
+    <string name="error_message_login_with_google">Hi ha hagut un problema iniciant la sessió amb Google Plus. Podries intentar-ho més tard?</string>
+    <string name="error_message_login_with_parse">Usuari i contrasenya no es corresponen, podries comprovar-ho?</string>
+    <string name="error_message_user_not_logged_in">Has de iniciar sessió per a això. Vols fer-ho ara?</string>
+    <string name="error_message_adding_an_existing_video">El vídeo que vols afegir ja existeix</string>
+
+    <!-- Generic errors -->
+    <string name="error_message_not_possible_launching_you_tube_app">Sembla que no podem obrir l’aplicació de Youtube, la tens instal·lada?</string>
+
+    <!-- Generic error message for Edit Text -->
+    <string name="error_message_field_empty">Aquest camp no pot estar buit.</string>
+    <string name="error_message_string_too_short">Has de introduir almenys %1$s lletres</string>
+    <string name="error_message_email_address_required">Necessitem una compte de correu vàlida.</string>
+</resources>
