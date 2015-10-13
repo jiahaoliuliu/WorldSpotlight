@@ -161,6 +161,8 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
                     "in the local file");
             mVideosList = retrieveVideosListFromRawFile();
 
+            // If only debug data is used, save the current debug data into the database
+            // Then notifiy the observer and finally, finish.
             if (!DebugOptions.shouldUseProductionData()) {
                 videosListToBeAddedToTheDatabase.addAll(mVideosList);
                 saveVideosListToDatabase(videosListToBeAddedToTheDatabase);
@@ -170,6 +172,7 @@ public class VideosModuleObserver extends AbstractVideosModuleObservable {
             }
         }
 
+        // Notify to the observable about the new data
         ParseResponse parseResponse = new ParseResponse.Builder(null).build();
         boolean areExtraVideos = false;
         VideosModuleVideosListResponse videosModuleVideosListResponse =
