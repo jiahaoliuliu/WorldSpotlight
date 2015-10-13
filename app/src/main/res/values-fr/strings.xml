@@ -28,7 +28,7 @@
     <string name="main_activity_you_are_here">Vous êtes ici</string>
     <string name="action_bar_search">Rechercher</string>
     <string name="main_activity_show_fav_videos_list_title">Favoris</string>
-    <string name="main_activity_press_again_to_exit">Appuyez à nouveau pour fermer l'application</string> <!-- TODO: Check the translation -->
+    <string name="main_activity_press_again_to_exit">Appuyez à nouveau pour fermer l\'application</string> <!-- TODO: Check the translation -->
 
     <!-- Drawer -->
     <string name="drawer_login">Se Connecter</string>
