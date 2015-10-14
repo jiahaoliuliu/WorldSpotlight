@@ -1252,7 +1252,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private void showFeedBack() {
         if (feedBackAlertDialog == null) {
             View feedbackView = LayoutInflater.from(mContext).inflate(R.layout.view_feedback, null);
-            EditText feedbackEditText = (EditText)feedbackView.findViewById(R.id.feedback_edit_text);
+            final EditText feedbackEditText = (EditText)feedbackView.findViewById(R.id.feedback_edit_text);
             feedbackEditText.setText("");
 
             feedBackAlertDialog = new AlertDialog.Builder(mContext)
@@ -1266,7 +1266,10 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                     .setPositiveButton(R.string.drawer_feedback_send, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // TODO: Implement this
+                                // TODO: Check if the content is empty or not
+                                // Show the toast
+                                mNotificationModule.showToast(R.string.drawer_feedback_thanks, true);
+                                mUserDataModule.sendFeedback(feedbackEditText.getText().toString());
                             }
                         }
                     )

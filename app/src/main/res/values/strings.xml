@@ -36,8 +36,9 @@
     <string name="drawer_recommended">Recommended</string>
     <string name="drawer_feedback">Feedback</string> <!-- TODO: Translate it -->
     <string name="drawer_feedback_title">Tell us about this app</string> <!-- TODO: Translate it -->
-    <string name="drawer_feedback_cancel">Cancel</string>
+    <string name="drawer_feedback_cancel">Cancel</string> <!-- TODO: Translate it -->
     <string name="drawer_feedback_send">Send</string> <!-- TODO: Translate it -->
+    <string name="drawer_feedback_thanks">Thanks for your feedback. We will check it ASAP!</string>
     <string name="drawer_logout">Logout</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>

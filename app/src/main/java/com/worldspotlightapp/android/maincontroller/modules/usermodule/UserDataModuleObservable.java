@@ -29,6 +29,7 @@ import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleReportResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUnlikeResponse;
 import com.worldspotlightapp.android.maincontroller.modules.usermodule.response.UserDataModuleUserResponse;
+import com.worldspotlightapp.android.model.Feedback;
 import com.worldspotlightapp.android.model.Like;
 import com.worldspotlightapp.android.model.Report;
 import com.worldspotlightapp.android.model.UserData;
@@ -515,6 +516,22 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     @Override
     public void hideAddAVideoTutorial(boolean enable) {
         mPreferences.set(BooleanId.HIDE_ADD_A_VIDEO_TUTORIAL, enable);
+    }
+
+    @Override
+    public void sendFeedback(final String feedbackContet) {
+        Feedback feedbackToBeSend = new Feedback(feedbackContet);
+        feedbackToBeSend.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParseResponse parseResponse = new ParseResponse.Builder(e).build();
+                if (!parseResponse.isError()) {
+                    Log.v(TAG, "Feedback correctly saved " + feedbackContet);
+                } else {
+                    Log.e(TAG, "Error saving the feedback " + feedbackContet, e);
+                }
+            }
+        });
     }
 
     /**
