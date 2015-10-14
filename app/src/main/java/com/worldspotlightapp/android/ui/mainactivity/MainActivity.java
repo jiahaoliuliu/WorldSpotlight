@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.support.v7.widget.SearchView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -148,6 +149,9 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private MenuItem mMenuItemSearch;
 
     private Picasso mPicasso;
+
+    // Feedback alert dialog
+    private AlertDialog feedBackAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1246,24 +1250,35 @@ public class MainActivity extends AbstractBaseActivityObserver implements
      * Show feedback screen to the user
      */
     private void showFeedBack() {
-        View feedbackView = LayoutInflater.from(mContext).inflate(R.layout.view_feedback, null);
+        if (feedBackAlertDialog == null) {
+            View feedbackView = LayoutInflater.from(mContext).inflate(R.layout.view_feedback, null);
+            EditText feedbackEditText = (EditText)feedbackView.findViewById(R.id.feedback_edit_text);
+            feedbackEditText.setText("");
 
-        new AlertDialog.Builder(mContext)
-            .setTitle(R.string.drawer_feedback_title)
-            .setView(
-                    feedbackView,
-                    getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
-                    getResources().getInteger(R.integer.drawer_feedback_dialog_top_margin),
-                    getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
-                    0)
-            .setPositiveButton(R.string.drawer_feedback_send, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO: Implement this
-                    }
-                }
-            )
-            .create()
-            .show();
+            feedBackAlertDialog = new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.drawer_feedback_title)
+                    .setView(
+                            feedbackView,
+                            getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
+                            getResources().getInteger(R.integer.drawer_feedback_dialog_top_margin),
+                            getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
+                            0)
+                    .setPositiveButton(R.string.drawer_feedback_send, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: Implement this
+                            }
+                        }
+                    )
+                    .setNegativeButton(R.string.drawer_feedback_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Not do anything
+                        }
+                    })
+                    .create();
+        }
+
+        feedBackAlertDialog.show();
     }
 }
