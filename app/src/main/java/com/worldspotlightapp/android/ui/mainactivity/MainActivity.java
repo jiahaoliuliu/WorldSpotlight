@@ -87,6 +87,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
      */
     public static final String INTENT_KEY_KEYWORD = "com.worldspotlightapp.android.ui.MainActivity.keyword";
 
+    private static final String HASH_TAG_RECOMMENDED = "Recommended";
+
     // Internal structured data
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
@@ -226,12 +228,11 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         // Close the drawer
                         // The drawer must be closed before start searching.
                         mDrawerLayout.closeDrawers();
-                        searchByKeyword("Recommended");
+                        searchByKeyword(HASH_TAG_RECOMMENDED);
                         return true;
                     case R.id.drawer_item_feedback:
-                        Log.v(TAG, "Recommended clicked");
-                        // TODO: Change it
-                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FAVOURITES);
+                        Log.v(TAG, "Feedback clicked");
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FEEDBACK);
                         // Close the drawer
                         mDrawerLayout.closeDrawers();
                         // TODO: Implement this
