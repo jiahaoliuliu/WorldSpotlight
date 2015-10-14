@@ -1,11 +1,10 @@
 package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,15 +15,16 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.support.v7.widget.SearchView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +36,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.collect.Iterables;
 import com.google.maps.android.clustering.Cluster;
@@ -235,7 +234,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FEEDBACK);
                         // Close the drawer
                         mDrawerLayout.closeDrawers();
-                        // TODO: Implement this
+                        showFeedBack();
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
@@ -1241,5 +1240,30 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         mMenuItemSearch.expandActionView();
         mSearchAutoCompleteTextView.setText(keyword);
         mSearchView.setQuery(keyword, true);
+    }
+
+    /**
+     * Show feedback screen to the user
+     */
+    private void showFeedBack() {
+        View feedbackView = LayoutInflater.from(mContext).inflate(R.layout.view_feedback, null);
+
+        new AlertDialog.Builder(mContext)
+            .setTitle(R.string.drawer_feedback_title)
+            .setView(
+                    feedbackView,
+                    getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
+                    getResources().getInteger(R.integer.drawer_feedback_dialog_top_margin),
+                    getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
+                    0)
+            .setPositiveButton(R.string.drawer_feedback_send, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Implement this
+                    }
+                }
+            )
+            .create()
+            .show();
     }
 }
