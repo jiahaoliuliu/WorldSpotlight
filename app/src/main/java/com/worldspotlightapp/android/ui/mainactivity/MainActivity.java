@@ -110,6 +110,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private NavigationView mDrawer;
     private MenuItem mDrawerItemLogin;
     private MenuItem mDrawerItemFavourites;
+    private MenuItem mDrawerItemFeedback;
     private MenuItem mDrawerItemLogout;
 
     // Search view
@@ -226,6 +227,14 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         // The drawer must be closed before start searching.
                         mDrawerLayout.closeDrawers();
                         searchByKeyword("Recommended");
+                        return true;
+                    case R.id.drawer_item_feedback:
+                        Log.v(TAG, "Recommended clicked");
+                        // TODO: Change it
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FAVOURITES);
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
+                        // TODO: Implement this
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
