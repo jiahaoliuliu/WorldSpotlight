@@ -150,7 +150,7 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
                         // User logged in through Facebook
                         setChanged();
                         notifyObservers(userDataModuleUserResponse);
-                    // User has signed in but the parse user is false. This is an inconsistent state.
+                        // User has signed in but the parse user is false. This is an inconsistent state.
                     } else {
                         // if the current user exists
                         if (ParseUser.getCurrentUser() != null) {
@@ -519,16 +519,16 @@ public class UserDataModuleObservable extends AbstractUserDataModuleObservable {
     }
 
     @Override
-    public void sendFeedback(final String feedbackContet) {
-        Feedback feedbackToBeSend = new Feedback(feedbackContet);
+    public void sendFeedback(final String feedbackContent) {
+        Feedback feedbackToBeSend = new Feedback(feedbackContent);
         feedbackToBeSend.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 ParseResponse parseResponse = new ParseResponse.Builder(e).build();
                 if (!parseResponse.isError()) {
-                    Log.v(TAG, "Feedback correctly saved " + feedbackContet);
+                    Log.v(TAG, "Feedback correctly saved " + feedbackContent);
                 } else {
-                    Log.e(TAG, "Error saving the feedback " + feedbackContet, e);
+                    Log.e(TAG, "Error saving the feedback " + feedbackContent, e);
                 }
             }
         });

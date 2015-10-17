@@ -1270,6 +1270,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                                 // Show the toast
                                 mNotificationModule.showToast(R.string.drawer_feedback_thanks, true);
                                 mUserDataModule.sendFeedback(feedbackEditText.getText().toString());
+                                // Clear the text after
+                                feedbackEditText.setText("");
                             }
                         }
                     )
