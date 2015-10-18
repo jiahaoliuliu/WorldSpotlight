@@ -108,6 +108,6 @@
     <string name="error_message_email_address_required">Vous devez saisir une adresse email valide</string>
 
     <string name="title_activity_organizers_recycler">liste des organisateurs</string> <!-- TODO Check the translation -->
-    <string> name="video_details_activity_more_organizers">Plus</string> <!-- TODO Check the translation -->
+    <string name="video_details_activity_more_organizers">Plus</string> <!-- TODO Check the translation -->
 
 </resources>
