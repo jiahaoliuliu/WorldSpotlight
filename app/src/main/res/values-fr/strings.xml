@@ -34,6 +34,11 @@
     <string name="drawer_login">Se Connecter</string>
     <string name="drawer_likes">Favoris</string>
     <string name="drawer_recommended">recommandé</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback">Retour d\'information</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_cancel">Annuler</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_send">Envoyer</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_thanks">Merci pour votre avis</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_title">Parlez-nous de cette appli</string> <!-- TODO: Check the translation -->
     <string name="drawer_logout">Se Déconnecter</string>
     <string name="drawer_open">Tiroir ouvert</string>
     <string name="drawer_close">Tiroir fermé</string>
@@ -103,6 +108,6 @@
     <string name="error_message_email_address_required">Vous devez saisir une adresse email valide</string>
 
     <string name="title_activity_organizers_recycler">liste des organisateurs</string> <!-- TODO Check the translation -->
-    <string name="video_details_activity_more_organizers">Plus</string> <!-- TODO Check the translation -->
+    <string> name="video_details_activity_more_organizers">Plus</string> <!-- TODO Check the translation -->
 
 </resources>

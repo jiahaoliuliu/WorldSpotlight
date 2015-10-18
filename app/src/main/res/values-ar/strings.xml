@@ -33,6 +33,11 @@
     <string name="drawer_login">تسجيل الدخول</string>
     <string name="drawer_likes">المفضلات</string>
     <string name="drawer_recommended">موصى به</string> <!-- TODO Check the translation -->
+    <string name="drawer_feedback">ردود الفعل</string> <!-- TODO Check the translation -->
+    <string name="drawer_feedback_cancel">إلغاء</string> <!-- TODO Check the translation -->
+    <string name="drawer_feedback_send">إرسال</string> <!-- TODO Check the translation -->
+    <string name="drawer_feedback_thanks">شكرا لملاحظاتك</string> <!-- TODO Check the translation -->
+    <string name="drawer_feedback_title">تخبرنا عن هذا التطبيق</string> <!-- TODO Check the translation -->
     <string name="drawer_logout">تسجيل الخروج</string>
     <string name="drawer_open">فتح الراسم</string>
     <string name="drawer_close">غلق الراسم</string>
@@ -105,4 +110,5 @@
     <string name="error_message_field_empty">لا يمكن ترك الحقل فارغا</string>
     <string name="error_message_string_too_short">يجب عليك إدخال ما لا يقل عن%1$s من الحروف</string>
     <string name="error_message_email_address_required">يجب إدخال عنوان بريد إلكتروني صالح</string>
+
 </resources>

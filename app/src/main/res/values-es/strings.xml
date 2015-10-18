@@ -33,6 +33,11 @@
     <string name="drawer_login">Loguar</string>
     <string name="drawer_likes">Favoritos</string>
     <string name="drawer_recommended">Recomendado</string>
+    <string name="drawer_feedback_cancel">Cancelar</string>
+    <string name="drawer_feedback_send">Enviar</string>
+    <string name="drawer_feedback_thanks">Gracias por tu opinión. ¡Sigue así!</string>
+    <string name="drawer_feedback_title">Dinos qué te parece la app</string>
+    <string name="drawer_feedback">Opinión</string>
     <string name="drawer_logout">Salir</string>
     <string name="drawer_open">Cajón abierto</string>
     <string name="drawer_close">Cajón cerrado</string>

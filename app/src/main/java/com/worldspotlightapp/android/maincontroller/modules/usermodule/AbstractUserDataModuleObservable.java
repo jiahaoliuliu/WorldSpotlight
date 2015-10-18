@@ -142,4 +142,12 @@ public abstract class AbstractUserDataModuleObservable extends AbstractBaseModul
      *      If the tutorial about addAVideo should be displayed
      */
     public abstract void hideAddAVideoTutorial(boolean enable);
+
+    /**
+     * Send the feedback to the company.
+     *
+     * @param feedbackContet
+     *      The content of the feedback to be checked
+     */
+    public abstract void sendFeedback(String feedbackContet);
 }
