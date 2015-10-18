@@ -34,6 +34,11 @@
     <string name="drawer_login">Accedi</string>
     <string name="drawer_likes">Preferiti</string>
     <string name="drawer_recommended">raccomandato</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback">Retroazione</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_cancel">Cancellare</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_send">Inviare</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_thanks">Grazie per i tuoi commenti</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_title">Parlaci di questo app</string> <!-- TODO: Check translation -->
     <string name="drawer_logout">Esci</string>
     <string name="drawer_open">Apri cassetto</string>
     <string name="drawer_close">Chiudi cassetto</string>
