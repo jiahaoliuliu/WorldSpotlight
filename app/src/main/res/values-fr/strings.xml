@@ -34,7 +34,7 @@
     <string name="drawer_login">Se Connecter</string>
     <string name="drawer_likes">Favoris</string>
     <string name="drawer_recommended">recommandé</string> <!-- TODO: Check the translation -->
-    <string name="drawer_feedback">Retour d'information</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback">Retour d\'information</string> <!-- TODO: Check the translation -->
     <string name="drawer_feedback_cancel">Annuler</string> <!-- TODO: Check the translation -->
     <string name="drawer_feedback_send">Envoyer</string> <!-- TODO: Check the translation -->
     <string name="drawer_feedback_thanks">Merci pour votre avis</string> <!-- TODO: Check the translation -->
