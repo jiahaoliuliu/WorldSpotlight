@@ -1,11 +1,10 @@
 package com.worldspotlightapp.android.ui.mainactivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,8 +15,10 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.collect.Iterables;
 import com.google.maps.android.clustering.Cluster;
@@ -87,6 +87,8 @@ public class MainActivity extends AbstractBaseActivityObserver implements
      */
     public static final String INTENT_KEY_KEYWORD = "com.worldspotlightapp.android.ui.MainActivity.keyword";
 
+    private static final String HASH_TAG_RECOMMENDED = "Recommended";
+
     // Internal structured data
     private FragmentManager mFragmentManager;
     private ClusterManager<Video> mClusterManager;
@@ -110,6 +112,7 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private NavigationView mDrawer;
     private MenuItem mDrawerItemLogin;
     private MenuItem mDrawerItemFavourites;
+    private MenuItem mDrawerItemFeedback;
     private MenuItem mDrawerItemLogout;
 
     // Search view
@@ -146,6 +149,9 @@ public class MainActivity extends AbstractBaseActivityObserver implements
     private MenuItem mMenuItemSearch;
 
     private Picasso mPicasso;
+
+    // Feedback alert dialog
+    private AlertDialog feedBackAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +231,14 @@ public class MainActivity extends AbstractBaseActivityObserver implements
                         // Close the drawer
                         // The drawer must be closed before start searching.
                         mDrawerLayout.closeDrawers();
-                        searchByKeyword("Recommended");
+                        searchByKeyword(HASH_TAG_RECOMMENDED);
+                        return true;
+                    case R.id.drawer_item_feedback:
+                        Log.v(TAG, "Feedback clicked");
+                        mEventTrackingModule.trackUserAction(ScreenId.MAIN_SCREEN, EventId.FEEDBACK);
+                        // Close the drawer
+                        mDrawerLayout.closeDrawers();
+                        showFeedBack();
                         return true;
                     case R.id.drawer_item_logout:
                         Log.v(TAG, "Logout clicked");
@@ -1231,5 +1244,46 @@ public class MainActivity extends AbstractBaseActivityObserver implements
         mMenuItemSearch.expandActionView();
         mSearchAutoCompleteTextView.setText(keyword);
         mSearchView.setQuery(keyword, true);
+    }
+
+    /**
+     * Show feedback screen to the user
+     */
+    private void showFeedBack() {
+        if (feedBackAlertDialog == null) {
+            View feedbackView = LayoutInflater.from(mContext).inflate(R.layout.view_feedback, null);
+            final EditText feedbackEditText = (EditText)feedbackView.findViewById(R.id.feedback_edit_text);
+            feedbackEditText.setText("");
+
+            feedBackAlertDialog = new AlertDialog.Builder(mContext)
+                    .setTitle(R.string.drawer_feedback_title)
+                    .setView(
+                            feedbackView,
+                            getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
+                            getResources().getInteger(R.integer.drawer_feedback_dialog_top_margin),
+                            getResources().getInteger(R.integer.drawer_feedback_dialog_horizontal_margin),
+                            0)
+                    .setPositiveButton(R.string.drawer_feedback_send, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: Check if the content is empty or not
+                                // Show the toast
+                                mNotificationModule.showToast(R.string.drawer_feedback_thanks, true);
+                                mUserDataModule.sendFeedback(feedbackEditText.getText().toString());
+                                // Clear the text after
+                                feedbackEditText.setText("");
+                            }
+                        }
+                    )
+                    .setNegativeButton(R.string.drawer_feedback_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Not do anything
+                        }
+                    })
+                    .create();
+        }
+
+        feedBackAlertDialog.show();
     }
 }

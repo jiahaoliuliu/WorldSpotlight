@@ -37,6 +37,7 @@
     <string name="mp_main_activity_login" translatable="false">Login</string>
     <string name="mp_main_activity_favourites" translatable="false">Favourites</string>
     <string name="mp_main_activity_recommended" translatable="false">Recommended</string>
+    <string name="mp_main_activity_feedback" translatable="false">Feedback</string>
     <string name="mp_main_activity_logout" translatable="false">Logout</string>
 
     <!--    Others -->

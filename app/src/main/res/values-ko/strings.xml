@@ -32,7 +32,12 @@
     <!--     Drawer -->
     <string name="drawer_login">로그인</string>
     <string name="drawer_likes">즐겨찾기</string>
-    <string name="drawer_recommended">추천</string>  <!-- TODO: Check translation -->
+    <string name="drawer_recommended">추천</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback">피드백</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_cancel">취소</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_send">보내</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_thanks">의견을 보내 주셔서 감사합니다</string> <!-- TODO: Check translation -->
+    <string name="drawer_feedback_title">이 응용 프로그램에 대한 정보를 알려주십시오</string> <!-- TODO: Check translation -->
     <string name="drawer_logout">로그아웃</string>
     <string name="drawer_open">서랍 열기</string>
     <string name="drawer_close">서랍 닫기</string>
@@ -103,4 +108,5 @@
 
     <string name="title_activity_organizers_recycler">조직 목록</string> <!-- TODO Check the translation -->
     <string name="video_details_activity_more_organizers">더</string> <!-- TODO Check the translation -->
+
 </resources>
