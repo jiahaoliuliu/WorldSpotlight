@@ -501,7 +501,8 @@ public class Video extends ParseObject implements ClusterItem {
         Video anotherVideo = (Video) o;
 
         // Check if the object id exists.
-        if (anotherVideo.hasObjectId()) {
+        // The object id could be null
+        if (anotherVideo.hasObjectId() && hasObjectId()) {
             return getObjectId().equals(anotherVideo.getObjectId());
         // If the object id does not exists, check the video id
         } else {
