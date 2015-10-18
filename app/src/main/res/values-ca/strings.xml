@@ -33,6 +33,11 @@
     <string name="drawer_login">Loguar</string>
     <string name="drawer_likes">Favorits</string>
     <string name="drawer_recommended">Recomanat</string>
+    <string name="drawer_feedback">Opinió</string>
+    <string name="drawer_feedback_cancel">Cancel·lar</string>
+    <string name="drawer_feedback_send">Enviar</string>
+    <string name="drawer_feedback_thanks">Gràcies per la seva col·laboració</string>
+    <string name="drawer_feedback_title">Explica'ns sobre aquesta aplicació</string>
     <string name="drawer_logout">Sortir</string>
     <string name="drawer_open">Calaix obert</string>
     <string name="drawer_close">Calaix tancat</string>
