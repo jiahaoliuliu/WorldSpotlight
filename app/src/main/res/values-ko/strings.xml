@@ -108,4 +108,5 @@
 
     <string name="title_activity_organizers_recycler">조직 목록</string> <!-- TODO Check the translation -->
     <string name="video_details_activity_more_organizers">더</string> <!-- TODO Check the translation -->
+
 </resources>

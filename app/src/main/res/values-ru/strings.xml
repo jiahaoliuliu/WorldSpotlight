@@ -34,6 +34,11 @@
     <string name="drawer_login">Войти</string>
     <string name="drawer_likes">Избранное</string>
     <string name="drawer_recommended">рекомендуемый</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback">Обратная связь</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_cancel">Отмена</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_send">Отправить</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_thanks">Спасибо за ваш отзыв</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_title">скажите нам об этом приложении</string> <!-- TODO: Check the translation -->
     <string name="drawer_logout">Выйти</string>
     <string name="drawer_open">Ящик открыт</string>
     <string name="drawer_close">Ящик закрыт</string>
@@ -104,4 +109,5 @@
 
     <string name="title_activity_organizers_recycler">список организаторы</string> <!-- TODO Check the translation -->
     <string name="video_details_activity_more_organizers">Больше</string> <!-- TODO Check the translation -->
+
 </resources>

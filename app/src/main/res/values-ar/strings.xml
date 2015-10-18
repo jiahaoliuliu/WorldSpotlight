@@ -110,4 +110,5 @@
     <string name="error_message_field_empty">لا يمكن ترك الحقل فارغا</string>
     <string name="error_message_string_too_short">يجب عليك إدخال ما لا يقل عن%1$s من الحروف</string>
     <string name="error_message_email_address_required">يجب إدخال عنوان بريد إلكتروني صالح</string>
+
 </resources>

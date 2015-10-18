@@ -109,4 +109,5 @@
     <string name="error_message_field_empty">Aquest camp no pot estar buit.</string>
     <string name="error_message_string_too_short">Has de introduir almenys %1$s lletres</string>
     <string name="error_message_email_address_required">Necessitem una compte de correu vàlida.</string>
+
 </resources>
