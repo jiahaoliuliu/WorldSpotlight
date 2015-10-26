@@ -34,6 +34,11 @@
     <string name="drawer_login">ログイン</string>
     <string name="drawer_likes">お気に入り</string>
     <string name="drawer_recommended">おすすめ</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback">フィードバック</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_cancel">キャンセル</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_send">送る</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_thanks">ご意見ありがとうございます</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_title">このアプリについて教えてください</string> <!-- TODO: Check the translation -->
     <string name="drawer_logout">ログアウト</string>
     <string name="drawer_open">開いてる引き出し</string>
     <string name="drawer_close">閉じてる引き出し</string>

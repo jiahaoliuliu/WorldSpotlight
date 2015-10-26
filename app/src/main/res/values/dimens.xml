@@ -30,6 +30,10 @@
     <dimen name="drawer_header_height">240dp</dimen>
     <dimen name="drawer_header_image_size">120dp</dimen>
 
+    <!--    Drawer feedback -->
+    <integer name="drawer_feedback_dialog_top_margin">40</integer>
+    <integer name="drawer_feedback_dialog_horizontal_margin">40</integer>
+
     <!--     Video Preview -->
     <dimen name="main_activity_video_preview_margin">10dp</dimen>
     <dimen name="main_activity_video_preview_title_size">15sp</dimen>

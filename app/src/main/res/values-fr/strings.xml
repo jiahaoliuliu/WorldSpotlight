@@ -28,12 +28,17 @@
     <string name="main_activity_you_are_here">Vous êtes ici</string>
     <string name="action_bar_search">Rechercher</string>
     <string name="main_activity_show_fav_videos_list_title">Favoris</string>
-    <string name="main_activity_press_again_to_exit">Appuyez à nouveau pour fermer l'application</string> <!-- TODO: Check the translation -->
+    <string name="main_activity_press_again_to_exit">Appuyez à nouveau pour fermer l\'application</string> <!-- TODO: Check the translation -->
 
     <!-- Drawer -->
     <string name="drawer_login">Se Connecter</string>
     <string name="drawer_likes">Favoris</string>
     <string name="drawer_recommended">recommandé</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback">Retour d\'information</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_cancel">Annuler</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_send">Envoyer</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_thanks">Merci pour votre avis</string> <!-- TODO: Check the translation -->
+    <string name="drawer_feedback_title">Parlez-nous de cette appli</string> <!-- TODO: Check the translation -->
     <string name="drawer_logout">Se Déconnecter</string>
     <string name="drawer_open">Tiroir ouvert</string>
     <string name="drawer_close">Tiroir fermé</string>
